@@ -20,17 +20,32 @@ var citiesSchema = new Schema({
   name : {type: String, required: true}
 });
 
-var professionalTypesSchema = new Schema({
-  type : {type : String, required: true},
-  description: {type : String, default:''}
-});
-
 var titlesSchema = new Schema({
   _doctor : {type:Schema.Types.ObjectId, ref:'doctors'},
   title : {type : String, required: true},
   description : {type: String, defaul:''},
   _university : {type:Schema.Types.ObjectId, ref:'universities'},
   graduationDate : {type: Date, required:true}
+});
+
+var professionalTypesSchema = new Schema({
+  type : {type : String, required: true},
+  description: {type : String, default:''}
+});
+
+var jobDataSchema = new Schema({
+  nit:{type:String, required:true, unique:true, default:'sin definir'},
+  clinic: {
+    name: {type: String, required:true, default:'sin definir'},
+    location: {
+      _city: {type: Schema.Types.ObjectId, ref:'city'},
+      address: {type: String, required:true, default:'sin definir'}
+    },
+    phone:{
+      movil : {type: String, default: 'sin definir'},
+      landline: {type: String, required:true, default:'sin definir'}
+    }
+  }
 });
 
 var doctorsSchema = new Schema({
@@ -70,31 +85,15 @@ var doctorsSchema = new Schema({
       number: {type: String, required:true, unique:true},
       expeditionDate: {type: Date, required:true}
     },
-    _professionalType: {type:Schema.Types.ObjectId, ref:'professionalType'},
+    _professionalType: {type:Schema.Types.ObjectId, ref:'professionalTypes'},
     _jobData: {type:Schema.Types.ObjectId, ref:'jobData'},
     isWorking:{type:String, required:true, enum:['si', 'no']},
     evidence: {type: String, required:true}
   },
-
   registerState:{
     type:String, 
     required:true, 
     enum:['en estudio', 'aprovado', 'desaprovado']
-  }
-});
-
-var jobDataSchema = new Schema({
-  nit:{type:String, required:true, unique:true, default:'sin definir'},
-  clinic: {
-    name: {type: String, required:true, default:'sin definir'},
-    location: {
-      _city: {type:Schema.Types.ObjectId, ref:'city', default:'sin definir'},
-      address: {type: String, required:true, default:'sin definir'}
-    },
-    phone:{
-      movil : {type: String, default: 'sin definir'},
-      landline: {type: String, required:true, default:'sin definir'}
-    }
   }
 });
 
@@ -104,8 +103,8 @@ var adminsSchema = new Schema({
 });
 
 exports.universities = mongoose.model('universities', universitiesSchema);
-exports.jobData = mongoose.model('jobData', jobDataSchema);
 exports.cities = mongoose.model('cities', citiesSchema);
+exports.jobData = mongoose.model('jobData', jobDataSchema);
 exports.professionalTypes = mongoose.model('professionalTypes',professionalTypesSchema);
 exports.titles = mongoose.model('titles', titlesSchema);
 exports.doctors = mongoose.model('doctors', doctorsSchema);
