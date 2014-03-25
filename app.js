@@ -9,6 +9,7 @@ var user = require('./routes/user');
 var api = {};
 api.version = 'v1';
 api.doctors = require('./routes/api/'+api.version+'/doctors');
+api.authentication = require('./routes/api/'+api.version+'/authentication');
 console.log(api);
 var http = require('http');
 var path = require('path');
@@ -35,10 +36,11 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-// API v1
-var urlDoctorsAPIv1 = '/api/v1/doctors'; 
-app.get(urlDoctorsAPIv1, api.doctors.getAllDoctors);
-app.post(urlDoctorsAPIv1, api.doctors.saveADoctor);
+// API v1 
+app.get("/api/v1/doctors", api.doctors.getAllDoctors);
+app.post("/api/v1/doctors", api.doctors.saveUserDataDoctor);
+
+app.post("/api/v1/authentication/doctors/access-token/", api.authentication.generateDoctorAccessToken);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

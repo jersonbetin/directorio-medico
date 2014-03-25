@@ -3,7 +3,9 @@
 var models = require('../../../models/models');
 var helpers = require('../../../helpers/helpers');
 var isDefined = helpers.isDefined;
-var doctorsModel = models.doctors;
+var encryptString = helpers.encryptString;
+
+var userDataDoctorsModel = models.userDataDoctors;
 
 var doctorDataStructure = {
   "doctorData":{
@@ -707,6 +709,35 @@ var testDoctorData = function(doctorData, contentType, next) {
     }
   }
   next(testApproved, data);
+};
+
+
+
+exports.saveUserDataDoctor = function (req, res){
+  if(isDefined(req.body.email) && isDefined(req.body.password)){
+    userDataDoctorsModel.create({
+      email: req.body.email,
+      password: encryptString(req.body.password,"secret-password-for-doctor-user-passwords")
+    }, function (err, userDataDoctor) {
+      if (err) {
+        if (err.code==11000) {
+          res.send({
+            error:{
+              code:1,
+              info:"Email already registered in our database"
+            }
+          });
+        }else{
+          res.send(500);
+        }
+      }else{
+        console.log(userDataDoctor);
+        res.send(userDataDoctor);
+      }
+    });
+  }else{
+    res.send(400);
+  }
 };
 
 exports.getAllDoctors = function (req, res) {

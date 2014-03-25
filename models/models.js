@@ -48,7 +48,31 @@ var jobDataSchema = new Schema({
   }
 });
 
-var doctorsSchema = new Schema({
+
+var userDataDoctorsSchema = new Schema({
+  email: { type: String, required: true, unique: true},
+  password: { type: String, required: true},
+  registerState:{
+    type:String, 
+    required:true, 
+    default: 'Regitrado sin peticion de estudio',
+    enum:['Regitrado sin peticion de estudio','Registrado y en estudio', 'Registrado y aprovado', 'Registrado pero desaprovado']
+  },
+  _personalDataDoctor: {
+    type:Schema.Types.ObjectId, 
+    ref:'personalDataDoctor'
+  },
+  _professionalDataDoctor: {
+    type:Schema.Types.ObjectId, 
+    ref:'professionalDataDoctor'
+  },
+  createdDate: {
+    type: Date, 
+    default: Date.now
+  }
+});
+
+var personalDataDoctorsSchema = new Schema({
   personalData :{
     identification: {
       type : {type: String, required:true, enum: ['TI', 'CC', 'Pasaporte']},
@@ -79,7 +103,10 @@ var doctorsSchema = new Schema({
       required:true, 
       enum:['Colombiano', 'Extranjero', 'Nacionalizado']
     }
-  },
+  }
+});
+
+var professionalDataDoctorsSchema = new Schema({
   profesionalData: {
     professinalCard: {
       number: {type: String, required:true, unique:true},
@@ -89,11 +116,6 @@ var doctorsSchema = new Schema({
     isWorking:{type:String, required:true, enum:['si', 'no']},
     _jobData: {type:Schema.Types.ObjectId, ref:'jobData'},
     evidence: {type: String, required:true}
-  },
-  registerState:{
-    type:String, 
-    required:true, 
-    enum:['en estudio', 'aprovado', 'desaprovado']
   }
 });
 
@@ -102,10 +124,22 @@ var adminsSchema = new Schema({
   password:{type : String, required:true}
 });
 
+var doctorsAccessTokensSchema = new Schema({
+  idUserDataDoctor: Schema.Types.ObjectId,
+  accessToken: String,
+  refreshToken: String,
+  expirationDate: Date
+});
+
 exports.universities = mongoose.model('universities', universitiesSchema);
 exports.cities = mongoose.model('cities', citiesSchema);
 exports.jobData = mongoose.model('jobData', jobDataSchema);
 exports.professionalTypes = mongoose.model('professionalTypes',professionalTypesSchema);
 exports.titles = mongoose.model('titles', titlesSchema);
-exports.doctors = mongoose.model('doctors', doctorsSchema);
+
+exports.personalDataDoctors = mongoose.model('personalDataDoctors', personalDataDoctorsSchema);
+exports.professionalDataDoctors = mongoose.model('professionalDataDoctors', professionalDataDoctorsSchema);
+exports.userDataDoctors = mongoose.model('userDataDoctors', userDataDoctorsSchema);
+exports.doctorsAccessTokens = mongoose.model('doctorsAccessTokens', doctorsAccessTokensSchema);
+
 exports.admins = mongoose.model('admins', adminsSchema);
