@@ -42,7 +42,7 @@ var jobDataSchema = new Schema({
       address: {type: String, required:true, default:'sin definir'}
     },
     phone:{
-      movil : {type: String, default: 'sin definir'},
+      mobile : {type: String, default: 'sin definir'},
       landline: {type: String, required:true, default:'sin definir'}
     }
   }
@@ -70,7 +70,7 @@ var doctorsSchema = new Schema({
         address: {type: String, required:true}
       },
       phone:{
-        movil : {type: String, required:true},
+        mobile : {type: String, required:true},
         home: {type: String, required:true}
       }
     },
@@ -86,8 +86,8 @@ var doctorsSchema = new Schema({
       expeditionDate: {type: Date, required:true}
     },
     _professionalType: {type:Schema.Types.ObjectId, ref:'professionalTypes'},
-    _jobData: {type:Schema.Types.ObjectId, ref:'jobData'},
     isWorking:{type:String, required:true, enum:['si', 'no']},
+    _jobData: {type:Schema.Types.ObjectId, ref:'jobData'},
     evidence: {type: String, required:true}
   },
   registerState:{

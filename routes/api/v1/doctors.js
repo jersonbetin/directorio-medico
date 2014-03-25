@@ -9,41 +9,60 @@ var doctorDataStructure = {
   "doctorData":{
     "personalData" :{
       "identification": {
-        "type" : "CC",
-        "number" : 123456789
+        "type" : "",
+        "number" : ""
       },
       "names" : {
-        "first": "pedro",
-        "second": "jose"
+        "first": "",
+        "second": ""
       },
       "lastnames" : {
-        "first" : "jimenez",
-        "second" : "perez"
+        "first" : "",
+        "second" : ""
       },
-      "sex": "M",
-      "birthdate": "22-02-1993",
+      "sex": "",
+      "birthdate": "",
       "contactData":{
         "home" : {
-          "city": "sahagun",
-          "address": "cr 19 #6-72"
+          "city": "",
+          "address": ""
         },
         "phone":{
-          "movil" : 3017244854,
-          "home": 7587931
+          "mobile" : "",
+          "home": ""
         }
       },
-      "nationality": "Colombiano"
+      "nationality": ""
     },
     "profesionalData": {
       "professinalCard": {
-        "number": 123456789,
-        "expeditionDate": "20-06-2010"
+        "number": "",
+        "expeditionDate": ""
       },
-      "_professionalType": "532db537bb861eb2811d87e7",
-      "isWorking":"no",
-      "evidence": "bla bla bla"
+      "professionalType": "",
+      "isWorking":"",
+      "evidence": ""
     },
-    "registerState":"en estudio"
+    "jobData":{
+      "nit": "",
+      "clinic": {
+        "name": "",
+        "location": {
+          "city": "",
+          "address": ""
+        },
+        "phone":{
+          "mobile": "",
+          "landline": ""
+        }
+      }
+    },
+    "titlesData": {
+      "title" : "",
+      "description" :"" ,
+      "university" : "",
+      "graduationDate" : ""
+    }
   }
 }
 
@@ -271,16 +290,16 @@ var testDoctorData = function(doctorData, contentType, next) {
           }
 
           if (isDefined(doctorData.personalData.contactData.phone)) {
-            if (isDefined(doctorData.personalData.contactData.phone.movil)) {
+            if (isDefined(doctorData.personalData.contactData.phone.mobile)) {
               data.push({
-                "doctorData.personalData.contactData.phone.movil":{
+                "doctorData.personalData.contactData.phone.mobile":{
                   "status": "ok",
-                  "value": doctorData.personalData.contactData.phone.movil
+                  "value": doctorData.personalData.contactData.phone.mobile
                 }
               });
             }else{
               data.push({
-                "doctorData.personalData.contactData.phone.movil":{
+                "doctorData.personalData.contactData.phone.mobile":{
                   "status": "error",
                   "info": "You must to send a value for this field"
                 }
@@ -394,6 +413,23 @@ var testDoctorData = function(doctorData, contentType, next) {
           testApproved = false;
         }
 
+        if (isDefined(doctorData.professionalData.professionalType)) {
+          data.push({
+            "doctorData.professionalData.professionalType":{
+              "status": "ok",
+              "value": doctorData.professionalData.professionalType
+            }
+          });
+        }else{
+          data.push({
+            "doctorData.professionalData.professionalType":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+
         if (isDefined(doctorData.professionalData.isWorking)) {
           data.push({
             "doctorData.professionalData.isWorking":{
@@ -409,6 +445,23 @@ var testDoctorData = function(doctorData, contentType, next) {
             }
           });
           testApproved=false;
+        }
+
+        if (isDefined(doctorData.professionalData.evidence)) {
+          data.push({
+            "doctorData.professionalData.evidence":{
+              "status": "ok",
+              "value": doctorData.professionalData.evidence
+            }
+          });
+        }else{
+          data.push({
+            "doctorData.professionalData.evidence":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
         } 
       }else{
         data.push({
@@ -418,7 +471,231 @@ var testDoctorData = function(doctorData, contentType, next) {
           }
         });
         testApproved = false;
+      } 
+
+      if (isDefined(doctorData.jobData)) {
+        if (isDefined(doctorData.jobData.nit)) {
+          data.push({
+            "doctorData.jobData.nit":{
+              "status": "ok",
+              "value": doctorData.jobData.nit
+            }
+          });
+        }else{
+          data.push({
+            "doctorData.jobData.nit":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+
+        if (isDefined(doctorData.jobData.clinic)) {
+          if (isDefined(doctorData.jobData.clinic.name)) {
+            data.push({
+              "doctorData.jobData.clinic.name":{
+                "status": "ok",
+                "value": doctorData.jobData.clinic.name
+              }
+            });
+          }else{
+            data.push({
+              "doctorData.jobData.clinic.name":{
+                "status": "error",
+                "info": "You must to send a value for this field"
+              }
+            });
+            testApproved=false;
+          }
+
+          if (isDefined(doctorData.jobData.clinic.location)) {
+            if (isDefined(doctorData.jobData.clinic.location.city)) {
+              data.push({
+                "doctorData.jobData.clinic.location.city":{
+                  "status": "ok",
+                  "value": doctorData.jobData.clinic.location.city
+                }
+              });
+            }else{
+              data.push({
+                "doctorData.jobData.clinic.location.city":{
+                  "status": "error",
+                  "info": "You must to send a value for this field"
+                }
+              });
+              testApproved=false;
+            }
+
+            if (isDefined(doctorData.jobData.clinic.location.address)) {
+              data.push({
+                "doctorData.jobData.clinic.location.address":{
+                  "status": "ok",
+                  "value": doctorData.jobData.clinic.location.address
+                }
+              });
+            }else{
+              data.push({
+                "doctorData.jobData.clinic.location.address":{
+                  "status": "error",
+                  "info": "You must to send a value for this field"
+                }
+              });
+              testApproved=false;
+            }
+          }else{
+            data.push({
+              "doctorData.jobData.location":{
+                "status": "error",
+                "info": "You must to send a location object"
+              }
+            });
+            testApproved=false;
+          }
+
+          if (isDefined(doctorData.jobData.clinic.phone)) {
+            if (isDefined(doctorData.jobData.clinic.phone.mobile)) {
+              data.push({
+                "doctorData.jobData.clinic.phone.mobile":{
+                  "status": "ok",
+                  "value": doctorData.jobData.clinic.phone.mobile
+                }
+              });
+            }else{
+              data.push({
+                "doctorData.jobData.clinic.phone.mobile":{
+                  "status": "error",
+                  "info": "You must to send a value for this field"
+                }
+              });
+              testApproved=false;
+            }
+
+            if (isDefined(doctorData.jobData.clinic.phone.landline)) {
+              data.push({
+                "doctorData.jobData.clinic.phone.landline":{
+                  "status": "ok",
+                  "value": doctorData.jobData.clinic.phone.landline
+                }
+              });
+            }else{
+              data.push({
+                "doctorData.jobData.clinic.phone.landline":{
+                  "status": "error",
+                  "info": "You must to send a value for this field"
+                }
+              });
+              testApproved=false;
+            }
+          }else{
+            data.push({
+              "doctorData.jobData.phone":{
+                "status": "error",
+                "info": "You must to send a phone object"
+              }
+            });
+            testApproved=false;
+          }
+        }else{
+          data.push({
+            "doctorData.jobData.clinic":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+      }else{
+        data.push({
+          "doctorData.jobData":{
+            "status": "error",
+            "info": "You must to send a jobData object"
+          }
+        });
+        testApproved = false;
       }
+
+
+      if (isDefined(doctorData.titlesData)) {
+        if (isDefined(doctorData.titlesData.title)) {
+          data.push({
+            "doctorData.titlesData.title":{
+              "status": "ok",
+              "value": doctorData.titlesData.title
+            }
+          });
+        }else{
+          data.push({
+            "doctorData.titlesData.title":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+
+        if (isDefined(doctorData.titlesData.description)) {
+          data.push({
+            "doctorData.titlesData.description":{
+              "status": "ok",
+              "value": doctorData.titlesData.description
+            }
+          });
+        }else{
+          data.push({
+            "doctorData.titlesData.description":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+
+        if (isDefined(doctorData.titlesData.university)) {
+          data.push({
+            "doctorData.titlesData.university":{
+              "status": "ok",
+              "value": doctorData.titlesData.university
+            }
+          });
+        }else{
+          data.push({
+            "doctorData.titlesData.university":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+
+        if (isDefined(doctorData.titlesData.graduationDate)) {
+          data.push({
+            "doctorData.titlesData.graduationDate":{
+              "status": "ok",
+              "value": doctorData.titlesData.graduationDate
+            }
+          });
+        }else{
+          data.push({
+            "doctorData.titlesData.graduationDate":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+
+      }else{
+        data.push({
+          "doctorData.titlesData":{
+            "status": "error",
+            "info": "You must to send a titlesData object"
+          }
+        });
+        testApproved = false;
+      }
+
+
     }else{
       data.push({
         "doctorData":{
