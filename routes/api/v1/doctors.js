@@ -714,9 +714,10 @@ var testDoctorData = function(doctorData, contentType, next) {
 
 
 exports.saveUserDataDoctor = function (req, res){
-  if(isDefined(req.body.email) && isDefined(req.body.password)){
+  if(isDefined(req.body.email) && isDefined(req.body.username) && isDefined(req.body.password)){
     userDataDoctorsModel.create({
       email: req.body.email,
+      username: req.body.username,
       password: encryptString(req.body.password,"secret-password-for-doctor-user-passwords")
     }, function (err, userDataDoctor) {
       if (err) {
@@ -739,7 +740,7 @@ exports.saveUserDataDoctor = function (req, res){
     res.send(400,{
       error:{
         code:400,
-        info:"Los parametros son incorectors debes pasar un email y un password"
+        info:"You must to pass a email, username and password values for make this query"
       }
     });
   }
@@ -748,23 +749,74 @@ exports.saveUserDataDoctor = function (req, res){
 exports.getDoctors = function (req, res) {
   var criteria = {};
   var projection = {};
+  if(helpers.isDefined(req.query.registerState)) {
+    if (req.query.registerState == 0 || req.query.registerState == 1 
+      || req.query.registerState == 2 || req.query.registerState == 3) {
+      criteria.registerState = req.query.registerState
+      console.log(criteria);
+    }
+  }
+  if(helpers.isDefined(req.query.email)) {
+    criteria.email = req.query.email
+    console.log(criteria);
+  }
+
   console.log("fields: "+req.query.fields);
-  models.userDataDoctors.find().populate('_personalDataDoctor').exec(function (err, doctors) {
+  models.userDataDoctors.find(criteria, function (err, doctors) {
     if (err) {
       res.send(500);
     }else{
       res.send(doctors);
     }
   });
-
-  /*.populate('_professionalTypes _jobData').exec(function (err, doctors) {
-    if (err) {
-      res.send(err);
-    }else{
-      res.send(200);
-    }
-  });*/
 };
+
+exports.getDoctorByUsername = function (req, res) {
+  var criteria = {};
+  var projection = {};
+  criteria.username=req.params.username;
+  console.log("fields: "+req.query.fields);
+  models.userDataDoctors.findOne(criteria, function (err, doctor) {
+    if (err) {
+      console.log(err);
+      res.send(500);
+    }else{
+      res.send(doctor);
+    }
+  });
+};
+
+exports.getPersonalDataDoctor = function (req, res){
+  
+  var criteria = {};
+  var projection = {};
+  criteria.username=req.params.username;
+  console.log("fields: "+req.query.fields);
+  models.userDataDoctors.findOne(criteria, function (err, doctor) {
+    if (err) {
+      console.log(err);
+      res.send(500);
+    }else{
+      console.log(doctor);
+      if (helpers.isDefined(doctor)) {
+        models.personalDataDoctors.findOne({idUserDataDoctor:doctor._id},function (err, personalDataDoctor) {
+          if (err) {
+            console.log(err);
+            res.send(500);
+          }else if (personalDataDoctor){
+            console.log("datos personales:"+personalDataDoctor);
+            res.send(200, {error: null, personalDataDoctor: personalDataDoctor});
+          }else{
+            res.send(200, {error: null, personalDataDoctor: null});
+          }
+        });
+      }else{
+        res.send(401);
+      }
+    }
+  });
+}
+
 /*
 exports.saveADoctor = function (req, res) {
   var contentType = req.header('content-type');

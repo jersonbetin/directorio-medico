@@ -25,6 +25,7 @@ var path = require('path');
 var app = express();
 
 var authenticationMiddleware = function(req, res, next) {
+  console.log("middleware activado");
   apiV1Url = /^\/api\/v1\/doctors/;
   console.log(req.url);
   if (apiV1Url.test(req.url)) {
@@ -73,9 +74,9 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+app.use(authenticationMiddleware);
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(authenticationMiddleware);
 
 // development only
 if ('development' == app.get('env')) {
@@ -87,6 +88,8 @@ app.get('/users', user.list);
 
 // API v1 
 app.get("/api/v1/doctors", api.doctors.getDoctors);
+app.get("/api/v1/doctors/:username", api.doctors.getDoctorByUsername);
+app.get("/api/v1/doctors/:username/personal_data", api.doctors.getPersonalDataDoctor);
 app.post("/api/v1/doctors", api.doctors.saveUserDataDoctor);
 
 app.post("/api/v1/authentication/doctors/access-token/", api.authentication.generateDoctorAccessToken);

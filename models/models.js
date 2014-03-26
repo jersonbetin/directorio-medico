@@ -51,20 +51,13 @@ var jobDataSchema = new Schema({
 
 var userDataDoctorsSchema = new Schema({
   email: { type: String, required: true, unique: true},
+  username: { type: String, required: true, unique: true},
   password: { type: String, required: true},
   registerState:{
     type:String, 
     required:true, 
-    default: 'Regitrado sin peticion de estudio',
-    enum:['Regitrado sin peticion de estudio','Registrado y en estudio', 'Registrado y aprovado', 'Registrado pero desaprovado']
-  },
-  _personalDataDoctor: {
-    type:Schema.Types.ObjectId, 
-    ref:'personalDataDoctors'
-  },
-  _professionalDataDoctor: {
-    type:Schema.Types.ObjectId, 
-    ref:'professionalDataDoctor'
+    default: 0,
+    enum:[0,1,2,3]
   },
   createdDate: {
     type: Date, 
@@ -73,6 +66,7 @@ var userDataDoctorsSchema = new Schema({
 });
 
 var personalDataDoctorsSchema = new Schema({
+  userDataDoctor: Schema.Types.ObjectId,
   personalData :{
     identification: {
       type : {type: String, required:true, enum: ['TI', 'CC', 'Pasaporte']},
