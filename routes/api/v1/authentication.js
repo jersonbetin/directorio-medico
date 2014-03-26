@@ -42,16 +42,27 @@ exports.generateDoctorAccessToken = function (req, res) {
                 res.send(500);
               }else{
                 console.log(doctorsAccessToken);
-                res.send({
-                  accessToken:doctorsAccessToken.accessToken,
-                  refreshToken:doctorsAccessToken.refreshToken,
-                  expirationDate:doctorsAccessToken.expirationDate
+                res.send(200,{
+                  mdStatus:{
+                    code:2100,
+                    info:"Doctor access token successfully created"
+                  },
+                  accessTokensInfo:{
+                    accessToken:doctorsAccessToken.accessToken,
+                    refreshToken:doctorsAccessToken.refreshToken,
+                    expirationDate:doctorsAccessToken.expirationDate
+                  }
                 });
               }
             });
           });
         }else{
-          res.send("no doctor");
+          res.send(200,{
+            mdStatus:{
+              code:4100,
+              info:"Incorrect Email or Password"
+            }
+          });
         }
       }
     });
@@ -61,26 +72,41 @@ exports.generateDoctorAccessToken = function (req, res) {
       doctorsAccessTokens.findOne({
         accessToken:req.header("accessToken"),
         refreshToken:req.header("refreshToken")
-      }, function(err, accessTokenObject){
+      }, function(err, doctorAccessToken){
         if (err) {
           console.log(err);
           res.send(500);
         }else{
-          if (accessTokenObject) {
-            var oldAccessToken = accessTokenObject;
-            console.log(oldAccessToken);
-            generateAccessToken(accessTokenObject.idUserDataDoctor, function(accessToken, refreshToken, expirationDate) {
-              accessTokenObject.accessToken = accessToken;
-              accessTokenObject.refreshToken = refreshToken;
-              accessTokenObject.expirationDate = expirationDate;
-              accessTokenObject.save(function(err, newAccessToken) {
-                console.log(newAccessToken);
-                res.send(newAccessToken);
+          if (doctorAccessToken) {
+            // var oldAccessToken = doctorAccessToken;
+            // console.log(oldAccessToken);
+            generateAccessToken(doctorAccessToken.idUserDataDoctor, function(accessToken, refreshToken, expirationDate) {
+              doctorAccessToken.accessToken = accessToken;
+              doctorAccessToken.refreshToken = refreshToken;
+              doctorAccessToken.expirationDate = expirationDate;
+              doctorAccessToken.save(function(err, updatedDoctorAccessToken) {
+                console.log(updatedDoctorAccessToken);
+                res.send(201,{
+                  mdStatus:{
+                    code:2101,
+                    info:"Doctor access token successfully update",
+                  },
+                  accessTokenInfo:{
+                    accessToken:updatedDoctorAccessToken.accessToken,
+                    refreshToken:updatedDoctorAccessToken.refreshToken,
+                    expirationDate:updatedDoctorAccessToken.expirationDate
+                  }
+                });
               });
             });
           }else{
-            console.log("invalid access and refresh tokens");
-            res.send("invalid access and refresh tokens");
+            console.log("Invalid access and refresh tokens");
+            res.send(401,{
+              mdStatus:{
+                code:4101,
+                info:"Invalid access or refresh tokens"
+              }
+            });
           }
         }
       });

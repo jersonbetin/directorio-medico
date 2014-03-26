@@ -60,7 +60,7 @@ var userDataDoctorsSchema = new Schema({
   },
   _personalDataDoctor: {
     type:Schema.Types.ObjectId, 
-    ref:'personalDataDoctor'
+    ref:'personalDataDoctors'
   },
   _professionalDataDoctor: {
     type:Schema.Types.ObjectId, 

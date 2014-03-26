@@ -736,23 +736,36 @@ exports.saveUserDataDoctor = function (req, res){
       }
     });
   }else{
-    res.send(400);
+    res.send(400,{
+      error:{
+        code:400,
+        info:"Los parametros son incorectors debes pasar un email y un password"
+      }
+    });
   }
 };
 
-exports.getAllDoctors = function (req, res) {
+exports.getDoctors = function (req, res) {
   var criteria = {};
   var projection = {};
   console.log("fields: "+req.query.fields);
-  doctorsModel.find().populate('_professionalTypes _jobData').exec(function (err, doctors) {
+  models.userDataDoctors.find().populate('_personalDataDoctor').exec(function (err, doctors) {
+    if (err) {
+      res.send(500);
+    }else{
+      res.send(doctors);
+    }
+  });
+
+  /*.populate('_professionalTypes _jobData').exec(function (err, doctors) {
     if (err) {
       res.send(err);
     }else{
       res.send(200);
     }
-  });
+  });*/
 };
-
+/*
 exports.saveADoctor = function (req, res) {
   var contentType = req.header('content-type');
   if (helpers.isDefined(contentType)){
@@ -786,14 +799,14 @@ exports.saveADoctor = function (req, res) {
         }
       });
 
-      /*console.log("Se recibio un json")
+      console.log("Se recibio un json")
       console.log("------------------------------------------------------------");
       console.log(req.body);
       if (isDefined(req.body.professionalData.isWorking)) {
         if (req.body.professionalData.isWorking == "no") {
 
-        }else*/
+        }else*
     };
   };
   res.send(200);
-};
+};*/
