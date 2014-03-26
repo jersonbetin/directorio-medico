@@ -88,9 +88,15 @@ app.get('/users', user.list);
 
 // API v1 
 app.get("/api/v1/doctors", api.doctors.getDoctors);
-app.get("/api/v1/doctors/:username", api.doctors.getDoctorByUsername);
-app.get("/api/v1/doctors/:username/personal_data", api.doctors.getPersonalDataDoctor);
 app.post("/api/v1/doctors", api.doctors.saveUserDataDoctor);
+
+
+app.get("/api/v1/doctors/:username", api.doctors.getDoctorByUsername);
+
+
+app.get("/api/v1/doctors/:username/personal_data", api.doctors.getPersonalDataDoctor);
+app.post("/api/v1/doctors/:username/personal_data", api.doctors.savePersonalDataDoctor);
+
 
 app.post("/api/v1/authentication/doctors/access-token/", api.authentication.generateDoctorAccessToken);
 

@@ -66,37 +66,35 @@ var userDataDoctorsSchema = new Schema({
 });
 
 var personalDataDoctorsSchema = new Schema({
-  userDataDoctor: Schema.Types.ObjectId,
-  personalData :{
-    identification: {
-      type : {type: String, required:true, enum: ['TI', 'CC', 'Pasaporte']},
-      number : {type : String, index : true, required:true, unique:true}
+  idUserDataDoctor: {type:Schema.Types.ObjectId, index:true, required:true},
+  identification: {
+    type : {type: String, required:true, enum: ['TI', 'CC', 'Pasaporte']},
+    number : {type : String, index : true, required:true, unique:true}
+  },
+  names : {
+    first: { type: String, required:true},
+    second: { type: String}
+  },
+  lastnames : {
+    first : {type: String, required:true},
+    second : {type: String, required:true}
+  },
+  sex: {type: String, enum: ['Masculino', 'Femenino']},
+  birthdate: {type: Date, required:true},
+  contactData:{
+    home : {
+      city: {type: String, required:true},
+      address: {type: String, required:true}
     },
-    names : {
-      first: { type: String, required:true},
-      second: { type: String}
-    },
-    lastnames : {
-      first : {type: String, required:true},
-      second : {type: String, required:true}
-    },
-    sex: {type: String, enum: ['M', 'F']},
-    birthdate: {type: Date, required:true},
-    contactData:{
-      home : {
-        city: {type: String, required:true},
-        address: {type: String, required:true}
-      },
-      phone:{
-        mobile : {type: String, required:true},
-        home: {type: String, required:true}
-      }
-    },
-    nationality: {
-      type:String, 
-      required:true, 
-      enum:['Colombiano', 'Extranjero', 'Nacionalizado']
+    phone:{
+      mobile : {type: String, required:true},
+      home: {type: String, required:true}
     }
+  },
+  nationality: {
+    type:String, 
+    required:true, 
+    enum:['Colombiano', 'Extranjero', 'Nacionalizado']
   }
 });
 

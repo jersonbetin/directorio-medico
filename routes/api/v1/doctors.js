@@ -7,6 +7,36 @@ var encryptString = helpers.encryptString;
 
 var userDataDoctorsModel = models.userDataDoctors;
 
+var personalDataDoctorStructure = {
+  "personalDataDoctor" :{
+    "identification": {
+      "type" : "",
+      "number" : ""
+    },
+    "names" : {
+      "first": "",
+      "second": ""
+    },
+    "lastnames" : {
+      "first" : "",
+      "second" : ""
+    },
+    "sex": "",
+    "birthdate": "",
+    "contactData":{
+      "home" : {
+        "city": "",
+        "address": ""
+      },
+      "phone":{
+        "mobile" : "",
+        "home": ""
+      }
+    },
+    "nationality": ""
+  }
+};
+
 var doctorDataStructure = {
   "doctorData":{
     "personalData" :{
@@ -77,299 +107,6 @@ var testDoctorData = function(doctorData, contentType, next) {
     var testApproved = true;
     console.log("json");
     if (isDefined(doctorData)) {
-      if (isDefined(doctorData.personalData)) {
-        if (isDefined(doctorData.personalData.identification)) {
-          if (isDefined(doctorData.personalData.identification.type)) {
-            if (["TI","CC","Pasaporte"].indexOf(doctorData.personalData.identification.type)>=0) {
-              data.push({
-                "doctorData.personalData.identification.type":{
-                  "status": "ok",
-                  "value": doctorData.personalData.identification.type
-                }
-              });
-            }else{
-              data.push({
-                "doctorData.personalData.identification.type":{
-                  "status": "error",
-                  "info": "The value of this fiel must be [TI,CC,Pasaporte]"
-                }
-              });
-              testApproved=false;
-            }
-          }else{
-            data.push({
-              "doctorData.personalData.identification.type":{
-                "status": "error",
-                "info": "You must to send a value for this field"
-              }
-            });
-            testApproved=false;
-          }
-
-          if (isDefined(doctorData.personalData.identification.number)) {
-            data.push({
-              "doctorData.personalData.identification.number":{
-                "status": "ok",
-                "value": doctorData.personalData.identification.number
-              }
-            });
-          }else{
-            data.push({
-              "doctorData.personalData.identification.number":{
-                "status": "error",
-                "info": "You must to send a value for this field"
-              }
-            });
-            testApproved=false;
-          }
-        }else{
-          data.push({
-            "doctorData.personalData.identification":{
-              "status": "error",
-              "info": "You must to send a identification object"
-            }
-          });
-          testApproved = false;
-        }
-
-        if (isDefined(doctorData.personalData.names)) {
-          if (isDefined(doctorData.personalData.names.first)) {
-            data.push({
-              "doctorData.personalData.names.first":{
-                "status": "ok",
-                "value": doctorData.personalData.names.first
-              }
-            });
-          }else{
-            data.push({
-              "doctorData.personalData.names.first":{
-                "status": "error",
-                "info": "You must to send a value for this field"
-              }
-            });
-            testApproved=false;
-          }
-
-          if (isDefined(doctorData.personalData.names.sencond)) {
-            data.push({
-              "doctorData.personalData.names.second":{
-                "status": "ok",
-                "value": doctorData.personalData.names.second
-              }
-            });
-          }
-        }else{
-          data.push({
-            "doctorData.personalData.names":{
-              "status": "error",
-              "info": "You must to send a names object"
-            }
-          });
-          testApproved = false;
-        }
-
-        if (isDefined(doctorData.personalData.lastnames)) {
-          if (isDefined(doctorData.personalData.lastnames.first)) {
-            data.push({
-              "doctorData.personalData.lastnames.first":{
-                "status": "ok",
-                "value": doctorData.personalData.lastnames.first
-              }
-            });
-          }else{
-            data.push({
-              "doctorData.personalData.lastnames.first":{
-                "status": "error",
-                "info": "You must to send a value for this field"
-              }
-            });
-            testApproved=false;
-          }
-
-          if (isDefined(doctorData.personalData.lastnames.second)) {
-            data.push({
-              "doctorData.personalData.lastnames.second":{
-                "status": "ok",
-                "value": doctorData.personalData.lastnames.second
-              }
-            });
-          }else{
-            data.push({
-              "doctorData.personalData.lastnames.second":{
-                "status": "error",
-                "info": "You must to send a value for this field"
-              }
-            });
-            testApproved=false;
-          }
-        }else{
-          data.push({
-            "doctorData.personalData.lastnames":{
-              "status": "error",
-              "info": "You must to send a lastnames object"
-            }
-          });
-          testApproved = false;
-        }
-
-        if (isDefined(doctorData.personalData.sex)) {
-          data.push({
-            "doctorData.personalData.sex":{
-              "status": "ok",
-              "value": doctorData.personalData.sex
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.personalData.sex":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-
-        if (isDefined(doctorData.personalData.birthdate)) {
-          data.push({
-            "doctorData.personalData.birthdate":{
-              "status": "ok",
-              "value": doctorData.personalData.birthdate
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.personalData.birthdate":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-        
-        if(isDefined(doctorData.personalData.contactData)){
-          if (isDefined(doctorData.personalData.contactData.home)) {
-            if (isDefined(doctorData.personalData.contactData.home.city)) {
-              data.push({
-                "doctorData.personalData.contactData.home.city":{
-                  "status": "ok",
-                  "value": doctorData.personalData.contactData.home.city
-                }
-              });
-            }else{
-              data.push({
-                "doctorData.personalData.contactData.home.city":{
-                  "status": "error",
-                  "info": "You must to send a value for this field"
-                }
-              });
-              testApproved=false;
-            }
-
-            if (isDefined(doctorData.personalData.contactData.home.address)) {
-              data.push({
-                "doctorData.personalData.contactData.home.address":{
-                  "status": "ok",
-                  "value": doctorData.personalData.contactData.home.address
-                }
-              });
-            }else{
-              data.push({
-                "doctorData.personalData.contactData.home.address":{
-                  "status": "error",
-                  "info": "You must to send a value for this field"
-                }
-              });
-              testApproved=false;
-            } 
-          }else{
-            data.push({
-              "doctorData.personalData.contactData.home":{
-                "status": "error",
-                "info": "You must to send a home object"
-              }
-            });
-            testApproved = false;
-          }
-
-          if (isDefined(doctorData.personalData.contactData.phone)) {
-            if (isDefined(doctorData.personalData.contactData.phone.mobile)) {
-              data.push({
-                "doctorData.personalData.contactData.phone.mobile":{
-                  "status": "ok",
-                  "value": doctorData.personalData.contactData.phone.mobile
-                }
-              });
-            }else{
-              data.push({
-                "doctorData.personalData.contactData.phone.mobile":{
-                  "status": "error",
-                  "info": "You must to send a value for this field"
-                }
-              });
-              testApproved=false;
-            }
-
-            if (isDefined(doctorData.personalData.contactData.phone.home)) {
-              data.push({
-                "doctorData.personalData.contactData.phone.home":{
-                  "status": "ok",
-                  "value": doctorData.personalData.contactData.phone.home
-                }
-              });
-            }else{
-              data.push({
-                "doctorData.personalData.contactData.phone.home":{
-                  "status": "error",
-                  "info": "You must to send a value for this field"
-                }
-              });
-              testApproved=false;
-            }
-          }else{
-            data.push({
-              "doctorData.personalData.contactData.phone":{
-                "status": "error",
-                "info": "You must to send a phone object"
-              }
-            });
-            testApproved = false;
-          }
-        }else{
-          data.push({
-            "doctorData.personalData.contactData":{
-              "status": "error",
-              "info": "You must to send a contactData object"
-            }
-          });
-          testApproved = false;
-        }
-
-        if (isDefined(doctorData.personalData.nationality)) {
-          data.push({
-            "doctorData.personalData.nationality":{
-              "status": "ok",
-              "value": doctorData.personalData.nationality
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.personalData.nationality":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-      }else{
-        data.push({
-          "doctorData.personalData":{
-            "status": "error",
-            "info": "You must to send a personalData object"
-          }
-        });
-        testApproved = false;
-      }
-
       if (isDefined(doctorData.professionalData)) {
         if (isDefined(doctorData.professionalData.professionalCard)) {
           if (isDefined(doctorData.professionalData.professionalCard.number)) {
@@ -711,6 +448,304 @@ var testDoctorData = function(doctorData, contentType, next) {
   next(testApproved, data);
 };
 
+var testPersonalDataDoctor = function(personalData, next) {
+  var data = [];
+  var testApproved = true;
+  if (isDefined(personalData)) {
+    if (isDefined(personalData.identification)) {
+      if (isDefined(personalData.identification.type)) {
+        if (["TI","CC","Pasaporte"].indexOf(personalData.identification.type)>=0) {
+          data.push({
+            "personalData.identification.type":{
+              "status": "ok",
+              "value": personalData.identification.type
+            }
+          });
+        }else{
+          data.push({
+            "personalData.identification.type":{
+              "status": "error",
+              "info": "The value of this fiel must be [TI,CC,Pasaporte]"
+            }
+          });
+          testApproved=false;
+        }
+      }else{
+        data.push({
+          "personalData.identification.type":{
+            "status": "error",
+            "info": "You must to send a value for this field"
+          }
+        });
+        testApproved=false;
+      }
+
+      if (isDefined(personalData.identification.number)) {
+        data.push({
+          "personalData.identification.number":{
+            "status": "ok",
+            "value": personalData.identification.number
+          }
+        });
+      }else{
+        data.push({
+          "personalData.identification.number":{
+            "status": "error",
+            "info": "You must to send a value for this field"
+          }
+        });
+        testApproved=false;
+      }
+    }else{
+      data.push({
+        "personalData.identification":{
+          "status": "error",
+          "info": "You must to send a identification object"
+        }
+      });
+      testApproved = false;
+    }
+
+    if (isDefined(personalData.names)) {
+      if (isDefined(personalData.names.first)) {
+        data.push({
+          "personalData.names.first":{
+            "status": "ok",
+            "value": personalData.names.first
+          }
+        });
+      }else{
+        data.push({
+          "personalData.names.first":{
+            "status": "error",
+            "info": "You must to send a value for this field"
+          }
+        });
+        testApproved=false;
+      }
+
+      if (isDefined(personalData.names.sencond)) {
+        data.push({
+          "personalData.names.second":{
+            "status": "ok",
+            "value": personalData.names.second
+          }
+        });
+      }
+    }else{
+      data.push({
+        "personalData.names":{
+          "status": "error",
+          "info": "You must to send a names object"
+        }
+      });
+      testApproved = false;
+    }
+
+    if (isDefined(personalData.lastnames)) {
+      if (isDefined(personalData.lastnames.first)) {
+        data.push({
+          "personalData.lastnames.first":{
+            "status": "ok",
+            "value": personalData.lastnames.first
+          }
+        });
+      }else{
+        data.push({
+          "personalData.lastnames.first":{
+            "status": "error",
+            "info": "You must to send a value for this field"
+          }
+        });
+        testApproved=false;
+      }
+
+      if (isDefined(personalData.lastnames.second)) {
+        data.push({
+          "personalData.lastnames.second":{
+            "status": "ok",
+            "value": personalData.lastnames.second
+          }
+        });
+      }else{
+        data.push({
+          "personalData.lastnames.second":{
+            "status": "error",
+            "info": "You must to send a value for this field"
+          }
+        });
+        testApproved=false;
+      }
+    }else{
+      data.push({
+        "personalData.lastnames":{
+          "status": "error",
+          "info": "You must to send a lastnames object"
+        }
+      });
+      testApproved = false;
+    }
+
+    if (isDefined(personalData.sex)) {
+      data.push({
+        "personalData.sex":{
+          "status": "ok",
+          "value": personalData.sex
+        }
+      });
+    }else{
+      data.push({
+        "personalData.sex":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    }
+
+    if (isDefined(personalData.birthdate)) {
+      data.push({
+        "personalData.birthdate":{
+          "status": "ok",
+          "value": personalData.birthdate
+        }
+      });
+    }else{
+      data.push({
+        "personalData.birthdate":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    }
+    
+    if(isDefined(personalData.contactData)){
+      if (isDefined(personalData.contactData.home)) {
+        if (isDefined(personalData.contactData.home.city)) {
+          data.push({
+            "personalData.contactData.home.city":{
+              "status": "ok",
+              "value": personalData.contactData.home.city
+            }
+          });
+        }else{
+          data.push({
+            "personalData.contactData.home.city":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+
+        if (isDefined(personalData.contactData.home.address)) {
+          data.push({
+            "personalData.contactData.home.address":{
+              "status": "ok",
+              "value": personalData.contactData.home.address
+            }
+          });
+        }else{
+          data.push({
+            "personalData.contactData.home.address":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        } 
+      }else{
+        data.push({
+          "personalData.contactData.home":{
+            "status": "error",
+            "info": "You must to send a home object"
+          }
+        });
+        testApproved = false;
+      }
+
+      if (isDefined(personalData.contactData.phone)) {
+        if (isDefined(personalData.contactData.phone.mobile)) {
+          data.push({
+            "personalData.contactData.phone.mobile":{
+              "status": "ok",
+              "value": personalData.contactData.phone.mobile
+            }
+          });
+        }else{
+          data.push({
+            "personalData.contactData.phone.mobile":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+
+        if (isDefined(personalData.contactData.phone.home)) {
+          data.push({
+            "personalData.contactData.phone.home":{
+              "status": "ok",
+              "value": personalData.contactData.phone.home
+            }
+          });
+        }else{
+          data.push({
+            "personalData.contactData.phone.home":{
+              "status": "error",
+              "info": "You must to send a value for this field"
+            }
+          });
+          testApproved=false;
+        }
+      }else{
+        data.push({
+          "personalData.contactData.phone":{
+            "status": "error",
+            "info": "You must to send a phone object"
+          }
+        });
+        testApproved = false;
+      }
+    }else{
+      data.push({
+        "personalData.contactData":{
+          "status": "error",
+          "info": "You must to send a contactData object"
+        }
+      });
+      testApproved = false;
+    }
+
+    if (isDefined(personalData.nationality)) {
+      data.push({
+        "personalData.nationality":{
+          "status": "ok",
+          "value": personalData.nationality
+        }
+      });
+    }else{
+      data.push({
+        "personalData.nationality":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    }
+  }else{
+    data.push({
+      "personalData":{
+        "status": "error",
+        "info": "You must to send a personalData object"
+      }
+    });
+    testApproved = false;
+  }
+  next(testApproved, data);
+};
+
 
 
 exports.saveUserDataDoctor = function (req, res){
@@ -744,6 +779,72 @@ exports.saveUserDataDoctor = function (req, res){
       }
     });
   }
+};
+
+exports.savePersonalDataDoctor = function (req, res){
+  testPersonalDataDoctor(req.body.personalData, function(testApproved,data){
+    if (testApproved) {
+      models.userDataDoctors.findOne({username:req.params.username}, function(err, userDataDoctor) {
+        if (err) {
+          console.log(err);
+          res.send(500);
+        }else if(helpers.isDefined(userDataDoctor)){
+          req.body.personalData.idUserDataDoctor = userDataDoctor._id;
+          models.personalDataDoctors.create(req.body.personalData, function (err, personalDataDoctor) {
+            if (err) {
+              if (err.code == 11000) {
+                models.personalDataDoctors.update(
+                  {idUserDataDoctor:userDataDoctor._id},
+                  req.body.personalData,
+                  function (err, personalDataDoctor) {
+                    if (err) {
+                      console.log(err);
+                      res.send(500);
+                    }else{
+                      res.send(200);
+                    }
+                });
+              }else{  
+                console.log(err);
+                res.send(500);
+              }
+            }else{
+              res.send(201,personalDataDoctor);
+            }
+          });
+        }else{
+          res.send("invalid username");
+        }
+      });
+    }else{
+      if (isDefined(req.query.errors) && req.query.errors == "verbose") {
+        res.send(400,{
+          mdStatus:{
+            code:4000,
+            info: "You have errors in personal data you have sent",
+            errors: {
+              data: data
+            },
+            help: {
+              "info": "You personalData object has to have a structura as follows",
+              "structure": personalDataDoctorStructure
+            }
+          }
+        });
+      }else{
+        res.send(400,{
+          mdStatus:{
+            code:4000,
+            info: "You have errors in personal data you have sent",
+            help: {
+              "info": "You personalData object has to have a structura as follows",
+              "structure": personalDataDoctorStructure
+            }
+          }
+        });
+      }
+    }
+  });
 };
 
 exports.getDoctors = function (req, res) {
