@@ -100,6 +100,7 @@ app.put("/api/v1/doctors/:username/personal_data", api.doctors.updatePersonalDat
 
 /*Titles Data Doctors*/
 app.get("/api/v1/doctors/:username/titles_data", api.doctors.getTitlesDataDoctor);
+app.post("/api/v1/doctors/:username/titles_data", api.doctors.saveTitlesDataDoctor);
 
 
 app.post("/api/v1/authentication/doctors/access-token/", api.authentication.generateDoctorAccessToken);

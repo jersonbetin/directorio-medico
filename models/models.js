@@ -24,7 +24,7 @@ var titlesDataDoctorsSchema = new Schema({
   idUserDataDoctor: {type:Schema.Types.ObjectId, required:true},
   title : {type : String, required: true},
   description : {type: String, defaul:''},
-  university : {type:Schema.Types.ObjectId, required:true},
+  idUniversity : {type:Schema.Types.ObjectId, required:true},
   graduationDate : {type: Date, required:true}
 });
 
