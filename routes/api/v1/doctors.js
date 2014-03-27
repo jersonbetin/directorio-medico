@@ -332,84 +332,7 @@ var testDoctorData = function(doctorData, contentType, next) {
       }
 
 
-      if (isDefined(doctorData.titlesData)) {
-        if (isDefined(doctorData.titlesData.title)) {
-          data.push({
-            "doctorData.titlesData.title":{
-              "status": "ok",
-              "value": doctorData.titlesData.title
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.titlesData.title":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-
-        if (isDefined(doctorData.titlesData.description)) {
-          data.push({
-            "doctorData.titlesData.description":{
-              "status": "ok",
-              "value": doctorData.titlesData.description
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.titlesData.description":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-
-        if (isDefined(doctorData.titlesData.university)) {
-          data.push({
-            "doctorData.titlesData.university":{
-              "status": "ok",
-              "value": doctorData.titlesData.university
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.titlesData.university":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-
-        if (isDefined(doctorData.titlesData.graduationDate)) {
-          data.push({
-            "doctorData.titlesData.graduationDate":{
-              "status": "ok",
-              "value": doctorData.titlesData.graduationDate
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.titlesData.graduationDate":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-
-      }else{
-        data.push({
-          "doctorData.titlesData":{
-            "status": "error",
-            "info": "You must to send a titlesData object"
-          }
-        });
-        testApproved = false;
-      }
+      
 
 
     }else{
@@ -723,18 +646,109 @@ var testPersonalDataDoctor = function(personalData, next) {
   next(testApproved, data);
 };
 
-var resToIncorrecersonalDataDoctorStructure = function(req, res) {
+var testTitlesDataDoctor = function(titlesData, next) {
+  var data = [];
+  var testApproved = true;
+  if (isDefined(titlesData)) {
+    if (isDefined(titlesData.title)) {
+      data.push({
+        "titlesData.title":{
+          "status": "ok",
+          "value": titlesData.title
+        }
+      });
+    }else{
+      data.push({
+        "titlesData.title":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    }
+
+    if (isDefined(titlesData.description)) {
+      data.push({
+        "titlesData.description":{
+          "status": "ok",
+          "value": titlesData.description
+        }
+      });
+    }else{
+      data.push({
+        "titlesData.description":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    }
+
+    if (isDefined(titlesData.university)) {
+      data.push({
+        "titlesData.university":{
+          "status": "ok",
+          "value": titlesData.university
+        }
+      });
+    }else{
+      data.push({
+        "titlesData.university":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    }
+
+    if (isDefined(titlesData.graduationDate)) {
+      data.push({
+        "titlesData.graduationDate":{
+          "status": "ok",
+          "value": titlesData.graduationDate
+        }
+      });
+    }else{
+      data.push({
+        "titlesData.graduationDate":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    }
+  }else{
+    data.push({
+      "titlesData":{
+        "status": "error",
+        "info": "You must to send a titlesData object"
+      }
+    });
+    testApproved = false;
+  }
+  next(testApproved, data);
+};
+
+var resToIncorrectStructure = function(req, res, structureType, data) {
+  structureType = structureType || "personalData"
+  if (structureType=="personalData") {
+    var structure = personalDataDoctorStructure;
+  }else if (structureType=="titlesData") {
+    var structure = titlesDataDoctorStructure;
+  }else if (structureType=="professionalData") {
+    var structure = professionalDataDoctorStructure;
+  }
   if (isDefined(req.query.errors) && req.query.errors == "verbose") {
     res.send(400,{
       mdStatus:{
         code:4000,
-        info: "You have errors in personal data you have sent",
+        info: "You have errors in "+structureType+" you have sent",
         errors: {
           data: data
         },
         help: {
-          "info": "You personalData object has to have a structura as follows",
-          "structure": personalDataDoctorStructure
+          "info": "You "+structureType+" object has to have a structura as follows",
+          "structure": structure
         }
       }
     });
@@ -745,12 +759,13 @@ var resToIncorrecersonalDataDoctorStructure = function(req, res) {
         info: "You have errors in personal data you have sent",
         help: {
           "info": "You personalData object has to have a structura as follows",
-          "structure": personalDataDoctorStructure
+          "structure": structure
         }
       }
     });
   }
 };
+
 
 /*User Data Doctor*/
 
@@ -903,7 +918,7 @@ exports.savePersonalDataDoctor = function (req, res){
         }
       });
     }else{
-      resToIncorrecersonalDataDoctorStructure(req,res);    
+      resToIncorrectStructure(req,res,"personalData",data);    
     }
   });
 };
@@ -945,7 +960,7 @@ exports.updatePersonalDataDoctor = function(req, res) {
         }
       });
     }else{
-      resToIncorrecersonalDataDoctorStructure(req,res);    
+      resToIncorrectStructure(req,res,"personalData",data);    
     }
   });
 };
@@ -966,13 +981,15 @@ exports.getTitlesDataDoctor = function(req, res) {
     }else{
       console.log(doctor);
       if (helpers.isDefined(doctor)) {
-        models.titlesDataDoctors.findOne({idUserDataDoctor:doctor._id},function (err, titlesDataDoctor) {
+        models.titlesDataDoctors.find({idUserDataDoctor:doctor._id},function (err, titlesDataDoctor) {
           if (err) {
             console.log(err);
             res.send(500);
           }else if (titlesDataDoctor){
+            console.log(titlesDataDoctor);
             console.log("titulos:"+titlesDataDoctor);
             res.send(200, {error: null, titlesDataDoctor: titlesDataDoctor});
+            // models.universities.findOne({_id:titlesData.idUniversity})
           }else{
             res.send(200, {error: null, titlesDataDoctor: null});
           }
@@ -980,6 +997,62 @@ exports.getTitlesDataDoctor = function(req, res) {
       }else{
         res.send(401);
       }
+    }
+  });
+};
+
+exports.saveTitlesDataDoctor = function (req, res){
+  testTitlesDataDoctor(req.body.titlesData, function(testApproved,data){
+    if (testApproved) {
+      models.userDataDoctors.findOne({username:req.params.username}, function(err, userDataDoctor) {
+        if (err) {
+          console.log(err);
+          res.send(500);
+        }else if(helpers.isDefined(userDataDoctor)){
+          req.body.titlesData.idUserDataDoctor = userDataDoctor._id;
+          models.universities.findOne({_id:req.body.titlesData.university}, function(err, university){
+            if (err) {
+              console.log(err);
+              res.send(500);
+            }else if(isDefined(university)){
+              console.log("se encontro la U");
+              req.body.titlesData.idUniversity = university._id;
+              models.titlesDataDoctors.create(req.body.titlesData, function (err, titlesDataDoctor) {
+                if (err) {
+                  if (err.code == 11000) {
+                    res.send(200,{
+                      mdStatus:{
+                        code:2010,
+                        info: "This username already has an asociated titlesData ",
+                        help: {
+                          "info": "You must to pass the value with the update method not with the post method"
+                        }
+                      }        
+                    });
+                  }else{  
+                    console.log(err);
+                    res.send(500);
+                  }
+                }else{
+                  res.send(201,titlesDataDoctor);
+                }
+              });
+            }else{
+              console.log("no se encontro la U");
+              res.send("no se va a guardar");
+            }
+          });
+        }else{
+          res.send(200,{
+            mdStatus:{
+              code:2000,
+              info: "This username doesn't exist in our  database"
+            }
+          });
+        }
+      });
+    }else{
+      resToIncorrectStructure(req,res,"titlesData", data);    
     }
   });
 };

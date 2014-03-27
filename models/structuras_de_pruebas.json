@@ -25,5 +25,14 @@
             }
         },
         "nationality": "Colombiano"
+    },
+
+
+
+    "titlesData": {
+        "title" : "Medico General",
+        "description" :"Medico General" ,
+        "university" : "53345273cc97fba50211725b",
+        "graduationDate" : "2010-12-12"
     }
 }
