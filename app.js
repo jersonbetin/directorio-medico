@@ -96,6 +96,7 @@ app.get("/api/v1/doctors/:username", api.doctors.getDoctorByUsername);
 
 app.get("/api/v1/doctors/:username/personal_data", api.doctors.getPersonalDataDoctor);
 app.post("/api/v1/doctors/:username/personal_data", api.doctors.savePersonalDataDoctor);
+app.put("/api/v1/doctors/:username/personal_data", api.doctors.updatePersonalDataDoctor);
 
 
 app.post("/api/v1/authentication/doctors/access-token/", api.authentication.generateDoctorAccessToken);

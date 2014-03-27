@@ -746,7 +746,34 @@ var testPersonalDataDoctor = function(personalData, next) {
   next(testApproved, data);
 };
 
-
+var resToIncorrecersonalDataDoctorStructure = function(req, res) {
+  if (isDefined(req.query.errors) && req.query.errors == "verbose") {
+    res.send(400,{
+      mdStatus:{
+        code:4000,
+        info: "You have errors in personal data you have sent",
+        errors: {
+          data: data
+        },
+        help: {
+          "info": "You personalData object has to have a structura as follows",
+          "structure": personalDataDoctorStructure
+        }
+      }
+    });
+  }else{
+    res.send(400,{
+      mdStatus:{
+        code:4000,
+        info: "You have errors in personal data you have sent",
+        help: {
+          "info": "You personalData object has to have a structura as follows",
+          "structure": personalDataDoctorStructure
+        }
+      }
+    });
+  }
+};
 
 exports.saveUserDataDoctor = function (req, res){
   if(isDefined(req.body.email) && isDefined(req.body.username) && isDefined(req.body.password)){
@@ -781,6 +808,47 @@ exports.saveUserDataDoctor = function (req, res){
   }
 };
 
+exports.updatePersonalDataDoctor = function(req, res) {
+  testPersonalDataDoctor(req.body.personalData, function(testApproved,data){
+    if (testApproved) {
+      models.userDataDoctors.findOne({username:req.params.username}, function(err, userDataDoctor) {
+        if (err) {
+          console.log(err);
+          res.send(500);
+        }else if(helpers.isDefined(userDataDoctor)){
+          req.body.personalData.idUserDataDoctor = userDataDoctor._id;
+          models.personalDataDoctors.update(
+            {idUserDataDoctor:userDataDoctor._id},
+            req.body.personalData,
+            function (err, personalDataDoctor) {
+              if (err) {
+                console.log(err);
+                res.send(500);
+              }else{
+                res.send(200,{
+                  mdStatus:{
+                    code:2000,
+                    info: "Personal data doctor successfully updated",
+                    url:"localhost:3000/api/v1/doctors/"+userDataDoctor.username+"/personal_data"
+                  }
+                });
+              }
+            });
+        }else{
+          res.send(200,{
+            mdStatus:{
+              code:2000,
+              info: "This username doesn't exist in our  database"
+            }
+          });
+        }
+      });
+    }else{
+      resToIncorrecersonalDataDoctorStructure(req,res);    
+    }
+  });
+};
+
 exports.savePersonalDataDoctor = function (req, res){
   testPersonalDataDoctor(req.body.personalData, function(testApproved,data){
     if (testApproved) {
@@ -793,16 +861,14 @@ exports.savePersonalDataDoctor = function (req, res){
           models.personalDataDoctors.create(req.body.personalData, function (err, personalDataDoctor) {
             if (err) {
               if (err.code == 11000) {
-                models.personalDataDoctors.update(
-                  {idUserDataDoctor:userDataDoctor._id},
-                  req.body.personalData,
-                  function (err, personalDataDoctor) {
-                    if (err) {
-                      console.log(err);
-                      res.send(500);
-                    }else{
-                      res.send(200);
+                res.send(200,{
+                  mdStatus:{
+                    code:2010,
+                    info: "This username already has an asociated personalData ",
+                    help: {
+                      "info": "You must to pass the value with update method not with a post method"
                     }
+                  }        
                 });
               }else{  
                 console.log(err);
@@ -813,36 +879,16 @@ exports.savePersonalDataDoctor = function (req, res){
             }
           });
         }else{
-          res.send("invalid username");
+          res.send(200,{
+            mdStatus:{
+              code:2000,
+              info: "This username doesn't exist in our  database"
+            }
+          });
         }
       });
     }else{
-      if (isDefined(req.query.errors) && req.query.errors == "verbose") {
-        res.send(400,{
-          mdStatus:{
-            code:4000,
-            info: "You have errors in personal data you have sent",
-            errors: {
-              data: data
-            },
-            help: {
-              "info": "You personalData object has to have a structura as follows",
-              "structure": personalDataDoctorStructure
-            }
-          }
-        });
-      }else{
-        res.send(400,{
-          mdStatus:{
-            code:4000,
-            info: "You have errors in personal data you have sent",
-            help: {
-              "info": "You personalData object has to have a structura as follows",
-              "structure": personalDataDoctorStructure
-            }
-          }
-        });
-      }
+      resToIncorrecersonalDataDoctorStructure(req,res);    
     }
   });
 };
