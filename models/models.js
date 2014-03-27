@@ -20,11 +20,11 @@ var citiesSchema = new Schema({
   name : {type: String, required: true}
 });
 
-var titlesSchema = new Schema({
-  _doctor : {type:Schema.Types.ObjectId, ref:'doctors'},
+var titlesDataDoctorsSchema = new Schema({
+  idUserDataDoctor: {type:Schema.Types.ObjectId, required:true},
   title : {type : String, required: true},
   description : {type: String, defaul:''},
-  _university : {type:Schema.Types.ObjectId, ref:'universities'},
+  university : {type:Schema.Types.ObjectId, required:true},
   graduationDate : {type: Date, required:true}
 });
 
@@ -34,16 +34,16 @@ var professionalTypesSchema = new Schema({
 });
 
 var jobDataSchema = new Schema({
-  nit:{type:String, required:true, unique:true, default:'sin definir'},
+  nit:{type:String, required:true, unique:true, default:''},
   clinic: {
-    name: {type: String, required:true, default:'sin definir'},
+    name: {type: String, required:true, default:''},
     location: {
-      _city: {type: Schema.Types.ObjectId, ref:'city'},
-      address: {type: String, required:true, default:'sin definir'}
+      city: {type: Schema.Types.ObjectId, required:true},
+      address: {type: String, required:true, default:''}
     },
     phone:{
-      mobile : {type: String, default: 'sin definir'},
-      landline: {type: String, required:true, default:'sin definir'}
+      mobile : {type: String, default: ''},
+      landline: {type: String, required:true, default:''}
     }
   }
 });
@@ -66,7 +66,7 @@ var userDataDoctorsSchema = new Schema({
 });
 
 var personalDataDoctorsSchema = new Schema({
-  idUserDataDoctor: {type:Schema.Types.ObjectId, index:true, required:true},
+  idUserDataDoctor: {type:Schema.Types.ObjectId, index:true, unique:true, required:true},
   identification: {
     type : {type: String, required:true, enum: ['TI', 'CC', 'Pasaporte']},
     number : {type : String, index : true, required:true, unique:true}
@@ -99,16 +99,15 @@ var personalDataDoctorsSchema = new Schema({
 });
 
 var professionalDataDoctorsSchema = new Schema({
-  profesionalData: {
-    professinalCard: {
-      number: {type: String, required:true, unique:true},
-      expeditionDate: {type: Date, required:true}
-    },
-    _professionalType: {type:Schema.Types.ObjectId, ref:'professionalTypes'},
-    isWorking:{type:String, required:true, enum:['si', 'no']},
-    _jobData: {type:Schema.Types.ObjectId, ref:'jobData'},
-    evidence: {type: String, required:true}
-  }
+  idUserDataDoctor: {type:Schema.Types.ObjectId, index:true, unique:true, required:true},
+  professinalCard: {
+    number: {type: String, required:true, unique:true},
+    expeditionDate: {type: Date, required:true}
+  },
+  professionalType: {type:Schema.Types.ObjectId, required:true},
+  isWorking:{type:String, required:true, enum:['yes', 'no']},
+  jobData: {type:Schema.Types.ObjectId, required:true},
+  evidence: {type: String, required:true}
 });
 
 var adminsSchema = new Schema({
@@ -127,8 +126,9 @@ exports.universities = mongoose.model('universities', universitiesSchema);
 exports.cities = mongoose.model('cities', citiesSchema);
 exports.jobData = mongoose.model('jobData', jobDataSchema);
 exports.professionalTypes = mongoose.model('professionalTypes',professionalTypesSchema);
-exports.titles = mongoose.model('titles', titlesSchema);
 
+
+exports.titlesDataDoctors = mongoose.model('titlesDataDoctors', titlesDataDoctorsSchema);
 exports.personalDataDoctors = mongoose.model('personalDataDoctors', personalDataDoctorsSchema);
 exports.professionalDataDoctors = mongoose.model('professionalDataDoctors', professionalDataDoctorsSchema);
 exports.userDataDoctors = mongoose.model('userDataDoctors', userDataDoctorsSchema);

@@ -87,16 +87,19 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 
 // API v1 
-app.get("/api/v1/doctors", api.doctors.getDoctors);
+
+/*User Data Doctors*/
+app.get("/api/v1/doctors", api.doctors.getUserDataDoctors);
+app.get("/api/v1/doctors/:username", api.doctors.getUserDataDoctorByUsername);
 app.post("/api/v1/doctors", api.doctors.saveUserDataDoctor);
 
-
-app.get("/api/v1/doctors/:username", api.doctors.getDoctorByUsername);
-
-
+/*Personal Data Doctors*/
 app.get("/api/v1/doctors/:username/personal_data", api.doctors.getPersonalDataDoctor);
 app.post("/api/v1/doctors/:username/personal_data", api.doctors.savePersonalDataDoctor);
 app.put("/api/v1/doctors/:username/personal_data", api.doctors.updatePersonalDataDoctor);
+
+/*Titles Data Doctors*/
+app.get("/api/v1/doctors/:username/titles_data", api.doctors.getTitlesDataDoctor);
 
 
 app.post("/api/v1/authentication/doctors/access-token/", api.authentication.generateDoctorAccessToken);

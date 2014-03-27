@@ -1,0 +1,29 @@
+{
+    "personalData" :{
+        "identification": {
+            "type" : "CC",
+            "number" : "1069490549"
+        },
+        "names" : {
+            "first": "Pedro",
+            "second": "Jose"
+        },
+        "lastnames" : {
+            "first" : "Jimenez",
+            "second" : "Perez"
+        },
+        "sex": "Masculino",
+        "birthdate": "1993-02-22",
+        "contactData":{
+            "home" : {
+                "city": "Sahagun",
+                "address": "carrera 19 #6-72"
+            },
+            "phone":{
+                "mobile" : "3017244854",
+                "home": "7587931"
+            }
+        },
+        "nationality": "Colombiano"
+    }
+}

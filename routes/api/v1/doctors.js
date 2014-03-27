@@ -37,64 +37,41 @@ var personalDataDoctorStructure = {
   }
 };
 
-var doctorDataStructure = {
-  "doctorData":{
-    "personalData" :{
-      "identification": {
-        "type" : "",
-        "number" : ""
-      },
-      "names" : {
-        "first": "",
-        "second": ""
-      },
-      "lastnames" : {
-        "first" : "",
-        "second" : ""
-      },
-      "sex": "",
-      "birthdate": "",
-      "contactData":{
-        "home" : {
-          "city": "",
-          "address": ""
-        },
-        "phone":{
-          "mobile" : "",
-          "home": ""
-        }
-      },
-      "nationality": ""
+var professionalDataDoctorStructure = {
+  "profesionalDataDoctor": {
+    "professinalCard": {
+      "number": "",
+      "expeditionDate": ""
     },
-    "profesionalData": {
-      "professinalCard": {
-        "number": "",
-        "expeditionDate": ""
+    "professionalType": "",
+    "isWorking":"",
+    "evidence": ""
+  }
+}
+
+var jobDataDoctorStruture = {
+  "jobData":{
+    "nit": "",
+    "clinic": {
+      "name": "",
+      "location": {
+        "city": "",
+        "address": ""
       },
-      "professionalType": "",
-      "isWorking":"",
-      "evidence": ""
-    },
-    "jobData":{
-      "nit": "",
-      "clinic": {
-        "name": "",
-        "location": {
-          "city": "",
-          "address": ""
-        },
-        "phone":{
-          "mobile": "",
-          "landline": ""
-        }
+      "phone":{
+        "mobile": "",
+        "landline": ""
       }
-    },
-    "titlesData": {
-      "title" : "",
-      "description" :"" ,
-      "university" : "",
-      "graduationDate" : ""
     }
+  }
+}
+
+var titlesDataDoctorStructure = {
+  "titlesData": {
+    "title" : "",
+    "description" :"" ,
+    "university" : "",
+    "graduationDate" : ""
   }
 }
 
@@ -775,6 +752,50 @@ var resToIncorrecersonalDataDoctorStructure = function(req, res) {
   }
 };
 
+/*User Data Doctor*/
+
+//get
+exports.getUserDataDoctors = function (req, res) {
+  var criteria = {};
+  var projection = {};
+  if(helpers.isDefined(req.query.registerState)) {
+    if (req.query.registerState == 0 || req.query.registerState == 1 
+      || req.query.registerState == 2 || req.query.registerState == 3) {
+      criteria.registerState = req.query.registerState
+      console.log(criteria);
+    }
+  }
+  if(helpers.isDefined(req.query.email)) {
+    criteria.email = req.query.email
+    console.log(criteria);
+  }
+
+  console.log("fields: "+req.query.fields);
+  models.userDataDoctors.find(criteria, function (err, doctors) {
+    if (err) {
+      res.send(500);
+    }else{
+      res.send(doctors);
+    }
+  });
+};
+
+exports.getUserDataDoctorByUsername = function (req, res) {
+  var criteria = {};
+  var projection = {};
+  criteria.username=req.params.username;
+  console.log("fields: "+req.query.fields);
+  models.userDataDoctors.findOne(criteria, function (err, doctor) {
+    if (err) {
+      console.log(err);
+      res.send(500);
+    }else{
+      res.send(doctor);
+    }
+  });
+};
+
+//post
 exports.saveUserDataDoctor = function (req, res){
   if(isDefined(req.body.email) && isDefined(req.body.username) && isDefined(req.body.password)){
     userDataDoctorsModel.create({
@@ -808,47 +829,41 @@ exports.saveUserDataDoctor = function (req, res){
   }
 };
 
-exports.updatePersonalDataDoctor = function(req, res) {
-  testPersonalDataDoctor(req.body.personalData, function(testApproved,data){
-    if (testApproved) {
-      models.userDataDoctors.findOne({username:req.params.username}, function(err, userDataDoctor) {
-        if (err) {
-          console.log(err);
-          res.send(500);
-        }else if(helpers.isDefined(userDataDoctor)){
-          req.body.personalData.idUserDataDoctor = userDataDoctor._id;
-          models.personalDataDoctors.update(
-            {idUserDataDoctor:userDataDoctor._id},
-            req.body.personalData,
-            function (err, personalDataDoctor) {
-              if (err) {
-                console.log(err);
-                res.send(500);
-              }else{
-                res.send(200,{
-                  mdStatus:{
-                    code:2000,
-                    info: "Personal data doctor successfully updated",
-                    url:"localhost:3000/api/v1/doctors/"+userDataDoctor.username+"/personal_data"
-                  }
-                });
-              }
-            });
-        }else{
-          res.send(200,{
-            mdStatus:{
-              code:2000,
-              info: "This username doesn't exist in our  database"
-            }
-          });
-        }
-      });
+
+/*Personal Data Doctors*/
+
+//get
+exports.getPersonalDataDoctor = function (req, res){
+  var criteria = {};
+  var projection = {};
+  criteria.username=req.params.username;
+  console.log("fields: "+req.query.fields);
+  models.userDataDoctors.findOne(criteria, function (err, doctor) {
+    if (err) {
+      console.log(err);
+      res.send(500);
     }else{
-      resToIncorrecersonalDataDoctorStructure(req,res);    
+      console.log(doctor);
+      if (helpers.isDefined(doctor)) {
+        models.personalDataDoctors.findOne({idUserDataDoctor:doctor._id},function (err, personalDataDoctor) {
+          if (err) {
+            console.log(err);
+            res.send(500);
+          }else if (personalDataDoctor){
+            console.log("datos personales:"+personalDataDoctor);
+            res.send(200, {error: null, personalDataDoctor: personalDataDoctor});
+          }else{
+            res.send(200, {error: null, personalDataDoctor: null});
+          }
+        });
+      }else{
+        res.send(401);
+      }
     }
   });
-};
+}
 
+//post
 exports.savePersonalDataDoctor = function (req, res){
   testPersonalDataDoctor(req.body.personalData, function(testApproved,data){
     if (testApproved) {
@@ -893,48 +908,53 @@ exports.savePersonalDataDoctor = function (req, res){
   });
 };
 
-exports.getDoctors = function (req, res) {
-  var criteria = {};
-  var projection = {};
-  if(helpers.isDefined(req.query.registerState)) {
-    if (req.query.registerState == 0 || req.query.registerState == 1 
-      || req.query.registerState == 2 || req.query.registerState == 3) {
-      criteria.registerState = req.query.registerState
-      console.log(criteria);
-    }
-  }
-  if(helpers.isDefined(req.query.email)) {
-    criteria.email = req.query.email
-    console.log(criteria);
-  }
-
-  console.log("fields: "+req.query.fields);
-  models.userDataDoctors.find(criteria, function (err, doctors) {
-    if (err) {
-      res.send(500);
+//put
+exports.updatePersonalDataDoctor = function(req, res) {
+  testPersonalDataDoctor(req.body.personalData, function(testApproved,data){
+    if (testApproved) {
+      models.userDataDoctors.findOne({username:req.params.username}, function(err, userDataDoctor) {
+        if (err) {
+          console.log(err);
+          res.send(500);
+        }else if(helpers.isDefined(userDataDoctor)){
+          req.body.personalData.idUserDataDoctor = userDataDoctor._id;
+          models.personalDataDoctors.update(
+            {idUserDataDoctor:userDataDoctor._id},
+            req.body.personalData,
+            function (err, personalDataDoctor) {
+              if (err) {
+                console.log(err);
+                res.send(500);
+              }else{
+                res.send(200,{
+                  mdStatus:{
+                    code:2000,
+                    info: "Personal data doctor successfully updated",
+                    url:"localhost:3000/api/v1/doctors/"+userDataDoctor.username+"/personal_data"
+                  }
+                });
+              }
+            });
+        }else{
+          res.send(200,{
+            mdStatus:{
+              code:2000,
+              info: "This username doesn't exist in our  database"
+            }
+          });
+        }
+      });
     }else{
-      res.send(doctors);
+      resToIncorrecersonalDataDoctorStructure(req,res);    
     }
   });
 };
 
-exports.getDoctorByUsername = function (req, res) {
-  var criteria = {};
-  var projection = {};
-  criteria.username=req.params.username;
-  console.log("fields: "+req.query.fields);
-  models.userDataDoctors.findOne(criteria, function (err, doctor) {
-    if (err) {
-      console.log(err);
-      res.send(500);
-    }else{
-      res.send(doctor);
-    }
-  });
-};
 
-exports.getPersonalDataDoctor = function (req, res){
-  
+/*Titles Data Doctors*/
+
+//get
+exports.getTitlesDataDoctor = function(req, res) {
   var criteria = {};
   var projection = {};
   criteria.username=req.params.username;
@@ -946,15 +966,15 @@ exports.getPersonalDataDoctor = function (req, res){
     }else{
       console.log(doctor);
       if (helpers.isDefined(doctor)) {
-        models.personalDataDoctors.findOne({idUserDataDoctor:doctor._id},function (err, personalDataDoctor) {
+        models.titlesDataDoctors.findOne({idUserDataDoctor:doctor._id},function (err, titlesDataDoctor) {
           if (err) {
             console.log(err);
             res.send(500);
-          }else if (personalDataDoctor){
-            console.log("datos personales:"+personalDataDoctor);
-            res.send(200, {error: null, personalDataDoctor: personalDataDoctor});
+          }else if (titlesDataDoctor){
+            console.log("titulos:"+titlesDataDoctor);
+            res.send(200, {error: null, titlesDataDoctor: titlesDataDoctor});
           }else{
-            res.send(200, {error: null, personalDataDoctor: null});
+            res.send(200, {error: null, titlesDataDoctor: null});
           }
         });
       }else{
@@ -962,50 +982,5 @@ exports.getPersonalDataDoctor = function (req, res){
       }
     }
   });
-}
+};
 
-/*
-exports.saveADoctor = function (req, res) {
-  var contentType = req.header('content-type');
-  if (helpers.isDefined(contentType)){
-    if (contentType == "application/json") {
-      testDoctorData(req.body.doctorData,contentType,function (testApproved,data) {
-        if (testApproved) {
-          res.send("se va a guardar el doctor");
-        }else{
-          if (isDefined(req.query.errors) && req.query.errors == "verbose") {
-            res.send({
-              errors: {
-                "info": "You have errors in doctor data you have sent",
-                "data": data
-              },
-              "help": {
-                "info": "You doctorData object has to have a structura as follows",
-                "structure": doctorDataStructure
-              },
-            });
-          }else{
-            res.send({
-              errors: {
-                "info": "You have errors in doctor data you have sent"
-              },
-              "help": {
-                "info": "You doctorData object has to have a structura as follows",
-                "structure": doctorDataStructure
-              },
-            });
-          }
-        }
-      });
-
-      console.log("Se recibio un json")
-      console.log("------------------------------------------------------------");
-      console.log(req.body);
-      if (isDefined(req.body.professionalData.isWorking)) {
-        if (req.body.professionalData.isWorking == "no") {
-
-        }else*
-    };
-  };
-  res.send(200);
-};*/
