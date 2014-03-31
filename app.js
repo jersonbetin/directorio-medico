@@ -26,7 +26,7 @@ var app = express();
 
 var authenticationMiddleware = function(req, res, next) {
   console.log("middleware activado");
-  apiV1Url = /^\/api\/v1\/doctors/;
+  apiV1Url = /^\/api\/v1/;
   console.log(req.url);
   if (apiV1Url.test(req.url)) {
     if(isDefined(req.get("Authorization"))){
@@ -38,9 +38,20 @@ var authenticationMiddleware = function(req, res, next) {
           res.send(500);
         }else{
           if(helpers.isDefined(doctorAccessToken)){
-            console.log(doctorAccessToken.idUserDataDoctor);
-            req.idUserDataDoctor = accessToken.idUserDataDoctor;
-            next();  
+            var now = Date.now();
+            if(now <= doctorAccessToken.expirationDate){
+              console.log("El token es valido y no ha expirado");
+              console.log(doctorAccessToken.idUserDataDoctor);
+              req.idUserDataDoctor = accessToken.idUserDataDoctor;
+              next();  
+            }else{
+              res.send(401,{
+                mdStatus:{
+                  code:4102,
+                  info:"Token access expired"
+                }
+              });
+            }
           }else{
             res.send(401,{
               mdStatus:{
@@ -100,7 +111,9 @@ app.put("/api/v1/doctors/:username/personal_data", api.doctors.updatePersonalDat
 
 /*Titles Data Doctors*/
 app.get("/api/v1/doctors/:username/titles_data", api.doctors.getTitlesDataDoctor);
+app.get("/api/v1/doctors/:username/titles_data/:title_id", api.doctors.getTitleDataDoctorById);
 app.post("/api/v1/doctors/:username/titles_data", api.doctors.saveTitlesDataDoctor);
+app.put("/api/v1/doctors/:username/titles_data/:title_id", api.doctors.updateTitleDataDoctor);
 
 
 app.post("/api/v1/authentication/doctors/access-token/", api.authentication.generateDoctorAccessToken);

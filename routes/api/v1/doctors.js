@@ -66,8 +66,8 @@ var jobDataDoctorStruture = {
   }
 }
 
-var titlesDataDoctorStructure = {
-  "titlesData": {
+var titleDataDoctorStructure = {
+  "titleData": {
     "title" : "",
     "description" :"" ,
     "university" : "",
@@ -646,20 +646,20 @@ var testPersonalDataDoctor = function(personalData, next) {
   next(testApproved, data);
 };
 
-var testTitlesDataDoctor = function(titlesData, next) {
+var testTitlesDataDoctor = function(titleData, next) {
   var data = [];
   var testApproved = true;
-  if (isDefined(titlesData)) {
-    if (isDefined(titlesData.title)) {
+  if (isDefined(titleData)) {
+    if (isDefined(titleData.title)) {
       data.push({
-        "titlesData.title":{
+        "titleData.title":{
           "status": "ok",
-          "value": titlesData.title
+          "value": titleData.title
         }
       });
     }else{
       data.push({
-        "titlesData.title":{
+        "titleData.title":{
           "status": "error",
           "info": "You must to send a value for this field"
         }
@@ -667,16 +667,16 @@ var testTitlesDataDoctor = function(titlesData, next) {
       testApproved=false;
     }
 
-    if (isDefined(titlesData.description)) {
+    if (isDefined(titleData.description)) {
       data.push({
-        "titlesData.description":{
+        "titleData.description":{
           "status": "ok",
-          "value": titlesData.description
+          "value": titleData.description
         }
       });
     }else{
       data.push({
-        "titlesData.description":{
+        "titleData.description":{
           "status": "error",
           "info": "You must to send a value for this field"
         }
@@ -684,16 +684,16 @@ var testTitlesDataDoctor = function(titlesData, next) {
       testApproved=false;
     }
 
-    if (isDefined(titlesData.university)) {
+    if (isDefined(titleData.university)) {
       data.push({
-        "titlesData.university":{
+        "titleData.university":{
           "status": "ok",
-          "value": titlesData.university
+          "value": titleData.university
         }
       });
     }else{
       data.push({
-        "titlesData.university":{
+        "titleData.university":{
           "status": "error",
           "info": "You must to send a value for this field"
         }
@@ -701,16 +701,16 @@ var testTitlesDataDoctor = function(titlesData, next) {
       testApproved=false;
     }
 
-    if (isDefined(titlesData.graduationDate)) {
+    if (isDefined(titleData.graduationDate)) {
       data.push({
-        "titlesData.graduationDate":{
+        "titleData.graduationDate":{
           "status": "ok",
-          "value": titlesData.graduationDate
+          "value": titleData.graduationDate
         }
       });
     }else{
       data.push({
-        "titlesData.graduationDate":{
+        "titleData.graduationDate":{
           "status": "error",
           "info": "You must to send a value for this field"
         }
@@ -719,9 +719,9 @@ var testTitlesDataDoctor = function(titlesData, next) {
     }
   }else{
     data.push({
-      "titlesData":{
+      "titleData":{
         "status": "error",
-        "info": "You must to send a titlesData object"
+        "info": "You must to send a titleData object"
       }
     });
     testApproved = false;
@@ -733,8 +733,8 @@ var resToIncorrectStructure = function(req, res, structureType, data) {
   structureType = structureType || "personalData"
   if (structureType=="personalData") {
     var structure = personalDataDoctorStructure;
-  }else if (structureType=="titlesData") {
-    var structure = titlesDataDoctorStructure;
+  }else if (structureType=="titleData") {
+    var structure = titleDataDoctorStructure;
   }else if (structureType=="professionalData") {
     var structure = professionalDataDoctorStructure;
   }
@@ -1001,6 +1001,43 @@ exports.getTitlesDataDoctor = function(req, res) {
   });
 };
 
+exports.getTitleDataDoctorById = function(req, res) {
+  var criteria = {};
+  var projection = {};
+  criteria.username=req.params.username;
+  console.log("fields: "+req.query.fields);
+  models.userDataDoctors.findOne(criteria, function (err, doctor) {
+    if (err) {
+      console.log(err);
+      res.send(500);
+    }else{
+      console.log(doctor);
+      console.log("idTitle: "+req.params.title_id);
+      if (helpers.isDefined(doctor)) {
+        models.titlesDataDoctors.find({
+          idUserDataDoctor:doctor._id,
+          _id:req.params.title_id
+        },function (err, titlesDataDoctor) {
+          if (err) {
+            console.log(err);
+            res.send(500);
+          }else if (titlesDataDoctor){
+            console.log(titlesDataDoctor);
+            console.log("titulos:"+titlesDataDoctor);
+            res.send(200, {error: null, titlesDataDoctor: titlesDataDoctor});
+            // models.universities.findOne({_id:titlesData.idUniversity})
+          }else{
+            res.send(200, {error: null, titlesDataDoctor: null});
+          }
+        });
+      }else{
+        res.send(401);
+      }
+    }
+  });
+};
+
+//post
 exports.saveTitlesDataDoctor = function (req, res){
   testTitlesDataDoctor(req.body.titlesData, function(testApproved,data){
     if (testApproved) {
@@ -1057,3 +1094,47 @@ exports.saveTitlesDataDoctor = function (req, res){
   });
 };
 
+//put
+exports.updateTitleDataDoctor = function(req, res) {
+  testTitlesDataDoctor(req.body.titleData, function(testApproved,data){
+    if (testApproved) {
+      models.userDataDoctors.findOne({username:req.params.username}, function(err, userDataDoctor) {
+        if (err) {
+          console.log(err);
+          res.send(500);
+        }else if(helpers.isDefined(userDataDoctor)){
+          console.log("si existe el nombre de usuario");
+          req.body.titleData.idUserDataDoctor = userDataDoctor._id;
+          models.titlesDataDoctors.update({
+              idUserDataDoctor: userDataDoctor._id,
+              _id: req.params.title_id
+            },
+            req.body.titleData,
+            function (err, titleDataDoctor) {
+              if (err) {
+                console.log(err);
+                res.send(500);
+              }else{
+                res.send(200,{
+                  mdStatus:{
+                    code:2000,
+                    info: "title data doctor successfully updated",
+                    url:"localhost:3000/api/v1/doctors/"+userDataDoctor.username+"/titles_data/"+req.params.title_id
+                  }
+                });
+              }
+            });
+        }else{
+          res.send(200,{
+            mdStatus:{
+              code:2000,
+              info: "This username doesn't exist in our  database"
+            }
+          });
+        }
+      });
+    }else{
+      resToIncorrectStructure(req,res,"titleData",data);    
+    }
+  });
+};
