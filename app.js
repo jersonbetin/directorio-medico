@@ -22,6 +22,7 @@ api.authentication = require('./routes/api/'+api.version+'/authentication');
 
 var routes = require('./routes');
 var renderTemplates = require('./routes/render_templates');
+var sessions = require('./routes/sessions.js');
 
 function appLA(req, res, next){
   next = next || null;
@@ -166,8 +167,11 @@ function crfsValidation(req, res, next){
 app.get('/', routes.index);
 app.get('/signup/doctors', renderTemplates.renderSigupDoctorTemplate);
 app.post('/signup/doctors', crfsValidation, api.doctors.saveUserDataDoctor);
+
 app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
-app.get('/users', user.list);
+app.post('/login/doctors', crfsValidation, sessions.newDoctorSession);
+app.delete('/login/doctors', crfsValidation, sessions.destroyDoctorSession);
+
 
 // API v1 
 

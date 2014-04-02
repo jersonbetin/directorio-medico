@@ -2,6 +2,8 @@ extends layout
 
 block content
   h1 dashboard
+  input#crfs_input(type="text" value="#{data.crfs}")
+  a#logout_doctor(href="#") Cerrar session
 
 block js_up
   script.
@@ -12,52 +14,29 @@ block js_up
 
 block js
   script.
-    //- $(document).on("ready", function(){
-    //-   //- alert("documento listo");
-    //-   function loginDoctorSuccess(data, textStatus, jqXHR){
-    //-     var isChecked = $("#remember_me").is(":checked");
-    //-     console.log(data);
-    //-     if(data){
-    //-       if(data.error){
-    //-         if(data.error.error=="WrongEmailOrPassword"){
-    //-           alert("El email o contraseña son incorrectos");
-    //-         }
-    //-       }else if(data.accessToken){
-    //-         alert("Session Iniciada");
-    //-         if(isChecked){
-    //-           alert("No se cerrara la sesion si se cierra el navegador");
-    //-           localStorage.rememberMe = true;
-    //-         }else{
-    //-           alert("Si se cerrara la sesion si se cierra el navegador");
-    //-           localStorage.rememberMe = false;
-    //-         }
-    //-         localStorage.accessToken = data.accessToken.accessToken;
-    //-         localStorage.refreshToken = data.accessToken.refreshToken;
-    //-       }
-    //-     }
-    //-     }
-
-    //-   $("#login_doctor_form_button").on('click', function(e){
-    //-     //- alert("se activo");
-    //-     var email = $("#doctor_email").val();
-    //-     var password = $("#doctor_password").val();
-    //-     if(email != "" && password != ""){
-    //-       //- alert(email+" "+username+" "+password+" ");
-    //-       e.preventDefault();
-    //-       $.ajax({
-    //-         type: "POST",
-    //-         url:"/api/v1/authentication/doctors/access-token/",
-    //-         headers: {
-    //-           "crfs": $("#crfs_input").val()
-    //-         },
-    //-         data:{
-    //-           email: email,
-    //-           password: password
-    //-         },
-    //-         success: loginDoctorSuccess
-    //-         });
-    //-       }
-        
-    //-     }); // End of signup doctor form button on click event
-
-    //-   }); // End of document on ready event
+    $(document).on("ready", function(){
+      function logoutDoctorSuccess(data, textStatus, jqXHR){
+        console.log(data);
+        if(data){
+          if(data.error){
+            if(data.error.error=="WrongEmailOrPassword"){
+              alert("El email o contraseña son incorrectos");
+            }
+          }else{
+            window.location.replace("/");
+          }
+        }
+      }
+      
+      $("#logout_doctor").on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+          type: "DELETE",
+          url:"/login/doctors",
+          headers: {
+            "crfs": $("#crfs_input").val()
+          },
+          success: logoutDoctorSuccess
+        });
+      }); // End of signup doctor form button on click event
+    }); // End of document on ready event
