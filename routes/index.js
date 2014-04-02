@@ -1,11 +1,13 @@
 
-/*
- * GET home page.
- */
-
 exports.index = function(req, res){
-  var data = {};
-  data.crfs = 123456789;
-  req.session.crfs = data.crfs;
-  res.render('index', {data:data});
+  console.log("cookies",req.cookies);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render dashboard from cookie")
+    res.render('dashboard');
+  }else if(req.session && req.session.isLogged == true){
+    console.log("render dashboard from session")
+    res.render('dashboard');
+  }else{
+    res.render('index');
+  }
 };

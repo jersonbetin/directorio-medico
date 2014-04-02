@@ -19,15 +19,15 @@ var generateAccessToken = function(id, next){
 };
 
 exports.generateDoctorAccessToken = function (req, res) {
-  if (isDefined(req.body.email) && isDefined(req.body.password)) {
-    console.log("They do send email and password");
+  if (req.body.email && req.body.password && req.body.clientType) {
+    console.log("They do send email, password and clientType");
     userDataDoctorsModel.findOne({
       email:req.body.email,
       password: encryptString(req.body.password,"secret-password-for-doctor-user-passwords")
     }, function (err, userDataDoctor) {
       if (err) {
         console.log(err);
-        res.send(500);
+        res.send({error:500});
       }else{
         if (userDataDoctor) {
           generateAccessToken(userDataDoctor.id, function(accessToken, refreshToken, expirationDate){
@@ -39,34 +39,63 @@ exports.generateDoctorAccessToken = function (req, res) {
             }, function(err, doctorsAccessToken) {
               if (err) {
                 console.log(err);
-                res.send(500);
+                res.send({error:500});
               }else{
-                console.log(doctorsAccessToken);
-                res.send(200,{
-                  mdStatus:{
-                    code:2100,
-                    info:"Doctor access token successfully created"
-                  },
-                  accessTokensInfo:{
-                    accessToken:doctorsAccessToken.accessToken,
-                    refreshToken:doctorsAccessToken.refreshToken,
-                    expirationDate:doctorsAccessToken.expirationDate
+                if (req.body.clientType=="browser"){
+                  if(req.body.rememberMe == 'true' || req.body.rememberMe == true) {
+                    console.log("Guardado en la cookie");
+                    res.cookie("isLogged", true);
+                    res.cookie("accessToken", doctorsAccessToken.accessToken);
+                    res.cookie("refreshToken", doctorsAccessToken.refreshToken);
+                  }else{
+                    console.log("Guardado en la session")
+                    req.session.isLogged = true;
+                    req.session.accessToken = doctorsAccessToken.accessToken;
+                    req.session.refreshToken = doctorsAccessToken.refreshToken;
+                    console.log(req.session);
                   }
-                });
+                  console.log(doctorsAccessToken);
+                  res.send({
+                    error:null,
+                    accessToken:{
+                      accessToken:doctorsAccessToken.accessToken,
+                      refreshToken:doctorsAccessToken.refreshToken,
+                    }
+                  });
+                }else if(req.body.clientType=="nativeApp"){
+                  console.log(doctorsAccessToken);
+                  res.send({
+                    error:null,
+                    accessToken:{
+                      accessToken:doctorsAccessToken.accessToken,
+                      refreshToken:doctorsAccessToken.refreshToken,
+                    }
+                  });
+                }else{
+                  res.send({
+                    error: {
+                      code:400,
+                      error:"BadRequest",
+                      info:"The clientType value you have sent is wrong, please send a [browser | nativeApp]"
+                    }
+                  });
+                }
               }
             });
           });
         }else{
-          res.send(200,{
-            mdStatus:{
-              code:4100,
-              info:"Incorrect Email or Password"
+          res.send({
+            error: {
+              code:200,
+              error:"WrongEmailOrPassword",
+              info:"The Email or Password you have sent are wrong"
             }
           });
         }
       }
     });
-  }else if (isDefined(req.body.username) && isDefined(req.body.password)) {
+  }
+  /*else if (isDefined(req.body.username) && isDefined(req.body.password)) {
     console.log("They do send email and password");
     userDataDoctorsModel.findOne({
       username:req.body.username,
@@ -156,7 +185,14 @@ exports.generateDoctorAccessToken = function (req, res) {
         }
       }
     });
-  }else{
-    res.send(400);
+  }*/
+  else{
+    res.send({
+      error: {
+        code:400,
+        error:"MissingValues",
+        info:"You must to send a email, password and clientType values"
+      }
+    });
   }
 }

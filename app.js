@@ -96,7 +96,7 @@ function authenticationMiddleware (req, res, next) {
             });
           }
         }
-      })
+      });
     }else{
       console.log("400 Authorization")
       res.send({
@@ -110,7 +110,7 @@ function authenticationMiddleware (req, res, next) {
   }else{
     next();
   }
-};
+}
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -122,8 +122,8 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 // app.use(authenticationMiddleware);
-app.use(express.cookieParser('1q2w3e4r'));
-app.use(express.session({secret:'1q2w3e4r'}));
+app.use(express.cookieParser('your secret here'));
+app.use(express.session());
 /*app.use(function (req, res, next) {
   console.log(req.method);
   console.log(req.url);
@@ -160,10 +160,13 @@ function crfsValidation(req, res, next){
   }
 }
 
+
+
 // Render Templates
 app.get('/', routes.index);
 app.get('/signup/doctors', renderTemplates.renderSigupDoctorTemplate);
 app.post('/signup/doctors', crfsValidation, api.doctors.saveUserDataDoctor);
+app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
 app.get('/users', user.list);
 
 // API v1 
@@ -185,7 +188,7 @@ app.post("/api/v1/doctors/:username/titles_data", api.doctors.saveTitlesDataDoct
 app.put("/api/v1/doctors/:username/titles_data/:title_id", api.doctors.updateTitleDataDoctor);
 
 
-app.post("/api/v1/authentication/doctors/access-token/", api.authentication.generateDoctorAccessToken);
+app.post("/api/v1/authentication/doctors/access-token/", crfsValidation, api.authentication.generateDoctorAccessToken);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

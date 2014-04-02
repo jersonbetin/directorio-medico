@@ -16,9 +16,9 @@ block js
         console.log(data);
         if(data){
           if(data.error){
-            if(data.error.error=="emailAlreadyExist"){
+            if(data.error.error=="EmailAlreadyExist"){
               alert("Este email ya esta registrado, por favor ingrese otro");
-            }else if(data.error.error=="usernameAlreadyExist"){
+            }else if(data.error.error=="UsernameAlreadyExist"){
               alert("Este username ya esta registrado, por favor ingrese otro");
             }
           }else if(data.userDataDoctor){

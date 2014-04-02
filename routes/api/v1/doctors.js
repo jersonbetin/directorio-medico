@@ -827,7 +827,7 @@ exports.saveUserDataDoctor = function (req, res){
             res.send({
               error:{
                 code: 1,
-                error: "emailAlreadyExist",
+                error: "EmailAlreadyExist",
                 info: "The email you have sent are already registered in our database"
               }
             });
@@ -835,7 +835,7 @@ exports.saveUserDataDoctor = function (req, res){
             res.send({
               error: {
                 code: 2,
-                error: "usernameAlreadyExist",
+                error: "UsernameAlreadyExist",
                 info: "The username you have sent are already registered in our database"
               }
             });
@@ -861,7 +861,7 @@ exports.saveUserDataDoctor = function (req, res){
     res.send({
       error:{
         code: 400,
-        error: "badRequest", 
+        error: "BadRequest", 
         info: "You must to pass a email, username and password values for make this query"
       }
     });
