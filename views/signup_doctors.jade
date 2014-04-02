@@ -1,0 +1,54 @@
+extends layout
+
+block content
+  input#crfs_input(type="hidden" value="#{data.crfs}")
+  form#signup_doctors_form
+    input#doctor_email(type="email" placeholder="Email" required)
+    input#doctor_username(type="text" placeholder="Nombre de usuario" required)
+    input#doctor_password(type="password" placeholder="Contraseña" required)
+    button#signup_doctor_form_button(type="sumbit") Registrar
+
+block js
+  script.
+    $(document).on("ready", function(){
+      //- alert("documento listo");
+      function signupDoctorSuccess(data, textStatus, jqXHR){
+        console.log(data);
+        if(data){
+          if(data.error){
+            if(data.error.error=="emailAlreadyExist"){
+              alert("Este email ya esta registrado, por favor ingrese otro");
+            }else if(data.error.error=="usernameAlreadyExist"){
+              alert("Este username ya esta registrado, por favor ingrese otro");
+            }
+          }else if(data.userDataDoctor){
+            alert("Usuario registrado");
+          }
+        }
+        };
+
+      $("#signup_doctor_form_button").on('click', function(e){
+        //- alert("se activo");
+        var email = $("#doctor_email").val();
+        var username = $("#doctor_username").val();
+        var password = $("#doctor_password").val();
+        if(email != "" && username != "" && password != ""){
+          //- alert(email+" "+username+" "+password+" ");
+          e.preventDefault();
+          $.ajax({
+            type: "POST",
+            url:"/signup/doctors",
+            headers: {
+              "crfs": $("#crfs_input").val()
+            },
+            data:{
+              email: email,
+              username: username,
+              password: password
+            },
+            success: signupDoctorSuccess
+            });
+          }
+        }); // End of signup doctor form button on click event
+
+      }); // End of document on ready event

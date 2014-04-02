@@ -1,5 +1,11 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  input(type="text" value="#{data.crfs}")
+
+block js
+  script.
+    $(document).on("ready", function(){
+      //- alert("documento listo");
+      
+      });

@@ -115,6 +115,11 @@ var adminsSchema = new Schema({
   password:{type : String, required:true}
 });
 
+// var authorizedAppsSchema = new Schema({
+//   name:{type:String, index:true, unique:true},
+//   description: String
+// });
+
 var doctorsAccessTokensSchema = new Schema({
   idUserDataDoctor: Schema.Types.ObjectId,
   accessToken: String,

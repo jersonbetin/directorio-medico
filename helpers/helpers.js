@@ -10,9 +10,9 @@ exports.isDefined = function (variable){
   }
 }
 
-exports.encryptString = function (password, key){
+exports.encryptString = function (string, key){
   key = key || "default-key";
   var hash = "";
-  hash = crypto.createHmac('sha1', key).update(password).digest('hex');
+  hash = crypto.createHmac('sha1', key).update(string).digest('hex');
   return hash;
 };

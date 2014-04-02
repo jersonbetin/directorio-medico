@@ -4,8 +4,10 @@
  */
 
 var express = require('express');
-var routes = require('./routes');
 var user = require('./routes/user');
+var http = require('http');
+var path = require('path');
+var app = express();
 
 var helpers = require('./helpers/helpers');
 var isDefined = helpers.isDefined;
@@ -13,22 +15,55 @@ var isDefined = helpers.isDefined;
 var models = require('./models/models');
 
 var api = {};
-
 api.version = 'v1';
 api.doctors = require('./routes/api/'+api.version+'/doctors');
 api.authentication = require('./routes/api/'+api.version+'/authentication');
-console.log(api);
+//console.log(api);
 
-var http = require('http');
-var path = require('path');
+var routes = require('./routes');
+var renderTemplates = require('./routes/render_templates');
 
-var app = express();
+function appLA(req, res, next){
+  next = next || null;
+  console.log(next); 
+  console.log(req.header("Host"));
+  if(req.header("Host") == "localhost:3000"){
+    if (req.session) {
+      if(req.session.crfs == req.header.crfs){
+        if (next) {
+          next();
+        }else{
+          return true;
+        }
+      }else{
+        if (next) {
+          res.send("Origen valido pero el token no");
+        }else{
+          return false;
+        }
+      }
+    }else{
 
-var authenticationMiddleware = function(req, res, next) {
-  console.log("middleware activado");
+    }
+  }else if(req.header("applicationToken")){
+    if (next) {
+      res.send("Origen no valido");
+    }else{
+      return false;
+    }
+  }else{
+    console.log("Estoy aqui ####################")
+  }
+}
+
+function accessLA (req, res, next) {
+  
+}
+
+function authenticationMiddleware (req, res, next) {
   apiV1Url = /^\/api\/v1/;
-  console.log(req.url);
-  if (apiV1Url.test(req.url)) {
+  console.log(req.path);
+  if (apiV1Url.test(req.path)) {
     if(isDefined(req.get("Authorization"))){
       console.log(req.get("Authorization"));
       var accessToken = req.get("Authorization");
@@ -63,7 +98,8 @@ var authenticationMiddleware = function(req, res, next) {
         }
       })
     }else{
-      res.send(400,{
+      console.log("400 Authorization")
+      res.send({
         mdStatus:{
           code:4000,
           info:"No access token sent",
@@ -85,22 +121,55 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(authenticationMiddleware);
+// app.use(authenticationMiddleware);
+app.use(express.cookieParser('1q2w3e4r'));
+app.use(express.session({secret:'1q2w3e4r'}));
+/*app.use(function (req, res, next) {
+  console.log(req.method);
+  console.log(req.url);
+  console.log(req.ip);
+  console.log(req.path);
+  console.log(req.host);
+  console.log(req.protocol);
+  next();
+});*/
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
   app.use(express.errorHandler());
+  app.use(app.locals.pretty = true);
 }
 
+function crfsValidation(req, res, next){
+  if(req.header("Host") == "localhost:3000"){
+    if (req.session) {
+      if(req.session.crfs == req.header("crfs")){
+          next();
+      }else{
+        res.send("Origen valido pero el token no");
+      }
+    }else{
+      res.send("No session");
+    }
+  }else if(req.header("applicationToken")){
+    res.send("Se recibio el token de la aplicacion");
+  }else{
+    res.send("Origen no valido");
+  }
+}
+
+// Render Templates
 app.get('/', routes.index);
+app.get('/signup/doctors', renderTemplates.renderSigupDoctorTemplate);
+app.post('/signup/doctors', crfsValidation, api.doctors.saveUserDataDoctor);
 app.get('/users', user.list);
 
 // API v1 
 
 /*User Data Doctors*/
-app.get("/api/v1/doctors", api.doctors.getUserDataDoctors);
+app.get("/api/v1/doctors", appLA, api.doctors.getUserDataDoctors);
 app.get("/api/v1/doctors/:username", api.doctors.getUserDataDoctorByUsername);
 app.post("/api/v1/doctors", api.doctors.saveUserDataDoctor);
 

@@ -812,6 +812,7 @@ exports.getUserDataDoctorByUsername = function (req, res) {
 
 //post
 exports.saveUserDataDoctor = function (req, res){
+  console.log("por aqui por aqui");
   if(isDefined(req.body.email) && isDefined(req.body.username) && isDefined(req.body.password)){
     userDataDoctorsModel.create({
       email: req.body.email,
@@ -819,26 +820,49 @@ exports.saveUserDataDoctor = function (req, res){
       password: encryptString(req.body.password,"secret-password-for-doctor-user-passwords")
     }, function (err, userDataDoctor) {
       if (err) {
+        console.log(err);
         if (err.code==11000) {
-          res.send({
-            error:{
-              code:1,
-              info:"Email already registered in our database"
-            }
-          });
+          console.log(err.err);
+          if(err.err.indexOf(req.body.email)!=-1){
+            res.send({
+              error:{
+                code: 1,
+                error: "emailAlreadyExist",
+                info: "The email you have sent are already registered in our database"
+              }
+            });
+          }else if(err.err.indexOf(req.body.username)!=-1){
+            res.send({
+              error: {
+                code: 2,
+                error: "usernameAlreadyExist",
+                info: "The username you have sent are already registered in our database"
+              }
+            });
+          }
         }else{
           res.send(500);
         }
       }else{
         console.log(userDataDoctor);
-        res.send(userDataDoctor);
+        var data = {
+          _id: userDataDoctor._id,
+          email: userDataDoctor.email,
+          username: userDataDoctor.username,
+          registerState: userDataDoctor.registerState
+        };
+        res.send({
+          error:null,
+          userDataDoctor:data
+        });
       }
     });
   }else{
-    res.send(400,{
+    res.send({
       error:{
-        code:400,
-        info:"You must to pass a email, username and password values for make this query"
+        code: 400,
+        error: "badRequest", 
+        info: "You must to pass a email, username and password values for make this query"
       }
     });
   }
