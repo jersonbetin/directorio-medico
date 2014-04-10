@@ -1,0 +1,180 @@
+extends layout
+
+block content
+
+  h1 Personal Information
+  form#perosnal_information_form
+    input#csrf_input(type="text" value="#{data.csrf}")
+    label(for="first_name_input") Primer nombre: 
+    input(type="text" id="first_name_input" placeholder="Primer nombre" required)
+    label(for="second_name_input") Segundo nombre: 
+    input(type="text" id="second_name_input" placeholder="Segundo nombre" required)
+    label(for="first_lastname_input") Primer apellido: 
+    input(type="text" id="first_lastname_input" placeholder="Primer apellido" required)
+    label(for="second_lastname_input") Segundo apellido: 
+    input(type="text" id="second_lastname_input" placeholder="Segundo apellido" required)
+    label(for="identification_type_select") Tipo de identification: 
+    select(id="identification_type_select")
+      option(value="CC") Cedula de ciudadania
+      option(value="TI") Targeta de identidad
+      option(value="Pasaporte") Pasaporte
+    label(for="identification_number_input") Numero de identificacion: 
+    input(type="text" id="identification_number_input" placeholder="Numero de identificacion" required)
+    label(for="sex_select") Sexo:
+    select(id="sex_select")
+      option(value="Masculino") Masculino
+      option(value="Femenino") Femenino    
+    label(for="birthdate_input") Fecha de nacimiento
+    input(type="date" id="birthdate_input" placeholder="Fecha de nacimiento" required)
+    label(for="home_city_input") Ciudad de residencia:
+    input(type="text" id="home_city_input" placeholder="Ciudad de residencia" required)
+    label(for="home_address_input") Direccion de residencia:
+    input(type="text" id="home_address_input" placeholder="Direccion de residencia:" required)
+    label(for="mobile_input") Numeros de celular: 
+    input(type="text" id="mobile_input" placeholder="Celular" required)
+    label(for="landline_input") Numero de telefono fijo: 
+    input(type="text" id="landline_input" placeholder="Fijo" required)
+    label(for="nationality_input") Nacionalidad:
+    select(id="nationality_select")
+      option(value="Colombiano") Colombiano
+      option(value="Extranjero") Extranjero
+      option(value="Nacionalizado") Nacionalizado
+    button(type="submit" id="button_save_personal_information_form") Guardar
+  h3
+    a(href="/") Home
+  h3
+    a#logout_doctor(href="#") Cerrar session
+
+
+block js
+  script.
+    $(document).on("ready", function(){
+      function logoutDoctorSuccess(data, textStatus, jqXHR){
+        console.log(data);
+        if(data){
+          if(data.error){
+            console.log(error);
+          }else{
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("tokenType");
+            localStorage.removeItem("expirationDate");
+            window.location.replace("/");
+          }
+        }
+      }
+      
+      $("#logout_doctor").on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+          type: "DELETE",
+          url:"/login/doctors",
+          headers: {
+            "csrfToken": $("#csrf_input").val()
+          },
+          success: logoutDoctorSuccess
+        });
+      }); // End of logout doctor on click event
+
+      $("#button_save_personal_information_form").on("click", function(e) {
+        console.log($(this).html());
+        var requestType = "POST";
+        if($(this).html() == "Actualizar"){
+          console.log("Si es Actualizar");
+          requestType = "PUT";
+        }
+        var firstName = $("#first_name_input").val();
+        var secondName = $("#second_name_input").val();
+        var firstLastname = $("#first_lastname_input").val();
+        var secondLastname = $("#second_lastname_input").val();
+        var identificationType = $("#identification_type_select").val();
+        var identificationNumber = $("#identification_number_input").val();
+        var birthdate = $("#birthdate_input").val();
+        var sex = $("#sex_select").val();
+        var homeCity = $("#home_city_input").val();
+        var homeAddress = $("#home_address_input").val();
+        var mobile = $("#mobile_input").val();
+        var landline = $("#landline_input").val();
+        var nationality = $("#nationality_select").val();
+        console.log("Datos:",firstName,secondName,firstLastname,secondLastname,identificationType,identificationNumber, birthdate, sex, homeCity, homeAddress, mobile, landline, nationality);
+        if(firstName != "" && secondName != "" && firstLastname != "" && secondLastname != "" && identificationType != "" && identificationNumber != "" && birthdate != "" && sex != "" && homeCity != "" && homeAddress != "" && mobile != "" &&  landline != "" && nationality != ""){
+          console.log("se pasaron todos los datos");
+          e.preventDefault();
+          var personalInformation = {
+            "identification": {
+              "type" : identificationType,
+              "number" : identificationNumber
+            },
+            "names" : {
+              "first": firstName,
+              "second": secondName
+            },
+            "lastnames" : {
+              "first" : firstLastname,
+              "second" : secondLastname
+            },
+            "sex": sex,
+            "birthdate": birthdate,
+            "contactData":{
+              "home" : {
+                "city": homeCity,
+                "address": homeAddress
+              },
+              "phone":{
+                "mobile" : mobile,
+                "home": landline
+              }
+            },
+            "nationality": nationality
+          }
+          //- console.log(personalInformation);
+          $.ajax({
+            type: requestType,
+            url:"/api/v1/doctors/me/personal_information?errors=verbose",
+            headers: {
+              "accessToken": localStorage.accessToken
+            },
+            data:{
+              personalInformation: personalInformation
+            },
+            success: function(data){
+              console.log(data);
+            }
+          });
+        }else{
+          console.log("No se pasaron todos los datos")
+        }
+      });
+
+      function getDoctorPersonalInformation(){
+        $.ajax({
+          url:"/api/v1/doctors/me/personal_information",
+          headers: {
+            "accessToken": localStorage.accessToken
+          },
+          success: function(data){
+            if(data.doctorPersonalInformation){
+              console.log(data.doctorPersonalInformation);
+              $("#first_name_input").val(data.doctorPersonalInformation.names.first);
+              $("#second_name_input").val(data.doctorPersonalInformation.names.second);
+              $("#first_lastname_input").val(data.doctorPersonalInformation.lastnames.first);
+              $("#second_lastname_input").val(data.doctorPersonalInformation.lastnames.second);
+              $("#identification_number_input").val(data.doctorPersonalInformation.identification.number);
+              $("#birthdate_input").val(data.doctorPersonalInformation.birthdate);
+              $("#home_city_input").val(data.doctorPersonalInformation.contactData.home.city);
+              $("#home_address_input").val(data.doctorPersonalInformation.contactData.home.address);
+              $("#mobile_input").val(data.doctorPersonalInformation.contactData.phone.mobile);
+              $("#landline_input").val(data.doctorPersonalInformation.contactData.phone.home);
+              $("#button_save_personal_information_form").html("Actualizar");
+            }else{
+              console.log("No se ha guardado aun informacion personal de este doctor")
+            }
+            //- if (data.userdataDoctor){
+            //-   console.log(data.userdataDoctor):
+            //- }
+          }
+        });
+      }
+
+      getDoctorPersonalInformation();
+    }); // End of document on ready event

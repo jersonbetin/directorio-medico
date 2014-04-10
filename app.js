@@ -30,7 +30,7 @@ function appLA(req, res, next){
   console.log(req.header("Host"));
   if(req.header("Host") == "localhost:3000"){
     if (req.session) {
-      if(req.session.crfs == req.header.crfs){
+      if(req.session.csrf == req.header.csrf){
         if (next) {
           next();
         }else{
@@ -143,56 +143,236 @@ if ('development' == app.get('env')) {
   app.use(app.locals.pretty = true);
 }
 
-function crfsValidation(req, res, next){
+function csrfValidation(req, res, next){
+  console.log("#################### CSRF VALIDATION  ####################")
   if(req.header("Host") == "localhost:3000"){
     if (req.session) {
-      if(req.session.crfs == req.header("crfs")){
+      console.log(req.session.csrf);
+      console.log(req.header("csrfToken"));
+      if(req.session.csrf == req.header("csrfToken")){
+          console.log("Si se encontro un CSRF token")
           next();
       }else{
-        res.send("Origen valido pero el token no");
+        console.log("Origen valido pero el csrf token no");
+        res.send("Origen valido pero el csrf token no");
       }
     }else{
       res.send("No session");
     }
   }else if(req.header("applicationToken")){
-    res.send("Se recibio el token de la aplicacion");
+    res.send("Se recibio el csrf token de la aplicacion");
   }else{
     res.send("Origen no valido");
   }
 }
 
+/*function getUserDataFromTokens(req, res, next){
+  console.log("#################### getUserDataFromTokens ####################");
+  if (req.session && (req.session.isLogged == true || req.session.isLogged == "true")) {
+    if(req.session.username){
+      next();
+    }else{
+      console.log("Geting data from session");
+      console.log(req.session.accessToken);
+      models.doctorsAccessTokens.findOne({accessToken:req.session.accessToken}, function(err, accessToken){
+        if (err) {
+          console.log(err);
+          res.send(500);
+        }else if(accessToken){
+          console.log("Access token found");
+          models.userDataDoctors.findOne({_id:accessToken.idUserDataDoctor}, function(err, userDataDoctor){
+            if (err) {
+              console.log(err);
+              res.send(500);
+            }else if(userDataDoctor){
+              console.log("userDataDoctor found: "+userDataDoctor.username);
+              console.log("Saving userDataDoctor username in session");
+              req.session.username = userDataDoctor.username;
+              console.log("Username saved");
+              next();
+            }else{
+              console.log("Can't found a userDataDoctor with this id");
+              res.send(401);
+            }
+          })
+        }else{
+          console.log("Access Token not found");
+          res.send(401);
+        }
+      });
+    }
+  }else if(req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == "true")){
+    if(req.cookies.username){
+      next();
+    }else{
+      console.log("Geting data from cookie");
+      console.log(req.cookies.accessToken);
+      models.doctorsAccessTokens.findOne({accessToken:req.cookies.accessToken}, function(err, accessToken){
+        if (err) {
+          console.log(err);
+          res.send(500);
+        }else if(accessToken){
+          console.log("Access token found");
+          models.userDataDoctors.findOne({_id:accessToken.idUserDataDoctor}, function(err, userDataDoctor){
+            if (err) {
+              console.log(err);
+              res.send(500);
+            }else if(userDataDoctor){
+              console.log("userDataDoctor found: "+userDataDoctor.username);
+              console.log("Saving userDataDoctor username in cookie");
+              res.cookie("username", userDataDoctor.username);
+              console.log("Username saved");
+              next();
+            }else{
+              console.log("Can't found a userDataDoctor with this id");
+              res.send(401);
+            }
+          })
+        }else{
+          console.log("Access Token not found");
+          res.clearCookie("isLogged");
+          res.clearCookie("accessToken");
+          res.clearCookie("refreshToken");
+          res.send(401);
+        }
+      });
+    }
+  }else{
+    next();
+  }
+}*/
+
+function credentialsVerification(req, res, next){
+  console.log("#################### CREDENTIALS VERIFICATION  ####################")
+  if (req.header("accessToken")) {
+    models.doctorsAccessTokens.findOne({accessToken:req.header("accessToken")}, function(err, doctorAccessToken){
+      if (err) {
+        console.log(err);
+        res.send({error:500});
+      }else if(doctorAccessToken){
+        console.log("Access token found");
+        if (Date.now() <= doctorAccessToken.expirationDate) {
+          if(req.params.username == "me"){
+            console.log("Se paso el me");
+            models.doctorsAccountInformation.findOne({_id: doctorAccessToken.idDAI}, function(err, doctorAI){
+              if(err){
+                console.log("err");
+                res.send(500);
+              }else if(doctorAI){
+                console.log(doctorAI.username);
+                req.params.username = doctorAI.username;
+                next();
+              }else{
+                console.log("MEdoctorAccountInformation not fount")
+                res.send(404);
+              }
+            });
+          }else{
+            if(req.method == "GET"){
+              next();
+            }else{
+              models.doctorsAccountInformation.findOne({username: username}, function(err, doctorAI){
+                if (err) {
+                  console.log(err);
+                  res.send(500);
+                }else if(doctorAI){
+                  console.log("DAT: "+doctorsAccessToken.idDAI);
+                  if(doctorAccessToken.idDAI == doctorAI.id){
+                    next();
+                  }else{
+                    res.send({
+                      error: {
+                        code:401,
+                        error:"InvalidAccessToken",
+                        info:"The access token have you sent is not related to the user that you want to modify"
+                      }    
+                    });
+                  }
+                }else{
+                  res.send({
+                    error: {
+                      code:401,
+                      error:"Username not found",
+                      info:"Username not found"
+                    }    
+                  });
+                }
+              });
+            }
+          }
+        }else{
+          res.send({
+          error: {
+            code:401,
+            error:"AccessTokenExpired",
+            info:"The accessToken have you sent have expired, please get a new accessToken"
+          }
+        });
+        }
+      }else{
+        console.log("Access token not valid");
+        res.send({
+          error: {
+            code:401,
+            error:"AccessTokenNoValid",
+            info:"The accessToken have you sent doesn't exist in our database, please send another"
+          }
+        });
+      }
+    });  
+  }else{
+    console.log("Access token not sent");
+    res.send({
+      error: {
+        code:401,
+        error:"AccessTokenNotSent",
+        info:"You don't sent an accessToken"
+      }
+    });
+  }
+}
 
 
 // Render Templates
 app.get('/', routes.index);
 app.get('/signup/doctors', renderTemplates.renderSigupDoctorTemplate);
-app.post('/signup/doctors', crfsValidation, api.doctors.saveUserDataDoctor);
+app.post('/signup/doctors', csrfValidation, api.doctors.saveDoctorAccountInformation);
 
 app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
-app.post('/login/doctors', crfsValidation, sessions.newDoctorSession);
-app.delete('/login/doctors', crfsValidation, sessions.destroyDoctorSession);
+app.post('/login/doctors', csrfValidation, sessions.newDoctorSession);
+app.delete('/login/doctors', csrfValidation, sessions.destroyDoctorSession);
+
+app.get('/:username/personal_information', renderTemplates.renderPersonalInformation)
 
 
 // API v1 
 
 /*User Data Doctors*/
-app.get("/api/v1/doctors", appLA, api.doctors.getUserDataDoctors);
-app.get("/api/v1/doctors/:username", api.doctors.getUserDataDoctorByUsername);
-app.post("/api/v1/doctors", api.doctors.saveUserDataDoctor);
+
+
+// app.get('/api/v1/doctors/me/personal_information', credentialsVerification, api.doctors.getDoctorPersonalDataById);
+
+
+// app.get('/api/v1/doctors/me', credentialsVerification, api.doctors.getDoctorAccountInformationById);
+app.get("/api/v1/doctors/:username", credentialsVerification, api.doctors.getDoctorAccountInformationByUsername);
+
+// app.get("/api/v1/doctors", appLA, api.doctors.getUserDataDoctors);
+// app.post("/api/v1/doctors", api.doctors.saveUserDataDoctor);
 
 /*Personal Data Doctors*/
-app.get("/api/v1/doctors/:username/personal_data", api.doctors.getPersonalDataDoctor);
-app.post("/api/v1/doctors/:username/personal_data", api.doctors.savePersonalDataDoctor);
-app.put("/api/v1/doctors/:username/personal_data", api.doctors.updatePersonalDataDoctor);
+// app.get("/api/v1/doctors/me/personal_information", credentialsVerification, api.doctors.getDoctorPersonalInformationById);
+app.get("/api/v1/doctors/:username/personal_information", credentialsVerification, api.doctors.getDoctorPersonalInformationByUsername);
+app.post("/api/v1/doctors/:username/personal_information", credentialsVerification, api.doctors.saveDoctorPersonalInformation);
+app.put("/api/v1/doctors/:username/personal_information", credentialsVerification, api.doctors.updateDoctorPersonalInformation);
 
 /*Titles Data Doctors*/
-app.get("/api/v1/doctors/:username/titles_data", api.doctors.getTitlesDataDoctor);
-app.get("/api/v1/doctors/:username/titles_data/:title_id", api.doctors.getTitleDataDoctorById);
-app.post("/api/v1/doctors/:username/titles_data", api.doctors.saveTitlesDataDoctor);
-app.put("/api/v1/doctors/:username/titles_data/:title_id", api.doctors.updateTitleDataDoctor);
+// app.get("/api/v1/doctors/:username/titles_data", api.doctors.getTitlesDataDoctor);
+// app.get("/api/v1/doctors/:username/titles_data/:title_id", api.doctors.getTitleDataDoctorById);
+// app.post("/api/v1/doctors/:username/titles_data", api.doctors.saveTitlesDataDoctor);
+// app.put("/api/v1/doctors/:username/titles_data/:title_id", api.doctors.updateTitleDataDoctor);
 
 
-app.post("/api/v1/authentication/doctors/access-token/", crfsValidation, api.authentication.generateDoctorAccessToken);
+app.post("/api/v1/authentication/doctors/access-token/", csrfValidation, api.authentication.generateDoctorAccessToken);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

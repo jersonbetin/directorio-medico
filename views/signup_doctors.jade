@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  input#crfs_input(type="hidden" value="#{data.crfs}")
+  input#csrf_input(type="" value="#{data.csrf}")
   form#signup_doctors_form
     input#doctor_email(type="email" placeholder="Email" required)
     input#doctor_username(type="text" placeholder="Nombre de usuario" required)
@@ -21,8 +21,9 @@ block js
             }else if(data.error.error=="UsernameAlreadyExist"){
               alert("Este username ya esta registrado, por favor ingrese otro");
             }
-          }else if(data.userDataDoctor){
+          }else if(data.doctorAccountInformation){
             alert("Usuario registrado");
+            window.location.replace("/");
           }
         }
         };
@@ -39,7 +40,7 @@ block js
             type: "POST",
             url:"/signup/doctors",
             headers: {
-              "crfs": $("#crfs_input").val()
+              "csrfToken": $("#csrf_input").val()
             },
             data:{
               email: email,

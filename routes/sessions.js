@@ -13,14 +13,10 @@ exports.destroyDoctorSession = function(req, res){
     console.log("11111111111111111111111111111111111111111");
     console.log(req.cookies);
     res.clearCookie("isLogged");
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
     res.send(200);
   }else if(req.session && (req.session.isLogged == true || req.session.isLogged == "true")){
     console.log("22222222222222222222222222222222222222222");
-    req.session.isLogged = null;
-    req.session.accessToken = null;
-    req.session.refreshToken = null;
+    delete req.session.isLogged;
     res.send(200);
   }else{
     console.log("3333333333333333333333333333333333333333333");

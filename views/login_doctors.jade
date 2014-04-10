@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  input#crfs_input(type="hidden" value="#{data.crfs}")
+  input#csrf_input(type="" value="#{data.csrf}")
   form#login_doctors_form
     input#doctor_email(type="email" placeholder="Email" required)
     input#doctor_password(type="password" placeholder="Contraseña" required)
@@ -9,16 +9,10 @@ block content
     | No cerrar sesion
     button#login_doctor_form_button(type="sumbit") Registrar
 
-block js_up
-  script.
-    console.log(localStorage)
-    if(localStorage.remember_me){
-      
-    }
-
 block js
   script.
     $(document).on("ready", function(){
+      console.log(localStorage);
       //- alert("documento listo");
       function loginDoctorSuccess(data, textStatus, jqXHR){
         var isChecked = $("#remember_me").is(":checked");
@@ -29,7 +23,10 @@ block js
               alert("El email o contraseña son incorrectos");
             }
           }else if(data.accessToken){
-            console.log("Session Iniciada");
+            localStorage.accessToken = data.accessToken.accessToken;
+            localStorage.refreshToken = data.accessToken.refreshToken;
+            localStorage.tokenType = data.accessToken.tokenType;
+            localStorage.expirationDate = data.accessToken.expirationDate;
             window.location.replace("/");
           }
         }
@@ -38,7 +35,7 @@ block js
       $("#login_doctor_form_button").on('click', function(e){
         //- alert("se activo");
         var isChecked = $("#remember_me").is(":checked");
-        alert(isChecked);
+        //- alert(isChecked);
 
         var email = $("#doctor_email").val();
         var password = $("#doctor_password").val();
@@ -49,7 +46,8 @@ block js
             type: "POST",
             url:"/api/v1/authentication/doctors/access-token/",
             headers: {
-              "crfs": $("#crfs_input").val()
+              "csrfToken": $("#csrf_input").val(),
+              "grantType" : "credentials"
             },
             data:{
               email: email,
@@ -58,9 +56,7 @@ block js
               rememberMe: isChecked
             },
             success: loginDoctorSuccess
-            });
+          });
           }
-        
         }); // End of signup doctor form button on click event
-
       }); // End of document on ready event
