@@ -3,11 +3,12 @@ extends layout
 block content
   h1 dashboard
   h2#username_h2 username: 
-  h2 Verificar en secretaria
+  h2 Verificar en secretaria de salud
   form
     label Cedula: 
     input#identification(type="text", placeholder="cedula")
     input#verify_identification_button(type="submit" value="verificar y llenar datos")
+  div#datos_de_secretaria
 
   input#csrf_input(type="hidden" value="#{data.csrf}")
   h3
@@ -93,7 +94,9 @@ block js
             console.log(data.registrado);
             if(data.registrado == "no"){
               alert("Usuario no registrado en la secretaria");
+              $("#datos_de_secretaria").html("<h3>Datos obtenido de la secretaria</h3>"+JSON.stringify(data));
             }else if(data.registrado == "si"){
+              $("#datos_de_secretaria").html("<h3>Datos obtenido de la secretaria</h3>"+JSON.stringify(data));
               alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
             }else{
               alert("hubo un error xp");
