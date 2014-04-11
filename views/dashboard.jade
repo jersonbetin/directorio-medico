@@ -2,16 +2,20 @@ extends layout
 
 block content
   h1 dashboard
-  h2 username: #{data.username}
+  h2#username_h2 username: 
   h2 Verificar en secretaria
   form
-    label Cedula
-    input(type="text", placeholder="cedula")
-    input(type="submit" value="verificar")
+    label Cedula: 
+    input#identification(type="text", placeholder="cedula")
+    input#verify_identification_button(type="submit" value="verificar y llenar datos")
 
-  input#csrf_input(type="text" value="#{data.csrf}")
+  input#csrf_input(type="hidden" value="#{data.csrf}")
   h3
-    a#personal_information_link(href="#") Datos Personales
+    a(href="/me/personal_information") Mi Informacion Personal
+  h3  
+    a(href="/me/professional_information") Mi Informacion profesional
+  h3  
+    a(href="/me/titles_information") Mis Titulos
   h3
     a#logout_doctor(href="#") Cerrar session
 
@@ -26,19 +30,18 @@ block js
   script.
     $(document).on("ready", function(){
       var doctorAI = {};
-      function getDoctorAccountInformation (username){
+      function getDoctorAccountInformationSuccess(data){
+        doctorAI = data.doctorAccountInformation;
+        $("#username_h2").html("Username: "+doctorAI.username);
+      }
+
+      function getDoctorAccountInformation (){
         $.ajax({
-          url:"/api/v1/doctors/me",
+          url:"/api/v1/doctors/me/account_information",
           headers: {
             "accessToken": localStorage.accessToken
           },
-          success: function(data){
-            console.log(data);
-            doctorAI = data.doctorAccountInformation;
-            //- if (data.userdataDoctor){
-            //-   console.log(data.userdataDoctor):
-            //- }
-          }
+          success: getDoctorAccountInformationSuccess
         });
       }
       
@@ -69,12 +72,35 @@ block js
         });
       }); // End of logout doctor on click event
 
-      $("#personal_information_link").on("click", function(e){
+      //- $("#personal_information_link").on("click", function(e){
+      //-   e.preventDefault();
+      //-   window.location.replace("/"+doctorAI.username+"/personal_information");
+      //- });
+
+      $("#verify_identification_button").on("click", function(e){
         e.preventDefault();
-        window.location.replace("/"+doctorAI.username+"/personal_information");
+        console.log("click click click");
+        console.log($("#identification").val());
+        e.preventDefault();
+        $.ajax({
+          type: "GET",
+          url:"/secretary/verify/"+$("#identification").val(),
+          headers: {
+            "csrfToken": $("#csrf_input").val()
+          },
+          success: function(data){
+            console.log(data);
+            console.log(data.registrado);
+            if(data.registrado == "no"){
+              alert("Usuario no registrado en la secretaria");
+            }else if(data.registrado == "si"){
+              alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
+            }else{
+              alert("hubo un error xp");
+            }
+          }
+        });
       });
-
-
       console.log(localStorage)
       getDoctorAccountInformation();
 

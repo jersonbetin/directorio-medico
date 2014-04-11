@@ -1,0 +1,126 @@
+extends layout
+
+block content
+
+  h1 Informacion Profesional
+  form#perosnal_information_form
+    input#csrf_input(type="text" value="#{data.csrf}")
+    label(for="professional_card_number_input") Numero de la targeta profesional: 
+    input(type="text" id="professional_card_number_input" placeholder="Numero de la targeta profesional" required)
+    label(for="professional_car_expedition_date_input") Fecha de expedicion: 
+    input(type="date" id="professional_car_expedition_date_input" required)
+    label(for="professional_type_input") Tipo de profesion: 
+    input(type="text" id="professional_type_input" placeholder="Tipo de profesion" required)
+    label(for="is_working_input") Esta trabajando?: 
+    input(type="text" id="is_working_input" placeholder="Esta trabajando?" required)
+    label(for="evidence_input") Evidencia: 
+    input(type="text" id="evidence_input" placeholder="evidencia" required)
+    button(type="submit" id="button_save_professional_information_form") Guardar
+  h3
+    a(href="/") Home
+  h3
+    a#logout_doctor(href="#") Cerrar session
+
+
+block js
+  script.
+    $(document).on("ready", function(){
+      function logoutDoctorSuccess(data, textStatus, jqXHR){
+        console.log(data);
+        if(data){
+          if(data.error){
+            console.log(error);
+          }else{
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("tokenType");
+            localStorage.removeItem("expirationDate");
+            window.location.replace("/");
+          }
+        }
+      }
+      
+      $("#logout_doctor").on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+          type: "DELETE",
+          url:"/login/doctors",
+          headers: {
+            "csrfToken": $("#csrf_input").val()
+          },
+          success: logoutDoctorSuccess
+        });
+      }); // End of logout doctor on click event
+
+      $("#button_save_professional_information_form").on("click", function(e) {
+        console.log($(this).html());
+        var requestType = "POST";
+        if($(this).html() == "Actualizar"){
+          console.log("Si es Actualizar");
+          requestType = "PUT";
+        }
+        var professionalCardNumber = $("#professional_card_number_input").val();
+        var professionalCardExpeditionDate = $("#professional_car_expedition_date_input").val();
+        console.log(professionalCardExpeditionDate);
+        var professionalType = $("#professional_type_input").val();
+        var isWorking = $("#is_working_input").val();
+        var evidence = $("#evidence_input").val();
+        if(professionalCardNumber != "" && professionalCardExpeditionDate != "" && professionalType != "" && is_working_input != "" && evidence != ""){
+          console.log("se pasaron todos los datos");
+          e.preventDefault();
+          var professionalInformation = {
+            "professionalCard": {
+              "number": professionalCardNumber,
+              "expeditionDate": professionalCardExpeditionDate
+            },
+            "professionalType": professionalType,
+            "isWorking":isWorking,
+            "evidence": evidence
+          }
+          //- console.log(personalInformation);
+          $.ajax({
+            type: requestType,
+            url:"/api/v1/doctors/me/professional_information?errors=verbose",
+            headers: {
+              "accessToken": localStorage.accessToken
+            },
+            data:{
+              professionalInformation: professionalInformation
+            },
+            success: function(data){
+              console.log(data);
+            }
+          });
+        }else{
+          console.log("No se pasaron todos los datos")
+        }
+      });
+
+      function getDoctorProfessionalInformation(){
+        $.ajax({
+          url:"/api/v1/doctors/me/professional_information",
+          headers: {
+            "accessToken": localStorage.accessToken
+          },
+          success: function(data){
+            console.log(data);
+            if(data.doctorProfessionalInformation){
+              console.log(data.doctorProfessionalInformation);
+              $("#professional_card_number_input").val(data.doctorProfessionalInformation.professionalCard.number);
+              $("#professional_car_expedition_date_input").val(data.doctorProfessionalInformation.professionalCard.expeditionDate);
+              $("#professional_type_input").val(data.doctorProfessionalInformation.professionalType);
+              $("#is_working_input").val(data.doctorProfessionalInformation.isWorking);
+              $("#evidence_input").val(data.doctorProfessionalInformation.evidence);
+              $("#button_save_professional_information_form").html("Actualizar");
+            }else{
+              console.log("No se ha guardado aun informacion personal de este doctor")
+            }
+            //- if (data.userdataDoctor){
+            //-   console.log(data.userdataDoctor):
+            //- }
+          }
+        });
+      }
+
+      getDoctorProfessionalInformation();
+    }); // End of document on ready event

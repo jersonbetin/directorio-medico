@@ -1,0 +1,150 @@
+extends layout
+
+block content
+  h1 Mis titulos
+  div#table_titles_information
+    table.table.table-bordered.table-hover.table-condensed
+      caption 
+      thead
+        tr
+          th Titulo
+          th Descripcion
+          th Fecha de graduacion
+          th Universidad
+          th Ciudad
+          th Departamento
+      tbody#table_titles_body
+        
+  h3
+    a(href="/") Home
+  h3
+    a#logout_doctor(href="#") Cerrar session
+
+
+block js
+  script.
+    $(document).on("ready", function(){
+      function logoutDoctorSuccess(data, textStatus, jqXHR){
+        console.log(data);
+        if(data){
+          if(data.error){
+            console.log(error);
+          }else{
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("tokenType");
+            localStorage.removeItem("expirationDate");
+            window.location.replace("/");
+          }
+        }
+      }
+      
+      $("#logout_doctor").on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+          type: "DELETE",
+          url:"/login/doctors",
+          headers: {
+            "csrfToken": $("#csrf_input").val()
+          },
+          success: logoutDoctorSuccess
+        });
+      }); // End of logout doctor on click event
+
+      //- $("#button_save_personal_information_form").on("click", function(e) {
+      //-   console.log($(this).html());
+      //-   var requestType = "POST";
+      //-   if($(this).html() == "Actualizar"){
+      //-     console.log("Si es Actualizar");
+      //-     requestType = "PUT";
+      //-   }
+      //-   var firstName = $("#first_name_input").val();
+      //-   var secondName = $("#second_name_input").val();
+      //-   var firstLastname = $("#first_lastname_input").val();
+      //-   var secondLastname = $("#second_lastname_input").val();
+      //-   var identificationType = $("#identification_type_select").val();
+      //-   var identificationNumber = $("#identification_number_input").val();
+      //-   var birthdate = $("#birthdate_input").val();
+      //-   var sex = $("#sex_select").val();
+      //-   var homeCity = $("#home_city_input").val();
+      //-   var homeAddress = $("#home_address_input").val();
+      //-   var mobile = $("#mobile_input").val();
+      //-   var landline = $("#landline_input").val();
+      //-   var nationality = $("#nationality_select").val();
+      //-   console.log("Datos:",firstName,secondName,firstLastname,secondLastname,identificationType,identificationNumber, birthdate, sex, homeCity, homeAddress, mobile, landline, nationality);
+      //-   if(firstName != "" && secondName != "" && firstLastname != "" && secondLastname != "" && identificationType != "" && identificationNumber != "" && birthdate != "" && sex != "" && homeCity != "" && homeAddress != "" && mobile != "" &&  landline != "" && nationality != ""){
+      //-     console.log("se pasaron todos los datos");
+      //-     e.preventDefault();
+      //-     var personalInformation = {
+      //-       "identification": {
+      //-         "type" : identificationType,
+      //-         "number" : identificationNumber
+      //-       },
+      //-       "names" : {
+      //-         "first": firstName,
+      //-         "second": secondName
+      //-       },
+      //-       "lastnames" : {
+      //-         "first" : firstLastname,
+      //-         "second" : secondLastname
+      //-       },
+      //-       "sex": sex,
+      //-       "birthdate": birthdate,
+      //-       "contactData":{
+      //-         "home" : {
+      //-           "city": homeCity,
+      //-           "address": homeAddress
+      //-         },
+      //-         "phone":{
+      //-           "mobile" : mobile,
+      //-           "home": landline
+      //-         }
+      //-       },
+      //-       "nationality": nationality
+      //-     }
+      //-     //- console.log(personalInformation);
+      //-     $.ajax({
+      //-       type: requestType,
+      //-       url:"/api/v1/doctors/me/personal_information?errors=verbose",
+      //-       headers: {
+      //-         "accessToken": localStorage.accessToken
+      //-       },
+      //-       data:{
+      //-         personalInformation: personalInformation
+      //-       },
+      //-       success: function(data){
+      //-         console.log(data);
+      //-       }
+      //-     });
+      //-   }else{
+      //-     console.log("No se pasaron todos los datos")
+      //-   }
+      //- });
+
+      function getDoctorTitlesInformation(){
+        $.ajax({
+          url:"/api/v1/doctors/me/titles_information",
+          headers: {
+            "accessToken": localStorage.accessToken
+          },
+          success: function(data){
+            console.log(data);
+            if(data.doctorTitlesInformation){
+              //- console.log(data.doctorPersonalInformation);
+              for(var i=0; i<data.doctorTitlesInformation.length; i++){
+                var cadena = "<tr><td>"+data.doctorTitlesInformation[i].title+"</td><td>"+data.doctorTitlesInformation[i].description+"</td><td>"+data.doctorTitlesInformation[i].graduationDate+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.name+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.city+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.department+"</td></tr>"
+                $("#table_titles_body").append(cadena);
+                //- console.log(data.doctorTitlesInformation[i]);
+              }
+            }else{
+              console.log("No se ha guardado aun informacion personal de este doctor")
+            }
+            //- if (data.userdataDoctor){
+            //-   console.log(data.userdataDoctor):
+            //- }
+          }
+        });
+      }
+
+      getDoctorTitlesInformation();
+    }); // End of document on ready event

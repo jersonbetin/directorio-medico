@@ -5,8 +5,6 @@ var helpers = require('../../../helpers/helpers');
 var isDefined = helpers.isDefined;
 var encryptString = helpers.encryptString;
 
-var userDataDoctorsModel = models.userDataDoctors;
-
 var doctorPersonalInformationStructure = {
   "doctorPersonalInformation" :{
     "identification": {
@@ -37,9 +35,9 @@ var doctorPersonalInformationStructure = {
   }
 };
 
-var professionalDataDoctorStructure = {
-  "profesionalDataDoctor": {
-    "professinalCard": {
+var doctorProfessionalInformationStructure = {
+  "professionalInformation": {
+    "professionalCard": {
       "number": "",
       "expeditionDate": ""
     },
@@ -66,8 +64,8 @@ var jobDataDoctorStruture = {
   }
 }
 
-var titleDataDoctorStructure = {
-  "titleData": {
+var doctorTitlesInformationStructure = {
+  "titlesInformation": {
     "title" : "",
     "description" :"" ,
     "university" : "",
@@ -84,110 +82,6 @@ var testDoctorData = function(doctorData, contentType, next) {
     var testApproved = true;
     console.log("json");
     if (isDefined(doctorData)) {
-      if (isDefined(doctorData.professionalData)) {
-        if (isDefined(doctorData.professionalData.professionalCard)) {
-          if (isDefined(doctorData.professionalData.professionalCard.number)) {
-            data.push({
-              "doctorData.professionalData.professionalCard.number":{
-                "status": "ok",
-                "value": doctorData.professionalData.professionalCard.number
-              }
-            });
-          }else{
-            data.push({
-              "doctorData.professionaData.professionalCard.number":{
-                "status": "error",
-                "info": "You must to send a value for this field"
-              }
-            });
-            testApproved=false;
-          } 
-
-          if (isDefined(doctorData.professionalData.professionalCard.expeditionDate)) {
-            data.push({
-              "doctorData.professionalData.professionalCard.expeditionDate":{
-                "status": "ok",
-                "value": doctorData.professionalData.professionalCard.expeditionDate
-              }
-            });
-          }else{
-            data.push({
-              "doctorData.professionaData.professionalCard.expeditionDate":{
-                "status": "error",
-                "info": "You must to send a value for this field"
-              }
-            });
-            testApproved=false;
-          }
-        }else{
-          data.push({
-            "doctorData.professionalData.professionalCard":{
-              "status": "error",
-              "info": "You must to send a professionalCard object"
-            }
-          });
-          testApproved = false;
-        }
-
-        if (isDefined(doctorData.professionalData.professionalType)) {
-          data.push({
-            "doctorData.professionalData.professionalType":{
-              "status": "ok",
-              "value": doctorData.professionalData.professionalType
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.professionalData.professionalType":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-
-        if (isDefined(doctorData.professionalData.isWorking)) {
-          data.push({
-            "doctorData.professionalData.isWorking":{
-              "status": "ok",
-              "value": doctorData.professionalData.isWorking
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.professionalData.isWorking":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-
-        if (isDefined(doctorData.professionalData.evidence)) {
-          data.push({
-            "doctorData.professionalData.evidence":{
-              "status": "ok",
-              "value": doctorData.professionalData.evidence
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.professionalData.evidence":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        } 
-      }else{
-        data.push({
-          "doctorData.professionalData":{
-            "status": "error",
-            "info": "You must to send a professionalData object"
-          }
-        });
-        testApproved = false;
-      } 
 
       if (isDefined(doctorData.jobData)) {
         if (isDefined(doctorData.jobData.nit)) {
@@ -647,20 +541,67 @@ var testDoctorPersonalInformation = function(personalInformation, next) {
   next(testApproved, data);
 };
 
-var testTitlesDataDoctor = function(titleData, next) {
+var testDoctorProfessionalInformation = function(professionalInformation, next) {
   var data = [];
   var testApproved = true;
-  if (isDefined(titleData)) {
-    if (isDefined(titleData.title)) {
+  // console.log(personalInformation);
+  if (isDefined(professionalInformation)) {
+    console.log(professionalInformation);
+    if (isDefined(professionalInformation.professionalCard)) {
+    console.log(professionalInformation.professionalCard);
+      if (isDefined(professionalInformation.professionalCard.number)) {
+        data.push({
+          "professionalInformation.professionalCard.number":{
+            "status": "ok",
+            "value": professionalInformation.professionalCard.number
+          }
+        });
+      }else{
+        data.push({
+          "professionaData.professionalCard.number":{
+            "status": "error",
+            "info": "You must to send a value for this field"
+          }
+        });
+        testApproved=false;
+      } 
+
+      if (isDefined(professionalInformation.professionalCard.expeditionDate)) {
+        data.push({
+          "professionalInformation.professionalCard.expeditionDate":{
+            "status": "ok",
+            "value": professionalInformation.professionalCard.expeditionDate
+          }
+        });
+      }else{
+        data.push({
+          "professionaData.professionalCard.expeditionDate":{
+            "status": "error",
+            "info": "You must to send a value for this field"
+          }
+        });
+        testApproved=false;
+      }
+    }else{
       data.push({
-        "titleData.title":{
+        "professionalInformation.professionalCard":{
+          "status": "error",
+          "info": "You must to send a professionalCard object"
+        }
+      });
+      testApproved = false;
+    }
+
+    if (isDefined(professionalInformation.professionalType)) {
+      data.push({
+        "professionalInformation.professionalType":{
           "status": "ok",
-          "value": titleData.title
+          "value": professionalInformation.professionalType
         }
       });
     }else{
       data.push({
-        "titleData.title":{
+        "professionalInformation.professionalType":{
           "status": "error",
           "info": "You must to send a value for this field"
         }
@@ -668,16 +609,16 @@ var testTitlesDataDoctor = function(titleData, next) {
       testApproved=false;
     }
 
-    if (isDefined(titleData.description)) {
+    if (isDefined(professionalInformation.isWorking)) {
       data.push({
-        "titleData.description":{
+        "professionalInformation.isWorking":{
           "status": "ok",
-          "value": titleData.description
+          "value": professionalInformation.isWorking
         }
       });
     }else{
       data.push({
-        "titleData.description":{
+        "professionalInformation.isWorking":{
           "status": "error",
           "info": "You must to send a value for this field"
         }
@@ -685,16 +626,49 @@ var testTitlesDataDoctor = function(titleData, next) {
       testApproved=false;
     }
 
-    if (isDefined(titleData.university)) {
+    if (isDefined(professionalInformation.evidence)) {
       data.push({
-        "titleData.university":{
+        "professionalInformation.evidence":{
           "status": "ok",
-          "value": titleData.university
+          "value": professionalInformation.evidence
         }
       });
     }else{
       data.push({
-        "titleData.university":{
+        "professionalInformation.evidence":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    } 
+  }else{
+    data.push({
+      "professionalInformation":{
+        "status": "error",
+        "info": "You must to send a professionalInformation object"
+      }
+    });
+    testApproved = false;
+  } 
+  next(testApproved, data);
+};
+
+var testDoctorTitleInformation = function(titleInformation, next) {
+  var data = [];
+  var testApproved = true;
+  console.log(titleInformation);
+  if (isDefined(titleInformation)) {
+    if (isDefined(titleInformation.title)) {
+      data.push({
+        "titleInformation.title":{
+          "status": "ok",
+          "value": titleInformation.title
+        }
+      });
+    }else{
+      data.push({
+        "titleInformation.title":{
           "status": "error",
           "info": "You must to send a value for this field"
         }
@@ -702,16 +676,50 @@ var testTitlesDataDoctor = function(titleData, next) {
       testApproved=false;
     }
 
-    if (isDefined(titleData.graduationDate)) {
+    if (isDefined(titleInformation.description)) {
       data.push({
-        "titleData.graduationDate":{
+        "titleInformation.description":{
           "status": "ok",
-          "value": titleData.graduationDate
+          "value": titleInformation.description
         }
       });
     }else{
       data.push({
-        "titleData.graduationDate":{
+        "titleInformation.description":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    }
+
+    if (isDefined(titleInformation.university)) {
+      data.push({
+        "titleInformation.university":{
+          "status": "ok",
+          "value": titleInformation.university
+        }
+      });
+    }else{
+      data.push({
+        "titleInformation.university":{
+          "status": "error",
+          "info": "You must to send a value for this field"
+        }
+      });
+      testApproved=false;
+    }
+
+    if (isDefined(titleInformation.graduationDate)) {
+      data.push({
+        "titleInformation.graduationDate":{
+          "status": "ok",
+          "value": titleInformation.graduationDate
+        }
+      });
+    }else{
+      data.push({
+        "titleInformation.graduationDate":{
           "status": "error",
           "info": "You must to send a value for this field"
         }
@@ -720,9 +728,9 @@ var testTitlesDataDoctor = function(titleData, next) {
     }
   }else{
     data.push({
-      "titleData":{
+      "titleInformation":{
         "status": "error",
-        "info": "You must to send a titleData object"
+        "info": "You must to send a titleInformation object"
       }
     });
     testApproved = false;
@@ -734,10 +742,10 @@ var resToIncorrectStructure = function(req, res, structureType, data) {
   structureType = structureType || "personalInformation"
   if (structureType=="personalInformation") {
     var structure = doctorPersonalInformationStructure;
-  }else if (structureType=="titleData") {
-    var structure = titleDataDoctorStructure;
-  }else if (structureType=="professionalData") {
-    var structure = professionalDataDoctorStructure;
+  }else if (structureType=="titleInformation") {
+    var structure = doctorTitlesInformationStructure;
+  }else if (structureType=="professionalInformation") {
+    var structure = doctorProfessionalInformationStructure;
   }
   if (isDefined(req.query.errors) && req.query.errors == "verbose") {
     res.send({
@@ -773,7 +781,7 @@ var resToIncorrectStructure = function(req, res, structureType, data) {
 /*Doctors Account Information*/
 
 //get
-exports.getUserDataDoctors = function (req, res) {
+exports.getDoctorsAccountInformation = function (req, res) {
   var criteria = {};
   var projection = {};
   if(helpers.isDefined(req.query.registerState)) {
@@ -789,7 +797,7 @@ exports.getUserDataDoctors = function (req, res) {
   }
 
   console.log("fields: "+req.query.fields);
-  models.userDataDoctors.find(criteria, function (err, doctors) {
+  models.DoctorsAccountInformation.find(criteria, function (err, doctors) {
     if (err) {
       res.send({
         error: {
@@ -942,7 +950,7 @@ exports.saveDoctorAccountInformation = function (req, res){
 };
 
 
-/*Doctors Personal Informatio*/
+/*Doctors Personal Information*/
 
 //get
 exports.getDoctorPersonalInformationById = function (req, res){
@@ -974,7 +982,10 @@ exports.getDoctorPersonalInformationByUsername = function (req, res){
   var criteria = {};
   var projection = {};
   criteria.username=req.params.username;
-  models.doctorsAccountInformation.findOne(criteria, function (err, doctorAI) {
+  models.doctorsPersonalInformation.findOne()
+  .populate({path: "doctorsAccountInformation", match: { username: req.params.username}})
+  .exec(function (err, doctorPI) {
+    console.log("doctor personal information"+doctorPI);
     if (err) {
       console.log(err);
       res.send({
@@ -984,26 +995,11 @@ exports.getDoctorPersonalInformationByUsername = function (req, res){
           info:"This erros happends in our servers, we will try to fix the soon as possible"
         }
       });
-    }else if (doctorAI) {
-      models.doctorsPersonalInformation.findOne({idDAI:doctorAI._id},function (err, doctorPI) {
-        if (err) {
-          console.log(err);
-          res.send({
-            error: {
-              code:500,
-              error:"SomethingWasWrongWithUs",
-              info:"This erros happends in our servers, we will try to fix the soon as possible"
-            }
-          });
-        }else if (doctorPI){
-          console.log("datos personales:"+doctorPI);
-          res.send(200, {error: null, doctorPersonalInformation: doctorPI});
-        }else{
-          res.send(200, {error: null, doctorPersonalInformation: null});
-        }
-      }); 
+    }else if (doctorPI){
+      console.log("datos personales:"+doctorPI);
+      res.send(200, {error: null, doctorPersonalInformation: doctorPI});
     }else{
-      res.send(404);
+      res.send(200, {error: null, doctorPersonalInformation: null});
     }
   });
 }
@@ -1086,7 +1082,7 @@ exports.updateDoctorPersonalInformation = function(req, res) {
         }else if(helpers.isDefined(doctorAccountInformation)){
           req.body.personalInformation.idDAI = doctorAccountInformation._id;
           models.doctorsPersonalInformation.update(
-            {idUserDataDoctor:doctorAccountInformation._id},
+            {idDAI:doctorAccountInformation._id},
             req.body.personalInformation,
             function (err, doctorPI) {
               if (err) {
@@ -1122,15 +1118,13 @@ exports.updateDoctorPersonalInformation = function(req, res) {
 };
 
 
-/*Titles Data Doctors*/
+/*Doctors TItles Information*/
 
 //get
-exports.getTitlesDataDoctor = function(req, res) {
+exports.getDoctorTitlesInformationById = function(req, res) {
   var criteria = {};
   var projection = {};
-  criteria.username=req.params.username;
-  console.log("fields: "+req.query.fields);
-  models.userDataDoctors.findOne(criteria, function (err, doctor) {
+  models.titleInformationDoctors.find({idDAI:req.params.id},function (err, doctorTI) {
     if (err) {
       console.log(err);
       res.send({
@@ -1140,41 +1134,21 @@ exports.getTitlesDataDoctor = function(req, res) {
           info:"This erros happends in our servers, we will try to fix the soon as possible"
         }
       });
+    }else if (doctorTI){
+      res.send(200, {error: null, doctorTitlesInformation: doctorTI});
+      // models.universities.findOne({_id:titleInformation.idUniversity})
     }else{
-      console.log(doctor);
-      if (helpers.isDefined(doctor)) {
-        models.titlesDataDoctors.find({idUserDataDoctor:doctor._id},function (err, titlesDataDoctor) {
-          if (err) {
-            console.log(err);
-            res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
-          }else if (titlesDataDoctor){
-            console.log(titlesDataDoctor);
-            console.log("titulos:"+titlesDataDoctor);
-            res.send(200, {error: null, titlesDataDoctor: titlesDataDoctor});
-            // models.universities.findOne({_id:titlesData.idUniversity})
-          }else{
-            res.send(200, {error: null, titlesDataDoctor: null});
-          }
-        });
-      }else{
-        res.send(401);
-      }
+      res.send(200, {error: null, doctorTitlesInformation: null});
     }
   });
 };
 
-exports.getTitleDataDoctorById = function(req, res) {
+exports.getDoctorsTitlesInformationByUsername = function(req, res) {
+  console.log("#################### getDoctorsTitlesInformationByUsername  ####################");
   var criteria = {};
   var projection = {};
   criteria.username=req.params.username;
-  console.log("fields: "+req.query.fields);
-  models.userDataDoctors.findOne(criteria, function (err, doctor) {
+  models.doctorsAccountInformation.findOne(criteria, function (err, doctorAI) {
     if (err) {
       console.log(err);
       res.send({
@@ -1185,29 +1159,25 @@ exports.getTitleDataDoctorById = function(req, res) {
         }
       });
     }else{
-      console.log(doctor);
-      console.log("idTitle: "+req.params.title_id);
-      if (helpers.isDefined(doctor)) {
-        models.titlesDataDoctors.find({
-          idUserDataDoctor:doctor._id,
-          _id:req.params.title_id
-        },function (err, titlesDataDoctor) {
+      if (helpers.isDefined(doctorAI)) {
+        models.doctorsTitlesInformation.find({idDAI:doctorAI._id}).populate("idUniversity").exec(function (err, doctorTI) {
           if (err) {
             console.log(err);
             res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
-          }else if (titlesDataDoctor){
-            console.log(titlesDataDoctor);
-            console.log("titulos:"+titlesDataDoctor);
-            res.send(200, {error: null, titlesDataDoctor: titlesDataDoctor});
-            // models.universities.findOne({_id:titlesData.idUniversity})
+              error: {
+                code:500,
+                error:"SomethingWasWrongWithUs",
+                info:"This erros happends in our servers, we will try to fix the soon as possible"
+              }
+            });
+          }else if (doctorTI){
+            for (var i=0; i < doctorTI.length; i++){
+              console.log(doctorTI[i]);
+            }
+            res.send(200, {error: null, doctorTitlesInformation: doctorTI});
+            // models.universities.findOne({_id:titleInformation.idUniversity})
           }else{
-            res.send(200, {error: null, titlesDataDoctor: null});
+            res.send(200, {error: null, doctorTitlesInformation: null});
           }
         });
       }else{
@@ -1218,58 +1188,59 @@ exports.getTitleDataDoctorById = function(req, res) {
 };
 
 //post
-exports.saveTitlesDataDoctor = function (req, res){
-  testTitlesDataDoctor(req.body.titlesData, function(testApproved,data){
+exports.saveDoctorTitleInformation = function (req, res){
+  testDoctorTitleInformation(req.body.titleInformation, function(testApproved,data){
     if (testApproved) {
-      models.userDataDoctors.findOne({username:req.params.username}, function(err, doctorAccountInformation) {
+      console.log(req.params.username);
+      models.doctorsAccountInformation.findOne({username:req.params.username}, function(err, doctorAI) {
         if (err) {
           console.log(err);
           res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
-        }else if(helpers.isDefined(doctorAccountInformation)){
-          req.body.titlesData.idUserDataDoctor = doctorAccountInformation._id;
-          models.universities.findOne({_id:req.body.titlesData.university}, function(err, university){
+            error: {
+              code:500,
+              error:"SomethingWasWrongWithUs",
+              info:"This erros happends in our servers, we will try to fix the soon as possible"
+            }
+          });
+        }else if(helpers.isDefined(doctorAI)){
+          req.body.titleInformation.idDAI = doctorAI._id;
+          models.universities.findOne({_id:req.body.titleInformation.university}, function(err, university){
             if (err) {
               console.log(err);
               res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
+                error: {
+                  code:500,
+                  error:"SomethingWasWrongWithUs",
+                  info:"This erros happends in our servers, we will try to fix the soon as possible"
+                }
+              });
             }else if(isDefined(university)){
               console.log("se encontro la U");
-              req.body.titlesData.idUniversity = university._id;
-              models.titlesDataDoctors.create(req.body.titlesData, function (err, titlesDataDoctor) {
+              req.body.titleInformation.idUniversity = university._id;
+              models.doctorsTitlesInformation.create(req.body.titleInformation, function (err, doctorTI) {
                 if (err) {
                   if (err.code == 11000) {
-                    res.send(200,{
-                      mdStatus:{
-                        code:2010,
-                        info: "This username already has an asociated titlesData ",
-                        help: {
-                          "info": "You must to pass the value with the update method not with the post method"
-                        }
-                      }        
+                    res.send({
+                      error: {
+                        code: 400,
+                        error: "titleInformationAlreadyRegistered"
+                      }
                     });
                   }else{  
                     console.log(err);
                     res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
+                    error: {
+                      code:500,
+                      error:"SomethingWasWrongWithUs",
+                      info:"This erros happends in our servers, we will try to fix the soon as possible"
+                    }
+                  });
                   }
                 }else{
-                  res.send(201,titlesDataDoctor);
+                  res.send({
+                    error: null,
+                    doctorTitleInformation: doctorTI
+                  });
                 }
               });
             }else{
@@ -1287,16 +1258,17 @@ exports.saveTitlesDataDoctor = function (req, res){
         }
       });
     }else{
-      resToIncorrectStructure(req,res,"titlesData", data);    
+      resToIncorrectStructure(req,res,"titleInformation", data);    
     }
   });
 };
 
 //put
-exports.updateTitleDataDoctor = function(req, res) {
-  testTitlesDataDoctor(req.body.titleData, function(testApproved,data){
+exports.updateDoctorTitleInformation = function(req, res) {
+  console.log("#################### updateDoctorTitleInformation  ####################");
+  testDoctorTitleInformation(req.body.titleInformation, function(testApproved,data){
     if (testApproved) {
-      models.userDataDoctors.findOne({username:req.params.username}, function(err, doctorAccountInformation) {
+      models.doctorsAccountInformation.findOne({username:req.params.username}, function(err, doctorAI) {
         if (err) {
           console.log(err);
           res.send({
@@ -1306,30 +1278,30 @@ exports.updateTitleDataDoctor = function(req, res) {
           info:"This erros happends in our servers, we will try to fix the soon as possible"
         }
       });
-        }else if(helpers.isDefined(doctorAccountInformation)){
+        }else if(helpers.isDefined(doctorAI)){
           console.log("si existe el nombre de usuario");
-          req.body.titleData.idUserDataDoctor = doctorAccountInformation._id;
-          models.titlesDataDoctors.update({
-              idUserDataDoctor: doctorAccountInformation._id,
+          req.body.titleInformation.idDAI = doctorAI._id;
+          models.doctorsTitlesInformation.update({
+              idDAI: doctorAI._id,
               _id: req.params.title_id
             },
-            req.body.titleData,
-            function (err, titleDataDoctor) {
+            req.body.titleInformation,
+            function (err, doctorTI) {
               if (err) {
                 console.log(err);
                 res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
+                  error: {
+                    code:500,
+                    error:"SomethingWasWrongWithUs",
+                    info:"This erros happends in our servers, we will try to fix the soon as possible"
+                  }
+                });
               }else{
                 res.send(200,{
                   mdStatus:{
                     code:2000,
                     info: "title data doctor successfully updated",
-                    url:"localhost:3000/api/v1/doctors/"+doctorAccountInformation.username+"/titles_data/"+req.params.title_id
+                    url:"localhost:3000/api/v1/doctors/"+doctorAI.username+"/titles_data/"+req.params.title_id
                   }
                 });
               }
@@ -1344,7 +1316,149 @@ exports.updateTitleDataDoctor = function(req, res) {
         }
       });
     }else{
-      resToIncorrectStructure(req,res,"titleData",data);    
+      resToIncorrectStructure(req,res,"titleInformation",data);    
+    }
+  });
+};
+
+
+/*Doctors Professional Information*/
+exports.getDoctorProfessionalInformationByUsername = function (req, res){
+  console.log("#################### getDoctorProfessionalInformationByUsername  ####################");
+  var criteria = {};
+  var projection = {};
+  criteria.username=req.params.username;
+  models.doctorsProfessionalInformation.findOne()
+  .populate({path: "doctorsAccountInformation", match: { username: req.params.username}})
+  .exec(function (err, doctorPI) {
+    console.log("doctor personal information"+doctorPI);
+    if (err) {
+      console.log(err);
+      res.send({
+        error: {
+          code:500,
+          error:"SomethingWasWrongWithUs",
+          info:"This erros happends in our servers, we will try to fix the soon as possible"
+        }
+      });
+    }else if (doctorPI){
+      console.log("datos professionales:"+doctorPI);
+      res.send(200, {error: null, doctorProfessionalInformation: doctorPI});
+    }else{
+      res.send(200, {error: null, doctorProfessionalInformation: null});
+    }
+  });
+}
+
+//post
+exports.saveDoctorProfessionalInformation = function (req, res){
+  console.log("#################### saveDoctorProfessionalInformation  ####################");
+  testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){
+    if (testApproved) {
+      console.log("Test approved");
+      console.log(req.params.username);
+      models.doctorsAccountInformation.findOne({username:req.params.username}, function(err, doctorAI) {
+        if (err) {
+          console.log(err);
+          res.send({
+            error: {
+              code:500,
+              error:"SomethingWasWrongWithUs",
+              info:"This erros happends in our servers, we will try to fix the soon as possible"
+            }
+          });
+        }else if(doctorAI){
+          req.body.professionalInformation.idDAI = doctorAI._id;
+          models.doctorsProfessionalInformation.create(req.body.professionalInformation, function (err, doctorPI) {
+            if (err) {
+              if (err.code == 11000) {
+                res.send({
+                  error: {
+                    code:200,
+                    error:"ProfessionalInformationAlreadySaved",
+                    info:"This username already has an asociated personalInformation"
+                  }
+                });
+              }else{  
+                console.log(err);
+                res.send({
+                  error: {
+                    code:500,
+                    error:"SomethingWasWrongWithUs",
+                    info:"This erros happends in our servers, we will try to fix the soon as possible"
+                  }
+                });
+              }
+            }else{
+              res.send({
+                error: null,
+                doctorProfessionalInformation: doctorPI
+              });
+            }
+          });
+        }else{
+          res.send(200,{
+            mdStatus:{
+              code:2000,
+              info: "This username doesn't exist in our  database"
+            }
+          });
+        }
+      });
+    }else{
+      resToIncorrectStructure(req,res,"professionalInformation",data);    
+    }
+  });
+};
+
+//put
+exports.updateDoctorProfessionalInformation = function(req, res) {
+  testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){
+    if (testApproved) {
+      models.doctorsAccountInformation.findOne({username:req.params.username}, function(err, doctorAI) {
+        if (err) {
+          console.log(err);
+          res.send({
+            error: {
+              code:500,
+              error:"SomethingWasWrongWithUs",
+              info:"This erros happends in our servers, we will try to fix the soon as possible"
+            }
+          });
+        }else if(helpers.isDefined(doctorAI)){
+          req.body.professionalInformation.idDAI = doctorAI._id;
+          models.doctorsProfessionalInformation.update(
+            {idDAI:doctorAI._id},
+            req.body.professionalInformation,
+            function (err, doctorPI) {
+              if (err) {
+                console.log(err);
+                res.send({
+                  error: {
+                    code:500,
+                    error:"SomethingWasWrongWithUs",
+                    info:"This erros happends in our servers, we will try to fix the soon as possible"
+                  }
+                });
+              }else{
+                res.send({
+                  error: null,
+                  doctorProfessionalInformation: doctorPI
+                });
+              }
+            });
+        }else{
+          res.send({
+            error: {
+              code:404,
+              error:"UsernameNotFound",
+              info: "This username doesn't exist in our  database"
+            }
+          });
+        }
+      });
+    }else{
+      resToIncorrectStructure(req,res,"professionalInformation",data);    
     }
   });
 };

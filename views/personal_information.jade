@@ -153,8 +153,9 @@ block js
             "accessToken": localStorage.accessToken
           },
           success: function(data){
+            console.log(data);
             if(data.doctorPersonalInformation){
-              console.log(data.doctorPersonalInformation);
+              //- console.log(data.doctorPersonalInformation);
               $("#first_name_input").val(data.doctorPersonalInformation.names.first);
               $("#second_name_input").val(data.doctorPersonalInformation.names.second);
               $("#first_lastname_input").val(data.doctorPersonalInformation.lastnames.first);

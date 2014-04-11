@@ -47,3 +47,41 @@ exports.renderPersonalInformation = function (req, res){
     res.redirect('/');
   } 
 };
+
+exports.renderProfessionalInformation = function (req, res){
+  console.log("#################### renderPersonalInformation ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render professional_information from cookie");
+    res.render('professional_information', {data: data});
+  }else if(req.session && req.session.isLogged == true || req.session.isLogged == 'true'){
+    console.log("render professional_information from session");
+    res.render('professional_information', {data: data});
+  }else{
+    res.redirect('/');
+  } 
+};
+
+exports.renderTitlesInformation = function (req, res){
+  console.log("#################### renderPersonalInformation ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render titles_information from cookie");
+    res.render('titles_information', {data: data});
+  }else if(req.session && req.session.isLogged == true || req.session.isLogged == 'true'){
+    console.log("render titles_information from session");
+    res.render('titles_information', {data: data});
+  }else{
+    res.redirect('/');
+  } 
+};

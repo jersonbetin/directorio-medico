@@ -58,15 +58,15 @@ var doctorsAccountInformationSchema = new Schema({
 });
 
 var doctorsTitlesInformationSchema = new Schema({
-  idDAI: {type:Schema.Types.ObjectId, required:true},
+  idDAI: {type:Schema.Types.ObjectId, required:true, ref: 'doctorsAccountInformation'},
   title : {type : String, required: true},
   description : {type: String, defaul:''},
-  idUniversity : {type:Schema.Types.ObjectId, required:true},
+  idUniversity : { type: Schema.Types.ObjectId, ref: 'universities' },
   graduationDate : {type: Date, required:true}
 });
 
 var doctorsPersonalInformationSchema = new Schema({
-  idDAI: {type:Schema.Types.ObjectId, index:true, unique:true, required:true},
+  idDAI: {type:Schema.Types.ObjectId, index:true, unique:true, required:true, ref: 'doctorsAccountInformation'},
   identification: {
     type : {type: String, required:true, enum: ['TI', 'CC', 'Pasaporte']},
     number : {type : String, index : true, required:true, unique:true}
@@ -99,14 +99,14 @@ var doctorsPersonalInformationSchema = new Schema({
 });
 
 var doctorsProfessionalInformationSchema = new Schema({
-  idDAI: {type:Schema.Types.ObjectId, index:true, unique:true, required:true},
-  professinalCard: {
+  idDAI: {type:Schema.Types.ObjectId, index:true, unique:true, required:true, ref:"doctorsAccountInformation"},
+  professionalCard: {
     number: {type: String, required:true, unique:true},
     expeditionDate: {type: Date, required:true}
   },
-  professionalType: {type:Schema.Types.ObjectId, required:true},
+  professionalType: {type: String, required:true},
   isWorking:{type:String, required:true, enum:['yes', 'no']},
-  jobInformation: {type:Schema.Types.ObjectId, required:true},
+  //jobInformation: {type:Schema.Types.ObjectId, required:true},
   evidence: {type: String, required:true}
 });
 
