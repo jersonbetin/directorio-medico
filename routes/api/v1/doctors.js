@@ -6,7 +6,7 @@ var isDefined = helpers.isDefined;
 var encryptString = helpers.encryptString;
 
 var doctorPersonalInformationStructure = {
-  "doctorPersonalInformation" :{
+  "personalInformation" :{
     "identification": {
       "type" : "",
       "number" : ""
@@ -82,7 +82,6 @@ var testDoctorData = function(doctorData, contentType, next) {
     var testApproved = true;
     console.log("json");
     if (isDefined(doctorData)) {
-
       if (isDefined(doctorData.jobData)) {
         if (isDefined(doctorData.jobData.nit)) {
           data.push({
@@ -224,11 +223,6 @@ var testDoctorData = function(doctorData, contentType, next) {
         });
         testApproved = false;
       }
-
-
-      
-
-
     }else{
       data.push({
         "doctorData":{
@@ -249,7 +243,7 @@ var testDoctorPersonalInformation = function(personalInformation, next) {
   if (isDefined(personalInformation)) {
     if (isDefined(personalInformation.identification)) {
       if (isDefined(personalInformation.identification.type)) {
-        if (["TI","CC","Pasaporte"].indexOf(personalInformation.identification.type)>=0) {
+        if (["ti","cc","pasaporte"].indexOf(personalInformation.identification.type)>=0) {
           data.push({
             "personalInformation.identification.type":{
               "status": "ok",
@@ -777,11 +771,79 @@ var resToIncorrectStructure = function(req, res, structureType, data) {
   }
 };
 
+/* respons code function */
+function res500Code(res){
+  res.send({
+    error: {
+      code:500,
+      error:"SomethingWasWrongWithUs",
+      info:"This erros happends in our servers, we will try to fix the soon as possible"
+    }
+  });
+}
+
+function res404Code(res){
+  res.send({
+    error: {
+      code:404,
+      error:"ResourceNotFound",
+      info:""
+    }
+  });
+}
+
+
+
+var doctors = {}; 
+
+doctors.getAccountInformationById = function (id, res, next){
+  console.log("########## doctors.getAccountInformationById  ##########");
+  models.doctorsAccountInformation.findOne({_id:id}, function (err, doctorAI) {
+    if (err) {
+      console.log(err);
+      res500Code(res);
+    }else if(doctorAI){
+      next(doctorAI);
+    }else{
+      res404Code(res);
+    }
+  });
+};
+
+doctors.getAccountInformationByUsername = function (username, res, next){
+  console.log("########## doctors.getAccountInformationByUsername  ##########");
+  models.doctorsAccountInformation.findOne({username:username}, function (err, doctorAI) {
+    if (err) {
+      console.log(err);
+      res500Code(res);
+    }else if(doctorAI){
+      next(doctorAI);
+    }else{
+      res404Code(res);
+    }
+  });
+};
+
+doctors.getPersonalInformationById = function (id, res, next){
+  console.log("########## doctors.getPersonalInformationById  ##########");
+  models.doctorsPersonalInformation.findOne({idDAI:id}, function (err, doctorPI) {
+    if (err) {
+      console.log(err);
+      res500Code(res);
+    }else if(doctorPI){
+      next(doctorPI);
+    }else{
+      res404Code(res);
+    }
+  });
+};
+
+
 
 /*Doctors Account Information*/
-
 //get
 exports.getDoctorsAccountInformation = function (req, res) {
+  console.log("########## exports.getDoctorsAccountInformation  ##########");
   var criteria = {};
   var projection = {};
   if(helpers.isDefined(req.query.registerState)) {
@@ -811,83 +873,37 @@ exports.getDoctorsAccountInformation = function (req, res) {
     }
   });
 };
-
 exports.getDoctorAccountInformationById = function (req, res){
-  console.log("#################### getUserDataDoctorById  ####################");
-  models.doctorsAccountInformation.findOne({_id:req.session.DAI.id}, function(err, doctorAI){
-    if (err) {
-      console.log(err);
-      res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
-    }else if(doctorAI){
-      res.send({
-        error:null,
-        doctorAccountInformation:{
-          email: doctorAI.email,
-          username: doctorAI.username,
-          registerState: doctorAI.registerState,
-          registerDate: doctorAI.createdDate
-        }
-      });
-    }else{
-      res.send({
-        error: {
-          code:404,
-          error:"UserDataDoctorIdNotFound",
-          info:""
-        }
-      });
-    }
+  console.log("########## exports.getDoctorAccountInformationById  ##########");
+  doctors.getAccountInformationById(req.session.DAI.id,res, function(doctorAI){
+    res.send({
+      error:null,
+      doctorAccountInformation:{
+        email: doctorAI.email,
+        username: doctorAI.username,
+        registerState: doctorAI.registerState,
+        registerDate: doctorAI.createdDate
+      }
+    });
   });
 };
-
 exports.getDoctorAccountInformationByUsername = function (req, res) {
-  console.log("#################### getUserDataDoctorByUsername  ####################");
-  var criteria = {};
-  var projection = {};
-  criteria.username=req.params.username;
-  console.log("fields: "+req.query.fields);
-  console.log("params: "+req.params);
-  models.doctorsAccountInformation.findOne(criteria, function (err, doctorAI) {
-    if (err) {
-      console.log(err);
-      res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
-    }else if(doctorAI){
-      res.send({
-        error:null,
-        doctorAccountInformation:{
-          email: doctorAI.email,
-          username: doctorAI.username,
-          registerState: doctorAI.registerState,
-          registerDate: doctorAI.createdDate
-        }
-      });
-    }else{
-      res.send({
-        error: {
-          code:404,
-          error:"DoctorAIUsernameNotFound",
-          info:""
-        }
-      });
-    }
+  console.log("########## exports.getDoctorAccountInformationByUsername  ##########");
+  doctors.getAccountInformationByUsername(req.params.username,res, function(doctorAI){
+    res.send({
+      error:null,
+      doctorAccountInformation:{
+        email: doctorAI.email,
+        username: doctorAI.username,
+        registerState: doctorAI.registerState,
+        registerDate: doctorAI.createdDate
+      }
+    });
   });
 };
-
 //post
 exports.saveDoctorAccountInformation = function (req, res){
-  console.log("#################### saveDoctorAccountInformation  ####################");
+  console.log("########## exports.saveDoctorAccountInformation  ##########");
   if(isDefined(req.body.email) && isDefined(req.body.username) && isDefined(req.body.password)){
     models.doctorsAccountInformation.create({
       email: req.body.email,
@@ -916,13 +932,7 @@ exports.saveDoctorAccountInformation = function (req, res){
             });
           }
         }else{
-          res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
+          res500Code(res);
         }
       }else{
         console.log(doctorAI);
@@ -951,59 +961,24 @@ exports.saveDoctorAccountInformation = function (req, res){
 
 
 /*Doctors Personal Information*/
-
 //get
 exports.getDoctorPersonalInformationById = function (req, res){
-  console.log("#################### getDoctorPersonalInformationById  ####################");
-  var criteria = {};
-  var projection = {};
-  models.doctorsPersonalInformation.findOne({idDAI:req.session.DAI.id},function (err, doctorPI) {
-    if (err) {
-      console.log(err);
-      res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
-    }else if (doctorPI){
+  console.log("#################### exports.getDoctorPersonalInformationById  ####################");
+  doctors.getPersonalInformationById(req.session.DAI.id, res, function(doctorPI){
+    console.log("datos personales:"+doctorPI);
+    res.send(200, {error: null, doctorPersonalInformation: doctorPI});
+  });
+};
+exports.getDoctorPersonalInformationByUsername = function (req, res){  
+  console.log("########## exports.getDoctorPersonalInformationByUsername  ##########");
+  doctors.getAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    console.log(doctorAI);
+    doctors.getPersonalInformationById(doctorAI._id, res, function(doctorPI){
       console.log("datos personales:"+doctorPI);
       res.send(200, {error: null, doctorPersonalInformation: doctorPI});
-    }else{
-      console.log("Doctor npersonal information not found");
-      res.send(200, {error: null, doctorPersonalInformation: null});
-    }
+    });
   });
-}
-
-exports.getDoctorPersonalInformationByUsername = function (req, res){
-  console.log("#################### getDoctorPersonalInformationByUsername  ####################");
-  var criteria = {};
-  var projection = {};
-  criteria.username=req.params.username;
-  models.doctorsPersonalInformation.findOne()
-  .populate({path: "doctorsAccountInformation", match: { username: req.params.username}})
-  .exec(function (err, doctorPI) {
-    console.log("doctor personal information"+doctorPI);
-    if (err) {
-      console.log(err);
-      res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
-    }else if (doctorPI){
-      console.log("datos personales:"+doctorPI);
-      res.send(200, {error: null, doctorPersonalInformation: doctorPI});
-    }else{
-      res.send(200, {error: null, doctorPersonalInformation: null});
-    }
-  });
-}
-
+};
 //post
 exports.saveDoctorPersonalInformation = function (req, res){
   console.log("#################### saveDoctorPersonalInformation  ####################");
@@ -1011,105 +986,55 @@ exports.saveDoctorPersonalInformation = function (req, res){
     if (testApproved) {
       console.log("Test approved");
       console.log(req.params.username);
-      models.doctorsAccountInformation.findOne({username:req.params.username}, function(err, doctorAccountInformation) {
-        if (err) {
-          console.log(err);
-          res.send({
-            error: {
-              code:500,
-              error:"SomethingWasWrongWithUs",
-              info:"This erros happends in our servers, we will try to fix the soon as possible"
-            }
-          });
-        }else if(doctorAccountInformation){
-          req.body.personalInformation.idDAI = doctorAccountInformation._id;
-          models.doctorsPersonalInformation.create(req.body.personalInformation, function (err, doctorPI) {
-            if (err) {
-              if (err.code == 11000) {
-                res.send({
-                  error: {
-                    code:200,
-                    error:"PersonalInformationAlreadySaved",
-                    info:"This username already has an asociated personalInformation"
-                  }
-                });
-              }else{  
-                console.log(err);
-                res.send({
-                  error: {
-                    code:500,
-                    error:"SomethingWasWrongWithUs",
-                    info:"This erros happends in our servers, we will try to fix the soon as possible"
-                  }
-                });
-              }
-            }else{
+      doctors.getAccountInformationByUsername(req.params.username, res, function(doctorAI){
+        req.body.personalInformation.idDAI = doctorAI._id;
+        models.doctorsPersonalInformation.create(req.body.personalInformation, function (err, doctorPI) {
+          if (err) {
+            if (err.code == 11000) {
               res.send({
-                error: null,
-                doctorPersonalInformation: doctorPI
+                error: {
+                  code:200,
+                  error:"PersonalInformationAlreadySaved",
+                  info:"This username already has an asociated personalInformation"
+                }
               });
+            }else{  
+              res500Code(res);
             }
-          });
-        }else{
-          res.send(200,{
-            mdStatus:{
-              code:2000,
-              info: "This username doesn't exist in our  database"
-            }
-          });
-        }
+          }else{
+            res.send({
+              error: null,
+              doctorPersonalInformation: doctorPI
+            });
+          }
+        });
       });
     }else{
       resToIncorrectStructure(req,res,"personalInformation",data);    
     }
   });
 };
-
 //put
 exports.updateDoctorPersonalInformation = function(req, res) {
   testDoctorPersonalInformation(req.body.personalInformation, function(testApproved,data){
     if (testApproved) {
-      models.doctorsAccountInformation.findOne({username:req.params.username}, function(err, doctorAccountInformation) {
-        if (err) {
-          console.log(err);
-          res.send({
-            error: {
-              code:500,
-              error:"SomethingWasWrongWithUs",
-              info:"This erros happends in our servers, we will try to fix the soon as possible"
+      doctors.getAccountInformationByUsername(req.params.username, res, function(doctorAI){
+        req.body.personalInformation.idDAI = doctorAI._id;
+        models.doctorsPersonalInformation.update(
+          {idDAI:doctorAI._id},
+          req.body.personalInformation,
+          function (err, doctorPI) {
+            if (err) {
+              console.log(err);
+              res500Code(res);
+            }else{
+              res.send({
+                error: null,
+                doctorPersonalInformation: doctorPI
+              });
             }
-          });
-        }else if(helpers.isDefined(doctorAccountInformation)){
-          req.body.personalInformation.idDAI = doctorAccountInformation._id;
-          models.doctorsPersonalInformation.update(
-            {idDAI:doctorAccountInformation._id},
-            req.body.personalInformation,
-            function (err, doctorPI) {
-              if (err) {
-                console.log(err);
-                res.send({
-                  error: {
-                    code:500,
-                    error:"SomethingWasWrongWithUs",
-                    info:"This erros happends in our servers, we will try to fix the soon as possible"
-                  }
-                });
-              }else{
-                res.send({
-                  error: null,
-                  doctorPersonalInformation: doctorPI
-                });
-              }
-            });
-        }else{
-          res.send({
-            error: {
-              code:404,
-              error:"UsernameNotFound",
-              info: "This username doesn't exist in our  database"
-            }
-          });
-        }
+          }
+        );
       });
     }else{
       resToIncorrectStructure(req,res,"personalInformation",data);    
@@ -1119,7 +1044,6 @@ exports.updateDoctorPersonalInformation = function(req, res) {
 
 
 /*Doctors TItles Information*/
-
 //get
 exports.getDoctorTitlesInformationById = function(req, res) {
   var criteria = {};
@@ -1142,7 +1066,6 @@ exports.getDoctorTitlesInformationById = function(req, res) {
     }
   });
 };
-
 exports.getDoctorsTitlesInformationByUsername = function(req, res) {
   console.log("#################### getDoctorsTitlesInformationByUsername  ####################");
   var criteria = {};
@@ -1186,7 +1109,6 @@ exports.getDoctorsTitlesInformationByUsername = function(req, res) {
     }
   });
 };
-
 //post
 exports.saveDoctorTitleInformation = function (req, res){
   testDoctorTitleInformation(req.body.titleInformation, function(testApproved,data){
@@ -1262,7 +1184,6 @@ exports.saveDoctorTitleInformation = function (req, res){
     }
   });
 };
-
 //put
 exports.updateDoctorTitleInformation = function(req, res) {
   console.log("#################### updateDoctorTitleInformation  ####################");
@@ -1323,6 +1244,7 @@ exports.updateDoctorTitleInformation = function(req, res) {
 
 
 /*Doctors Professional Information*/
+//get
 exports.getDoctorProfessionalInformationByUsername = function (req, res){
   console.log("#################### getDoctorProfessionalInformationByUsername  ####################");
   var criteria = {};
@@ -1349,7 +1271,6 @@ exports.getDoctorProfessionalInformationByUsername = function (req, res){
     }
   });
 }
-
 //post
 exports.saveDoctorProfessionalInformation = function (req, res){
   console.log("#################### saveDoctorProfessionalInformation  ####################");
@@ -1410,7 +1331,6 @@ exports.saveDoctorProfessionalInformation = function (req, res){
     }
   });
 };
-
 //put
 exports.updateDoctorProfessionalInformation = function(req, res) {
   testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){

@@ -106,12 +106,12 @@ function credentialsVerification(req, res, next){
             if(req.method == "GET"){
               next();
             }else{
-              models.doctorsAccountInformation.findOne({username: username}, function(err, doctorAI){
+              models.doctorsAccountInformation.findOne({username: req.params.username}, function(err, doctorAI){
                 if (err) {
                   console.log(err);
                   res.send(500);
                 }else if(doctorAI){
-                  console.log("DAT: "+doctorsAccessToken.idDAI);
+                  console.log("DAT: " + doctorAccessToken.idDAI);
                   if(doctorAccessToken.idDAI == doctorAI.id){
                     next();
                   }else{

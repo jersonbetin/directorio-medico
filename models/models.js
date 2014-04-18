@@ -68,33 +68,30 @@ var doctorsTitlesInformationSchema = new Schema({
 var doctorsPersonalInformationSchema = new Schema({
   idDAI: {type:Schema.Types.ObjectId, index:true, unique:true, required:true, ref: 'doctorsAccountInformation'},
   identification: {
-    type : {type: String, required:true, enum: ['TI', 'CC', 'Pasaporte']},
+    type : {type: String, required:true, enum: ['ti', 'cc', 'pasaporte']},
     number : {type : String, index : true, required:true, unique:true}
   },
-  names : {
-    first: { type: String, required:true},
-    second: { type: String}
-  },
+  names : { type: String, required:true},
   lastnames : {
     first : {type: String, required:true},
     second : {type: String, required:true}
   },
-  sex: {type: String, enum: ['Masculino', 'Femenino']},
+  sex: {type: String, enum: ['masculino', 'femenino']},
   birthdate: {type: Date, required:true},
   contactData:{
     home : {
-      city: {type: String, required:true},
-      address: {type: String, required:true}
+      city: {type: String},
+      address: {type: String}
     },
     phone:{
-      mobile : {type: String, required:true},
-      home: {type: String, required:true}
+      mobile : {type: String},
+      home: {type: String}
     }
   },
   nationality: {
     type:String, 
     required:true, 
-    enum:['Colombiano', 'Extranjero', 'Nacionalizado']
+    enum:['colombiano', 'extranjero', 'nacionalizado']
   }
 });
 
@@ -105,14 +102,9 @@ var doctorsProfessionalInformationSchema = new Schema({
     expeditionDate: {type: Date, required:true}
   },
   professionalType: {type: String, required:true},
-  isWorking:{type:String, required:true, enum:['yes', 'no']},
+  isWorking:{type:String, required:true, enum:['yes', 'no'], default:"no"},
   //jobInformation: {type:Schema.Types.ObjectId, required:true},
-  evidence: {type: String, required:true}
-});
-
-var adminsSchema = new Schema({
-  user:{type : String, required:true},
-  password:{type : String, required:true}
+  evidence: {type: String}
 });
 
 var doctorsAccessTokensSchema = new Schema({
@@ -134,5 +126,3 @@ exports.doctorsPersonalInformation = mongoose.model('doctorsPersonalInformation'
 exports.doctorsProfessionalInformation = mongoose.model('doctorsProfessionalInformation', doctorsProfessionalInformationSchema);
 exports.doctorsAccountInformation = mongoose.model('doctorsAccountInformation', doctorsAccountInformationSchema);
 exports.doctorsAccessTokens = mongoose.model('doctorsAccessTokens', doctorsAccessTokensSchema);
-
-exports.admins = mongoose.model('admins', adminsSchema);

@@ -17,7 +17,7 @@ var generateAccessToken = function(id, next){
 };
 
 function processCredentialsGrant (req, res){
-   if (req.body.email && req.body.password && req.body.clientType) {
+  if (req.body.email && req.body.password && req.body.clientType) {
     console.log(req.body.email);
     console.log(req.body.password);
     models.doctorsAccountInformation.findOne({
@@ -80,10 +80,19 @@ function processCredentialsGrant (req, res){
         });
       }
     });
+  }else{
+    res.send({
+      error: {
+        code:400,
+        error:"MissingValues",
+        info:"You have to send a email, password and clientType"
+      }
+    });
   }
 }
 
 exports.generateDoctorAccessToken = function (req, res) {
+  console.log("#################### generateDoctorAccessToken  ####################")
   if (req.header("grantType")){
     if (req.header("grantType") == "credentials"){
       processCredentialsGrant(req, res);
