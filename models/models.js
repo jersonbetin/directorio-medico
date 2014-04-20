@@ -10,6 +10,25 @@ db.once('open', function callback(){
   console.log('Database medicalDirectory');
 });
 
+// var appointmentSchema = new Schema({
+  
+// });
+
+// var calendarSchemma = new Schema({
+//   idDAI: {type:Schema.Types.ObjectId, required:true, ref: 'doctorsAccountInformation'},
+//   year: Number,
+//   months: [{
+//     month: Number,
+//     days: [{
+//       day: Number,
+//       hours: [{
+//         hour: Number,
+//         appointment: Boolean
+//       }]
+//     }]
+//   }]
+// });
+
 var universitiesSchema = new Schema({
   name : {type : String, required: true},
   department : {type : String, required: true},// traer de una tabla

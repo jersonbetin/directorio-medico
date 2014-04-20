@@ -36,22 +36,20 @@ var doctorProfessionalInformationStructure = {
     },
     "professionalType": "",
     "isWorking":"",
-    "evidence": ""
-  }
-}
-
-var jobDataDoctorStruture = {
-  "jobData":{
-    "nit": "",
-    "clinic": {
-      "name": "",
-      "location": {
-        "city": "",
-        "address": ""
-      },
-      "phone":{
-        "mobile": "",
-        "landline": ""
+    "evidence": "",
+    //If working is yes then
+    "jobInformation":{
+      "clinic": {
+        "nit": "",
+        "name": "",
+        "location": {
+          "city": "",
+          "address": ""
+        },
+        "phone":{
+          "mobile": "",
+          "landline": ""
+        }
       }
     }
   }
@@ -65,169 +63,6 @@ var doctorTitlesInformationStructure = {
     "graduationDate" : ""
   }
 }
-
-
-/* Function that verify is all data necesary for save a doctor has been send correctly*/
-var testDoctorData = function(doctorData, contentType, next) {
-  contentType = contentType || "application/json";
-  if (contentType == "application/json") {
-    var data = [];
-    var testApproved = true;
-    console.log("json");
-    if (isDefined(doctorData)) {
-      if (isDefined(doctorData.jobData)) {
-        if (isDefined(doctorData.jobData.nit)) {
-          data.push({
-            "doctorData.jobData.nit":{
-              "status": "ok",
-              "value": doctorData.jobData.nit
-            }
-          });
-        }else{
-          data.push({
-            "doctorData.jobData.nit":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-
-        if (isDefined(doctorData.jobData.clinic)) {
-          if (isDefined(doctorData.jobData.clinic.name)) {
-            data.push({
-              "doctorData.jobData.clinic.name":{
-                "status": "ok",
-                "value": doctorData.jobData.clinic.name
-              }
-            });
-          }else{
-            data.push({
-              "doctorData.jobData.clinic.name":{
-                "status": "error",
-                "info": "You must to send a value for this field"
-              }
-            });
-            testApproved=false;
-          }
-
-          if (isDefined(doctorData.jobData.clinic.location)) {
-            if (isDefined(doctorData.jobData.clinic.location.city)) {
-              data.push({
-                "doctorData.jobData.clinic.location.city":{
-                  "status": "ok",
-                  "value": doctorData.jobData.clinic.location.city
-                }
-              });
-            }else{
-              data.push({
-                "doctorData.jobData.clinic.location.city":{
-                  "status": "error",
-                  "info": "You must to send a value for this field"
-                }
-              });
-              testApproved=false;
-            }
-
-            if (isDefined(doctorData.jobData.clinic.location.address)) {
-              data.push({
-                "doctorData.jobData.clinic.location.address":{
-                  "status": "ok",
-                  "value": doctorData.jobData.clinic.location.address
-                }
-              });
-            }else{
-              data.push({
-                "doctorData.jobData.clinic.location.address":{
-                  "status": "error",
-                  "info": "You must to send a value for this field"
-                }
-              });
-              testApproved=false;
-            }
-          }else{
-            data.push({
-              "doctorData.jobData.location":{
-                "status": "error",
-                "info": "You must to send a location object"
-              }
-            });
-            testApproved=false;
-          }
-
-          if (isDefined(doctorData.jobData.clinic.phone)) {
-            if (isDefined(doctorData.jobData.clinic.phone.mobile)) {
-              data.push({
-                "doctorData.jobData.clinic.phone.mobile":{
-                  "status": "ok",
-                  "value": doctorData.jobData.clinic.phone.mobile
-                }
-              });
-            }else{
-              data.push({
-                "doctorData.jobData.clinic.phone.mobile":{
-                  "status": "error",
-                  "info": "You must to send a value for this field"
-                }
-              });
-              testApproved=false;
-            }
-
-            if (isDefined(doctorData.jobData.clinic.phone.landline)) {
-              data.push({
-                "doctorData.jobData.clinic.phone.landline":{
-                  "status": "ok",
-                  "value": doctorData.jobData.clinic.phone.landline
-                }
-              });
-            }else{
-              data.push({
-                "doctorData.jobData.clinic.phone.landline":{
-                  "status": "error",
-                  "info": "You must to send a value for this field"
-                }
-              });
-              testApproved=false;
-            }
-          }else{
-            data.push({
-              "doctorData.jobData.phone":{
-                "status": "error",
-                "info": "You must to send a phone object"
-              }
-            });
-            testApproved=false;
-          }
-        }else{
-          data.push({
-            "doctorData.jobData.clinic":{
-              "status": "error",
-              "info": "You must to send a value for this field"
-            }
-          });
-          testApproved=false;
-        }
-      }else{
-        data.push({
-          "doctorData.jobData":{
-            "status": "error",
-            "info": "You must to send a jobData object"
-          }
-        });
-        testApproved = false;
-      }
-    }else{
-      data.push({
-        "doctorData":{
-          "status": "error",
-          "info": "You must to send a doctorData object"
-        }
-      });
-      testApproved = false;
-    }
-  }
-  next(testApproved, data);
-};
 
 var testDoctorPersonalInformation = function(personalInformation, next) {
   var data = [];
@@ -535,7 +370,7 @@ var testDoctorProfessionalInformation = function(professionalInformation, next) 
   if (isDefined(professionalInformation)) {
     console.log(professionalInformation);
     if (isDefined(professionalInformation.professionalCard)) {
-    console.log(professionalInformation.professionalCard);
+      console.log(professionalInformation.professionalCard);
       if (isDefined(professionalInformation.professionalCard.number)) {
         data.push({
           "professionalInformation.professionalCard.number":{
@@ -603,6 +438,148 @@ var testDoctorProfessionalInformation = function(professionalInformation, next) 
           "value": professionalInformation.isWorking
         }
       });
+      if(professionalInformation.isWorking == "yes"){
+        if (isDefined(professionalInformation.jobInformation)) {
+          if (isDefined(professionalInformation.jobInformation.clinic)) {
+            if (isDefined(professionalInformation.jobInformation.clinic.nit)) {
+              data.push({
+                "professionalInformation.jobInformation.clinic.nit":{
+                  "status": "ok",
+                  "value": professionalInformation.jobInformation.clinic.nit
+                }
+              });
+            }else{
+              data.push({
+                "professionalInformation.jobInformation.clinic.nit":{
+                  "status": "error",
+                  "info": "You must to send a value for this field"
+                }
+              });
+              testApproved=false;
+            }
+            if (isDefined(professionalInformation.jobInformation.clinic.name)) {
+              data.push({
+                "professionalInformation.jobInformation.clinic.name":{
+                  "status": "ok",
+                  "value": professionalInformation.jobInformation.clinic.name
+                }
+              });
+            }else{
+              data.push({
+                "professionalInformation.jobInformation.clinic.name":{
+                  "status": "error",
+                  "info": "You must to send a value for this field"
+                }
+              });
+              testApproved=false;
+            }
+
+            if (isDefined(professionalInformation.jobInformation.clinic.location)) {
+              if (isDefined(professionalInformation.jobInformation.clinic.location.city)) {
+                data.push({
+                  "professionalInformation.jobInformation.clinic.location.city":{
+                    "status": "ok",
+                    "value": professionalInformation.jobInformation.clinic.location.city
+                  }
+                });
+              }else{
+                data.push({
+                  "professionalInformation.jobInformation.clinic.location.city":{
+                    "status": "error",
+                    "info": "You must to send a value for this field"
+                  }
+                });
+                testApproved=false;
+              }
+
+              if (isDefined(professionalInformation.jobInformation.clinic.location.address)) {
+                data.push({
+                  "professionalInformation.jobInformation.clinic.location.address":{
+                    "status": "ok",
+                    "value": professionalInformation.jobInformation.clinic.location.address
+                  }
+                });
+              }else{
+                data.push({
+                  "professionalInformation.jobInformation.clinic.location.address":{
+                    "status": "error",
+                    "info": "You must to send a value for this field"
+                  }
+                });
+                testApproved=false;
+              }
+            }else{
+              data.push({
+                "professionalInformation.jobInformation.location":{
+                  "status": "error",
+                  "info": "You must to send a location object"
+                }
+              });
+              testApproved=false;
+            }
+
+            if (isDefined(professionalInformation.jobInformation.clinic.phone)) {
+              if (isDefined(professionalInformation.jobInformation.clinic.phone.mobile)) {
+                data.push({
+                  "professionalInformation.jobInformation.clinic.phone.mobile":{
+                    "status": "ok",
+                    "value": professionalInformation.jobInformation.clinic.phone.mobile
+                  }
+                });
+              }else{
+                data.push({
+                  "professionalInformation.jobInformation.clinic.phone.mobile":{
+                    "status": "error",
+                    "info": "You must to send a value for this field"
+                  }
+                });
+                testApproved=false;
+              }
+
+              if (isDefined(professionalInformation.jobInformation.clinic.phone.landline)) {
+                data.push({
+                  "professionalInformation.jobInformation.clinic.phone.landline":{
+                    "status": "ok",
+                    "value": professionalInformation.jobInformation.clinic.phone.landline
+                  }
+                });
+              }else{
+                data.push({
+                  "professionalInformation.jobInformation.clinic.phone.landline":{
+                    "status": "error",
+                    "info": "You must to send a value for this field"
+                  }
+                });
+                testApproved=false;
+              }
+            }else{
+              data.push({
+                "professionalInformation.jobInformation.phone":{
+                  "status": "error",
+                  "info": "You must to send a phone object"
+                }
+              });
+              testApproved=false;
+            }
+          }else{
+            data.push({
+              "professionalInformation.jobInformation.clinic":{
+                "status": "error",
+                "info": "You must to send a value for this field"
+              }
+            });
+            testApproved=false;
+          }
+        }else{
+          data.push({
+            "professionalInformation.jobInformation":{
+              "status": "error",
+              "info": "You must to send a jobData object"
+            }
+          });
+          testApproved = false;
+        }
+      }
     }else{
       data.push({
         "professionalInformation.isWorking":{

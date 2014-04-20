@@ -20,6 +20,21 @@ block content
   h3
     a#logout_doctor(href="#") Cerrar session
 
+  div
+    table#my_calendar
+      caption Calendario   
+      thead
+        tr(matriz_row=0)
+          th Lunes 
+          th Martes  
+          th Miercoles 
+          th Jueves 
+          th Viernes 
+          th Sabado 
+          th Domingo
+      tbody#my_calendar_tbody 
+           
+
 block js_up
   script.
     //- console.log(localStorage)
@@ -30,6 +45,37 @@ block js_up
 block js
   script.
     $(document).on("ready", function(){
+    var i = 8;
+      for(i;i<18;i++){
+        var cad = "<tr matriz_row="+i+">"+
+        "<td matriz_col=1><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
+        "<td matriz_col=2> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
+        "<td matriz_col=3> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
+        "<td matriz_col=4> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
+        "<td matriz_col=5> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
+        "<td matriz_col=6> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
+        "<td matriz_col=7> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
+        "</tr>";
+        //- console.log(cad);
+        $("#my_calendar_tbody").append(cad);
+      }
+
+      $("#my_calendar").on("click", "td", function(e){
+        //- alert("click");
+      });
+
+      $("#my_calendar").on("click", "button", function(e){
+        //- alert("click");
+        //- var row = $(this).parent().attr("matriz_row");
+        //- var col = $(this).attr("matriz_col");
+        //console.log($(this).attr("class"));
+        var col = $(this).parent().parent().attr("matriz_col");
+        //- var row = $(this).parent().parent().attr("matriz_row");
+        var list = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"];
+        var hour = $(this).html();
+        console.log(list[col-1]+" "+hour);
+      });
+
       var doctorAI = {};
       function getDoctorAccountInformationSuccess(data){
         doctorAI = data.doctorAccountInformation;
@@ -106,5 +152,6 @@ block js
       });
       console.log(localStorage)
       getDoctorAccountInformation();
+
 
     }); // End of document on ready event

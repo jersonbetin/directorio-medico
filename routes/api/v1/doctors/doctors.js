@@ -31,8 +31,8 @@ function res404Code(res){
 
 var doctors = {}; 
 
-doctors.getAccountInformationById = function (id, res, next){
-  console.log("########## doctors.getAccountInformationById  ##########");
+doctors.findAccountInformationById = function (id, res, next){
+  console.log("########## doctors.findAccountInformationById  ##########");
   models.doctorsAccountInformation.findOne({_id:id}, function (err, doctorAI) {
     if (err) {
       console.log(err);
@@ -45,8 +45,8 @@ doctors.getAccountInformationById = function (id, res, next){
   });
 };
 
-doctors.getAccountInformationByUsername = function (username, res, next){
-  console.log("########## doctors.getAccountInformationByUsername  ##########");
+doctors.findAccountInformationByUsername = function (username, res, next){
+  console.log("########## doctors.findAccountInformationByUsername  ##########");
   models.doctorsAccountInformation.findOne({username:username}, function (err, doctorAI) {
     if (err) {
       console.log(err);
@@ -59,8 +59,8 @@ doctors.getAccountInformationByUsername = function (username, res, next){
   });
 };
 
-doctors.getPersonalInformationById = function (id, res, next){
-  console.log("########## doctors.getPersonalInformationById  ##########");
+doctors.findPersonalInformationById = function (id, res, next){
+  console.log("########## doctors.findPersonalInformationById  ##########");
   models.doctorsPersonalInformation.findOne({idDAI:id}, function (err, doctorPI) {
     if (err) {
       console.log(err);
@@ -73,21 +73,33 @@ doctors.getPersonalInformationById = function (id, res, next){
   });
 };
 
-doctors.getTitlesInformationById = function(id, res, next) {
-  console.log("########## doctors.getTitlesInformationById  ##########");
-  models.titleInformationDoctors.find({idDAI:id}).populate("idUniversity").exec(function (err, doctorTI) {
+doctors.findTitlesInformationById = function(id, res, next) {
+  console.log("########## doctors.findTitlesInformationById  ##########");
+  models.doctorsTitlesInformation.find({idDAI:id}).populate("idUniversity").exec(function (err, doctorTI) {
     if (err) {
       console.log(err);
       res500Code(res);
     }else if (doctorTI){
-      res.send(200, {error: null, doctorTitlesInformation: doctorTI});
-      // models.universities.findOne({_id:titleInformation.idUniversity})
+      next(doctorTI);
     }else{
       res404Code(res);
     }
   });
 };
 
+doctors.findProfessionalInformationById = function (id, res, next){
+  console.log("########## doctors.findProfessionalInformationById  ##########");
+  models.doctorsProfessionalInformation.findOne({idDAI:id}, function (err, doctorPI) {
+    if (err) {
+      console.log(err);
+      res500Code(res);
+    }else if (doctorTI){
+      next(doctorPI);
+    }else{
+      res404Code(res);
+    }
+  });
+}
 
 
 /*Doctors Account Information*/
@@ -126,7 +138,7 @@ exports.getDoctorsAccountInformation = function (req, res) {
 
 exports.getDoctorAccountInformationById = function (req, res){
   console.log("########## exports.getDoctorAccountInformationById  ##########");
-  doctors.getAccountInformationById(req.session.DAI.id,res, function(doctorAI){
+  doctors.findAccountInformationById(req.session.DAI.id,res, function(doctorAI){
     res.send({
       error:null,
       doctorAccountInformation:{
@@ -141,7 +153,7 @@ exports.getDoctorAccountInformationById = function (req, res){
 
 exports.getDoctorAccountInformationByUsername = function (req, res) {
   console.log("########## exports.getDoctorAccountInformationByUsername  ##########");
-  doctors.getAccountInformationByUsername(req.params.username,res, function(doctorAI){
+  doctors.findAccountInformationByUsername(req.params.username,res, function(doctorAI){
     res.send({
       error:null,
       doctorAccountInformation:{
@@ -217,7 +229,7 @@ exports.saveDoctorAccountInformation = function (req, res){
 //get
 exports.getDoctorPersonalInformationById = function (req, res){
   console.log("########## exports.getDoctorPersonalInformationById  ##########");
-  doctors.getPersonalInformationById(req.session.DAI.id, res, function(doctorPI){
+  doctors.findPersonalInformationById(req.session.DAI.id, res, function(doctorPI){
     console.log("datos personales:"+doctorPI);
     res.send(200, {error: null, doctorPersonalInformation: doctorPI});
   });
@@ -225,9 +237,9 @@ exports.getDoctorPersonalInformationById = function (req, res){
 
 exports.getDoctorPersonalInformationByUsername = function (req, res){  
   console.log("########## exports.getDoctorPersonalInformationByUsername  ##########");
-  doctors.getAccountInformationByUsername(req.params.username, res, function(doctorAI){
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
     console.log(doctorAI);
-    doctors.getPersonalInformationById(doctorAI._id, res, function(doctorPI){
+    doctors.findPersonalInformationById(doctorAI._id, res, function(doctorPI){
       console.log("datos personales:"+doctorPI);
       res.send(200, {error: null, doctorPersonalInformation: doctorPI});
     });
@@ -241,7 +253,7 @@ exports.saveDoctorPersonalInformation = function (req, res){
     if (testApproved) {
       console.log("Test approved");
       console.log(req.params.username);
-      doctors.getAccountInformationByUsername(req.params.username, res, function(doctorAI){
+      doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         req.body.personalInformation.idDAI = doctorAI._id;
         models.doctorsPersonalInformation.create(req.body.personalInformation, function (err, doctorPI) {
           if (err) {
@@ -275,7 +287,7 @@ exports.updateDoctorPersonalInformation = function(req, res) {
   console.log("########## exports.updateDoctorPersonalInformation  ##########");
   testDoctorPersonalInformation(req.body.personalInformation, function(testApproved,data){
     if (testApproved) {
-      doctors.getAccountInformationByUsername(req.params.username, res, function(doctorAI){
+      doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         req.body.personalInformation.idDAI = doctorAI._id;
         models.doctorsPersonalInformation.update(
           {idDAI:doctorAI._id},
@@ -304,7 +316,7 @@ exports.updateDoctorPersonalInformation = function(req, res) {
 //get
 exports.getDoctorTitlesInformationById = function(req, res) {
   console.log("########## exports.getDoctorTitlesInformationById  ##########");
-  doctors.getTitlesInformationById(req.session.DAI.id, res, function(doctorTI){
+  doctors.findTitlesInformationById(req.session.DAI.id, res, function(doctorTI){
     res.send(200, {error: null, doctorTitlesInformation: doctorTI});
   });
 };
@@ -312,8 +324,8 @@ exports.getDoctorTitlesInformationById = function(req, res) {
 exports.getDoctorsTitlesInformationByUsername = function(req, res) {
   console.log("########## exports.getDoctorsTitlesInformationByUsername  ##########");
   criteria.username=req.params.username;
-  doctors.getAccountInformationByUsername(req.params.username, res, function(doctorAI){
-    doctors.getTitlesInformationById(doctorAI.id, res, function(doctorTI){
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    doctors.findTitlesInformationById(doctorAI.id, res, function(doctorTI){
       res.send(200, {error: null, doctorTitlesInformation: doctorTI});
     });
   });
@@ -325,7 +337,7 @@ exports.saveDoctorTitleInformation = function (req, res){
   testDoctorTitleInformation(req.body.titleInformation, function(testApproved,data){
     if (testApproved) {
       console.log(req.params.username);
-      doctors.getAccountInformationByUsername(req.params.username, res, function(doctorAI){
+      doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         req.body.titleInformation.idDAI = doctorAI._id;
         models.universities.findOne({_id:req.body.titleInformation.university}, function(err, university){
           if (err) {
@@ -377,7 +389,7 @@ exports.updateDoctorTitleInformation = function(req, res) {
   console.log("########## exports.updateDoctorTitleInformation  ##########");
   testDoctorTitleInformation(req.body.titleInformation, function(testApproved,data){
     if (testApproved) {
-      doctors.getAccountInformationByUsername(req.params.username, res, function(doctorAI){
+      doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         models.universities.findOne({_id:req.body.titleInformation.university}, function(err, university){
           if (err) {
             console.log(err);
@@ -389,13 +401,7 @@ exports.updateDoctorTitleInformation = function(req, res) {
             models.doctorsTitlesInformation.update({idDAI: doctorAI._id, _id: req.params.title_id}, req.body.titleInformation, function (err, doctorTI) {
               if (err) {
                 console.log(err);
-                res.send({
-                  error: {
-                    code:500,
-                    error:"SomethingWasWrongWithUs",
-                    info:"This erros happends in our servers, we will try to fix the soon as possible"
-                  }
-                });
+                res500Code(res);
               }else{
                 res.send(200,{
                   mdStatus:{
@@ -421,137 +427,70 @@ exports.updateDoctorTitleInformation = function(req, res) {
 
 /*Doctors Professional Information*/
 //get
-exports.getDoctorProfessionalInformationByUsername = function (req, res){
-  console.log("#################### getDoctorProfessionalInformationByUsername  ####################");
-  var criteria = {};
-  var projection = {};
-  criteria.username=req.params.username;
-  models.doctorsProfessionalInformation.findOne()
-  .populate({path: "doctorsAccountInformation", match: { username: req.params.username}})
-  .exec(function (err, doctorPI) {
-    console.log("doctor personal information"+doctorPI);
-    if (err) {
-      console.log(err);
-      res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
-    }else if (doctorPI){
-      console.log("datos professionales:"+doctorPI);
-      res.send(200, {error: null, doctorProfessionalInformation: doctorPI});
-    }else{
-      res.send(200, {error: null, doctorProfessionalInformation: null});
-    }
+exports.getDoctorProfessionalInformationById = function (req, res){
+  console.log("########## exports.getDoctorProfessionalInformationById  ##########");
+  doctors.findProfessionalInformationById(req.session.DAI.id, res, function(doctorPI){
+    res.send(200, {error: null, doctorProfessionalInformation: doctorPI});
   });
 }
+
+exports.getDoctorProfessionalInformationByUsername = function (req, res){
+  console.log("########## exports.getDoctorProfessionalInformationByUsername  ##########");
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    doctors.findProfessionalInformationById(doctorAI._id, res, function(doctorPI){
+      res.send(200, {error: null, doctorProfessionalInformation: doctorPI});
+    });
+  });
+}
+
 //post
 exports.saveDoctorProfessionalInformation = function (req, res){
-  console.log("#################### saveDoctorProfessionalInformation  ####################");
+  console.log("########## exports.saveDoctorProfessionalInformation  ##########");
   testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){
     if (testApproved) {
       console.log("Test approved");
-      console.log(req.params.username);
-      models.doctorsAccountInformation.findOne({username:req.params.username}, function(err, doctorAI) {
-        if (err) {
-          console.log(err);
-          res.send({
-            error: {
-              code:500,
-              error:"SomethingWasWrongWithUs",
-              info:"This erros happends in our servers, we will try to fix the soon as possible"
-            }
-          });
-        }else if(doctorAI){
-          req.body.professionalInformation.idDAI = doctorAI._id;
-          models.doctorsProfessionalInformation.create(req.body.professionalInformation, function (err, doctorPI) {
-            if (err) {
-              if (err.code == 11000) {
-                res.send({
-                  error: {
-                    code:200,
-                    error:"ProfessionalInformationAlreadySaved",
-                    info:"This username already has an asociated personalInformation"
-                  }
-                });
-              }else{  
-                console.log(err);
-                res.send({
-                  error: {
-                    code:500,
-                    error:"SomethingWasWrongWithUs",
-                    info:"This erros happends in our servers, we will try to fix the soon as possible"
-                  }
-                });
-              }
-            }else{
+      doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+        req.body.professionalInformation.idDAI = doctorAI._id;
+        models.doctorsProfessionalInformation.create(req.body.professionalInformation, function (err, doctorPI) {
+          if (err) {
+            if (err.code == 11000) {
               res.send({
-                error: null,
-                doctorProfessionalInformation: doctorPI
+                error: {
+                  code:200,
+                  error:"ProfessionalInformationAlreadySaved",
+                  info:"This username already has an asociated personalInformation"
+                }
               });
+            }else{  
+              console.log(err);
+              res500Code(res);
             }
-          });
-        }else{
-          res.send(200,{
-            mdStatus:{
-              code:2000,
-              info: "This username doesn't exist in our  database"
-            }
-          });
-        }
+          }else{
+            res.send({error: null, doctorProfessionalInformation: doctorPI});
+          }
+        });
       });
     }else{
       resToIncorrectStructure(req,res,"professionalInformation",data);    
     }
   });
 };
+
 //put
 exports.updateDoctorProfessionalInformation = function(req, res) {
+  console.log("########## exports.updateDoctorProfessionalInformation  ##########");
   testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){
     if (testApproved) {
-      models.doctorsAccountInformation.findOne({username:req.params.username}, function(err, doctorAI) {
-        if (err) {
-          console.log(err);
-          res.send({
-            error: {
-              code:500,
-              error:"SomethingWasWrongWithUs",
-              info:"This erros happends in our servers, we will try to fix the soon as possible"
-            }
-          });
-        }else if(helpers.isDefined(doctorAI)){
-          req.body.professionalInformation.idDAI = doctorAI._id;
-          models.doctorsProfessionalInformation.update(
-            {idDAI:doctorAI._id},
-            req.body.professionalInformation,
-            function (err, doctorPI) {
-              if (err) {
-                console.log(err);
-                res.send({
-                  error: {
-                    code:500,
-                    error:"SomethingWasWrongWithUs",
-                    info:"This erros happends in our servers, we will try to fix the soon as possible"
-                  }
-                });
-              }else{
-                res.send({
-                  error: null,
-                  doctorProfessionalInformation: doctorPI
-                });
-              }
-            });
-        }else{
-          res.send({
-            error: {
-              code:404,
-              error:"UsernameNotFound",
-              info: "This username doesn't exist in our  database"
-            }
-          });
-        }
+      doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+        req.body.professionalInformation.idDAI = doctorAI._id;
+        models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, req.body.professionalInformation, function (err, doctorPI) {
+          if (err) {
+            console.log(err);
+            res500Code(res);
+          }else{
+            res.send({error: null, doctorProfessionalInformation: doctorPI });
+          }
+        });
       });
     }else{
       resToIncorrectStructure(req,res,"professionalInformation",data);    
