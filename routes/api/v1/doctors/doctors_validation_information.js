@@ -4,10 +4,7 @@ var doctorPersonalInformationStructure = {
       "type" : "",
       "number" : ""
     },
-    "names" : {
-      "first": "",
-      "second": ""
-    },
+    "names" : "",
     "lastnames" : {
       "first" : "",
       "second" : ""
@@ -124,39 +121,20 @@ var testDoctorPersonalInformation = function(personalInformation, next) {
     }
 
     if (isDefined(personalInformation.names)) {
-      if (isDefined(personalInformation.names.first)) {
-        data.push({
-          "personalInformation.names.first":{
-            "status": "ok",
-            "value": personalInformation.names.first
-          }
-        });
-      }else{
-        data.push({
-          "personalInformation.names.first":{
-            "status": "error",
-            "info": "You must to send a value for this field"
-          }
-        });
-        testApproved=false;
-      }
-
-      if (isDefined(personalInformation.names.sencond)) {
-        data.push({
-          "personalInformation.names.second":{
-            "status": "ok",
-            "value": personalInformation.names.second
-          }
-        });
-      }
+      data.push({
+        "personalInformation.names": {
+          "status": "ok",
+          "value": personalInformation.names
+        } 
+      });
     }else{
       data.push({
         "personalInformation.names":{
           "status": "error",
-          "info": "You must to send a names object"
+          "info": "You must to send a value for this field"
         }
       });
-      testApproved = false;
+      testApproved=false;
     }
 
     if (isDefined(personalInformation.lastnames)) {

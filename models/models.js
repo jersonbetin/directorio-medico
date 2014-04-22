@@ -10,24 +10,59 @@ db.once('open', function callback(){
   console.log('Database medicalDirectory');
 });
 
-// var appointmentSchema = new Schema({
-  
-// });
+var patientSchema = new Schema({
+  accountInformation: {
+    email: { type: String, required: true, unique: true},
+    username: { type: String, required: true, unique: true},
+    password: { type: String, required: true},
+    createdDate: {
+      type: Date, 
+      default: Date.now
+    } 
+  },
+  personalInformation:{
+    identification: {
+      type : {type: String, required:true, enum: ['ti', 'cc', 'pasaporte']},
+      number : {type : String, index : true, required:true, unique:true}
+    },
+    names : { type: String, required:true},
+    lastnames : {
+      first : {type: String, required:true},
+      second : {type: String, required:true}
+    },
+    sex: {type: String, enum: ['masculino', 'femenino']},
+    birthdate: {type: Date, required:true},
+    contactData:{
+      phone:{
+        mobile : {type: String},
+        home: {type: String}
+      }
+    }
+  }
+});
 
-// var calendarSchemma = new Schema({
-//   idDAI: {type:Schema.Types.ObjectId, required:true, ref: 'doctorsAccountInformation'},
-//   year: Number,
-//   months: [{
-//     month: Number,
-//     days: [{
-//       day: Number,
-//       hours: [{
-//         hour: Number,
-//         appointment: Boolean
-//       }]
-//     }]
-//   }]
-// });
+var appointmentSchema = new Schema({
+  idDAI: {type:Schema.Types.ObjectId, required:true, ref: 'doctorsAccountInformation'},
+  idPatient: {type:Schema.Types.ObjectId, required:true, ref: 'patientInformation'},
+  date: {type: Date, required:true},
+  startTIme: Number,
+  endtime: Number
+});
+
+var calendarSchemma = new Schema({
+  idDAI: {type:Schema.Types.ObjectId, required:true, ref: 'doctorsAccountInformation'},
+  year: Number,
+  months: [{
+    month: Number,
+    days: [{
+      day: Number,
+      hours: [{
+        hour: Number,
+        appointment: Boolean
+      }]
+    }]
+  }]
+});
 
 var universitiesSchema = new Schema({
   name : {type : String, required: true},
@@ -54,7 +89,7 @@ var jobInformationSchema = new Schema({
     },
     phone:{
       mobile : {type: String, default: ''},
-      landline: {type: String, required:true, default:''}
+      landline: {type: String, default:''}
     }
   }
 });
@@ -65,7 +100,7 @@ var doctorsAccountInformationSchema = new Schema({
   username: { type: String, required: true, unique: true},
   password: { type: String, required: true},
   registerState:{
-    type:String, 
+    type:String,
     required:true, 
     default: 0,
     enum:[0,1,2,3]
@@ -122,7 +157,7 @@ var doctorsProfessionalInformationSchema = new Schema({
   },
   professionalType: {type: String, required:true},
   isWorking:{type:String, required:true, enum:['yes', 'no'], default:"no"},
-  //jobInformation: {type:Schema.Types.ObjectId, required:true},
+  jobInformation: {type:Schema.Types.ObjectId, ref:"doctorsJo"},
   evidence: {type: String}
 });
 
