@@ -1,9 +1,11 @@
 'use strict'
 
+
 var models = require('../../../../models/models');
 var helpers = require('../../../../helpers/helpers');
 var isDefined = helpers.isDefined;
 var encryptString = helpers.encryptString;
+var mails = require("../libs/mails");
 require("./doctors_validation_information");
 
 
@@ -108,7 +110,7 @@ exports.getDoctorsAccountInformation = function (req, res) {
   console.log("########## exports.getDoctorsAccountInformation  ##########");
   var criteria = {};
   var projection = {};
-  if(helpers.isDefined(req.query.registerState)) {
+  if(req.query.registerState) {
     if (req.query.registerState == 0 || req.query.registerState == 1 
       || req.query.registerState == 2 || req.query.registerState == 3) {
       criteria.registerState = req.query.registerState
@@ -120,16 +122,11 @@ exports.getDoctorsAccountInformation = function (req, res) {
     console.log(criteria);
   }
 
-  console.log("fields: "+req.query.fields);
-  models.DoctorsAccountInformation.find(criteria, function (err, doctors) {
+  // console.log("fields: "+req.query.fields);
+  console.log("Por aqui");
+  models.doctorsAccountInformation.find(criteria, function (err, doctors) {
     if (err) {
-      res.send({
-        error: {
-          code:500,
-          error:"SomethingWasWrongWithUs",
-          info:"This erros happends in our servers, we will try to fix the soon as possible"
-        }
-      });
+      res500Code(res);
     }else{
       res.send(doctors);
     }
@@ -207,6 +204,15 @@ exports.saveDoctorAccountInformation = function (req, res){
           username: doctorAI.username,
           registerState: doctorAI.registerState
         };
+        var mailOptions = {
+            from: "<consulting.cordoba.service@gmail.com>", // sender address
+            to: doctorAI.email, // list of receivers
+            subject: "Bienvenido a Cosulting", // Subject line
+            text: "Te damos la bienvenida a consulting, nuestra plataforma para que realices todo lo relacionado con tus consultas medicas. Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma consultinn.com", // plaintext body
+            html: "<h1>Te damos la bienvenida a consulting.</h1><h2>Consulting es nuestra plataforma para que realices todo lo relacionado con tus consultas medicas.</h2> <p>Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma <h3><a href='http://localhost:3000'>consulting.com</a></h3>"
+          }
+
+          mails.sendMail(mailOptions);
         res.send({
           error:null,
           doctorAccountInformation:data
@@ -221,6 +227,44 @@ exports.saveDoctorAccountInformation = function (req, res){
         info: "You must to pass a email, username and password values for make this query"
       }
     });
+  }
+};
+
+//put
+exports.updateDoctorRegisterStateByUsernameFromSecretary = function (req, res){
+  if (req.body.registerState && (req.body.registerState == 0 || req.body.registerState==1 || req.body.registerState==2 || req.body.registerState==3)) {
+    doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+      doctorAI.registerState = req.body.registerState;
+      doctorAI.save(function(err, doctorAI){
+        if(err){
+          res500Code(res);
+        }else{
+          var rs = "";
+          if(doctorAI.registerState == 0){
+            rs = "Registrado pero no en estudio";
+          }else if(doctorAI.registerState == 1){
+            rs = "Registrado y en estudio";
+          }else if(doctorAI.registerState == 2){
+            rs = "Registrado y aprovado";
+          }else{
+            rs = "Registrado y no aprovado";
+          }
+          // setup e-mail data with unicode symbols
+          var mailOptions = {
+            from: "<consulting.cordoba.service@gmail.com>", // sender address
+            to: doctorAI.email, // list of receivers
+            subject: "Actualizacion del registro de estado", // Subject line
+            text: "La secretaria de salud ha actualizado tu estado de registro. Ahora tu estado de registro es: "+rs+". Por favor ingrese a la plataforma y verifique su actualizacion", // plaintext body
+            html: "<h2>La secretaria de salud ha actualizado tu estado de registro</h2>. Ahora tu estado de registro es: <strong>"+rs+"</strong>. <p>Por favor ingrese a la plataforma y verifique su actualizacion</p>"
+          }
+
+          mails.sendMail(mailOptions);
+          res.send(200);
+        }
+      });
+    });
+  }else{
+    res.send({error: "You must to send a registerState field and its value must be 0, 1, 2 or 3, please fix the request"});
   }
 };
 

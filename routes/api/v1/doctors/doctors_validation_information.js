@@ -28,8 +28,7 @@ var doctorPersonalInformationStructure = {
 var doctorProfessionalInformationStructure = {
   "professionalInformation": {
     "professionalCard": {
-      "number": "",
-      "expeditionDate": ""
+      "number": ""
     },
     "professionalType": "",
     "isWorking":"",
@@ -365,23 +364,6 @@ var testDoctorProfessionalInformation = function(professionalInformation, next) 
         });
         testApproved=false;
       } 
-
-      if (isDefined(professionalInformation.professionalCard.expeditionDate)) {
-        data.push({
-          "professionalInformation.professionalCard.expeditionDate":{
-            "status": "ok",
-            "value": professionalInformation.professionalCard.expeditionDate
-          }
-        });
-      }else{
-        data.push({
-          "professionaData.professionalCard.expeditionDate":{
-            "status": "error",
-            "info": "You must to send a value for this field"
-          }
-        });
-        testApproved=false;
-      }
     }else{
       data.push({
         "professionalInformation.professionalCard":{

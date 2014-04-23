@@ -10,7 +10,7 @@ db.once('open', function callback(){
   console.log('Database medicalDirectory');
 });
 
-var patientSchema = new Schema({
+var patientsSchema = new Schema({
   accountInformation: {
     email: { type: String, required: true, unique: true},
     username: { type: String, required: true, unique: true},
@@ -65,6 +65,7 @@ var calendarSchemma = new Schema({
 });
 
 var universitiesSchema = new Schema({
+  nit: {type : String, required: true, unique: true},
   name : {type : String, required: true},
   department : {type : String, required: true},// traer de una tabla
   city: {type : String, required: true}// traer de una tabla
@@ -100,7 +101,7 @@ var doctorsAccountInformationSchema = new Schema({
   username: { type: String, required: true, unique: true},
   password: { type: String, required: true},
   registerState:{
-    type:String,
+    type:Number,
     required:true, 
     default: 0,
     enum:[0,1,2,3]
@@ -152,8 +153,7 @@ var doctorsPersonalInformationSchema = new Schema({
 var doctorsProfessionalInformationSchema = new Schema({
   idDAI: {type:Schema.Types.ObjectId, index:true, unique:true, required:true, ref:"doctorsAccountInformation"},
   professionalCard: {
-    number: {type: String, required:true, unique:true},
-    expeditionDate: {type: Date, required:true}
+    number: {type: String, required:true, unique:true}
   },
   professionalType: {type: String, required:true},
   isWorking:{type:String, required:true, enum:['yes', 'no'], default:"no"},
@@ -180,3 +180,6 @@ exports.doctorsPersonalInformation = mongoose.model('doctorsPersonalInformation'
 exports.doctorsProfessionalInformation = mongoose.model('doctorsProfessionalInformation', doctorsProfessionalInformationSchema);
 exports.doctorsAccountInformation = mongoose.model('doctorsAccountInformation', doctorsAccountInformationSchema);
 exports.doctorsAccessTokens = mongoose.model('doctorsAccessTokens', doctorsAccessTokensSchema);
+
+
+exports.patients = mongoose.model('patients', patientsSchema);
