@@ -208,11 +208,11 @@ exports.saveDoctorAccountInformation = function (req, res){
             from: "<consulting.cordoba.service@gmail.com>", // sender address
             to: doctorAI.email, // list of receivers
             subject: "Bienvenido a Cosulting", // Subject line
-            text: "Te damos la bienvenida a consulting, nuestra plataforma para que realices todo lo relacionado con tus consultas medicas. Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma consultinn.com", // plaintext body
-            html: "<h1>Te damos la bienvenida a consulting.</h1><h2>Consulting es nuestra plataforma para que realices todo lo relacionado con tus consultas medicas.</h2> <p>Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma <h3><a href='http://localhost:3000'>consulting.com</a></h3>"
+            text: "Te damos la bienvenida a consulting, nuestra plataforma para que administres todo lo relacionado con consultas medicas. Hola"+doctorAI.username+". Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma consultinn.com", // plaintext body
+            html: "<h1>Te damos la bienvenida a consulting.</h1><h2>Consulting es nuestra plataforma para que administres todo lo relacionado con consultas medicas.</h2> <p>Hola <h3>"+doctorAI.username+".</h3>Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma <h3><a href='http://localhost:3000'>consulting.com</a></h3>"
           }
 
-          mails.sendMail(mailOptions);
+        mails.sendMail(mailOptions);
         res.send({
           error:null,
           doctorAccountInformation:data

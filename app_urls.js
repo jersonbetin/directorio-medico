@@ -4,6 +4,7 @@ var models = require('./models/models');
 var api = {};
 api.version = 'v1';
 api.doctors = require('./routes/api/'+api.version+'/doctors/doctors');
+api.patients = require('./routes/api/'+api.version+'/patients/patients');
 api.authentication = require('./routes/api/'+api.version+'/authentication');
 //console.log(api);
 
@@ -44,6 +45,7 @@ module.exports = function (app) {
   app.get('/', routes.index);
   app.get('/signup/doctors', renderTemplates.renderSigupDoctorTemplate);
   app.post('/signup/doctors', middleware.csrfValidation, api.doctors.saveDoctorAccountInformation);
+  app.post('/signup/patients', middleware.csrfValidation, api.patients.savePatientAccountInformation);
 
   app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);
@@ -91,6 +93,15 @@ module.exports = function (app) {
   app.post("/api/v1/doctors/:username/professional_information", middleware.credentialsVerification, api.doctors.saveDoctorProfessionalInformation);
   app.put("/api/v1/doctors/:username/professional_information", middleware.credentialsVerification, api.doctors.updateDoctorProfessionalInformation);
 
+
+  /* Patient Account Information */
+  app.get("/api/v1/patients", api.patients.getPatientsAccountInformation);
+  app.get("/api/v1/patients/:username/account_information", middleware.credentialsVerification, api.patients.getPatientAccountInformationByUsername);
+
+  /* Patient Personal Information */
+  app.get("/api/v1/patients/:username/personal_information", middleware.credentialsVerification, api.patients.getPatientPersonalInformationByUsername);
+  app.post("/api/v1/patients/:username/personal_information", middleware.credentialsVerification, api.patients.savePatientPersonalInformation);
+  app.put("/api/v1/patients/:username/personal_information", middleware.credentialsVerification, api.patients.updatePatientPersonalInformation);
 
 
   app.post("/api/v1/authentication/doctors/access-token/", middleware.csrfValidation, api.authentication.generateDoctorAccessToken);

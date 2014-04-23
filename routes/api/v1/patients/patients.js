@@ -1,8 +1,10 @@
 'use strict'
 
 var models = require('../../../../models/models');
-var encryptString = helpers.encryptString;
+var helpers = require('../../../../helpers/helpers');
+
 require("./patients_validation_information");
+var mails = require("../libs/mails");
 
 
 
@@ -101,7 +103,7 @@ exports.getPatientAccountInformationById = function (req, res){
 
 exports.getPatientAccountInformationByUsername = function (req, res) {
   console.log("########## exports.getPatientAccountInformationByUsername  ##########");
-  doctors.findByUsername(req.params.username, res, function(patient.accountInformation){
+  doctors.findByUsername(req.params.username, res, function(patient){
     res.send({
       error:null,
       patientAccountInformation:{
@@ -156,9 +158,18 @@ exports.savePatientAccountInformation = function (req, res){
           username: patient.accountInformation.username,
           createdDate: patient.accountInformation.createdDate
         };
+        var mailOptions = {
+          from: "<consulting.cordoba.service@gmail.com>", // sender address
+          to: patient.accountInformation.email, // list of receivers
+          subject: "Bienvenido a Cosulting", // Subject line
+          text: "Te damos la bienvenida a consulting, nuestra plataforma para que administres todo lo relacionado con consultas medicas. Hola "+patients.accountInformation.username+", es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma consultinn.com", // plaintext body
+          html: "<h1>Te damos la bienvenida a consulting.</h1><h2>Consulting es nuestra plataforma para que administres todo lo relacionado con consultas medicas.</h2> <p>Hola <h3>"+patients.accountInformation.username+".</h3>Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma <h3><a href='http://localhost:3000'>consulting.com</a></h3>"
+        }
+
+        mails.sendMail(mailOptions);
         res.send({
           error:null,
-          patient.accountInformation: data
+          patientAccountInformation: data
         });
       }
     });
