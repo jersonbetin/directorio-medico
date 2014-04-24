@@ -18,6 +18,18 @@ exports.renderSigupDoctorTemplate = function (req, res) {
   res.render('signup_doctors', {data: data});
 };
 
+exports.renderSigupPatientTemplate = function (req, res) {
+  console.log("#################### renderSigupDoctorTemplate ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  res.render('signup_patients', {data: data});
+};
+
+
 exports.renderLoginDoctorTemplate = function (req, res) {
   console.log("#################### renderLoginDoctorTemplate ####################");
   console.log("Generation csrf token");
@@ -29,6 +41,16 @@ exports.renderLoginDoctorTemplate = function (req, res) {
   res.render('login_doctors', {data: data});
 };
 
+exports.renderLoginPatientTemplate = function (req, res) {
+  console.log("#################### renderLoginPatientTemplate ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  res.render('login_patients', {data: data});
+};
 exports.renderPersonalInformation = function (req, res){
   console.log("#################### renderPersonalInformation ####################");
   console.log("Generation csrf token");

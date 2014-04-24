@@ -45,11 +45,16 @@ module.exports = function (app) {
   app.get('/', routes.index);
   app.get('/signup/doctors', renderTemplates.renderSigupDoctorTemplate);
   app.post('/signup/doctors', middleware.csrfValidation, api.doctors.saveDoctorAccountInformation);
-  app.post('/signup/patients', middleware.csrfValidation, api.patients.savePatientAccountInformation);
 
   app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);
   app.delete('/login/doctors', middleware.csrfValidation, sessions.destroyDoctorSession);
+  
+  app.get('/signup/patients', renderTemplates.renderSigupPatientTemplate);
+  app.post('/signup/patients', middleware.csrfValidation, api.patients.savePatientAccountInformation);
+  app.get('/login/patients', renderTemplates.renderLoginPatientTemplate);
+  app.post('/login/patients', middleware.csrfValidation, sessions.newPatientSession);
+  app.delete('/login/patients', middleware.csrfValidation, sessions.destroyPatientSession);
 
   app.get('/:username/personal_information', renderTemplates.renderPersonalInformation)
   app.get('/:username/professional_information', renderTemplates.renderProfessionalInformation)
@@ -105,5 +110,6 @@ module.exports = function (app) {
 
 
   app.post("/api/v1/authentication/doctors/access-token/", middleware.csrfValidation, api.authentication.generateDoctorAccessToken);
+  app.post("/api/v1/authentication/patients/access-token/", middleware.csrfValidation, api.authentication.generatePatientAccessToken);
 
 };

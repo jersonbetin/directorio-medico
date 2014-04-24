@@ -2,9 +2,9 @@
 
 var models = require('../../../../models/models');
 var helpers = require('../../../../helpers/helpers');
+var mails = require("../libs/mails");
 
 require("./patients_validation_information");
-var mails = require("../libs/mails");
 
 
 
@@ -103,7 +103,7 @@ exports.getPatientAccountInformationById = function (req, res){
 
 exports.getPatientAccountInformationByUsername = function (req, res) {
   console.log("########## exports.getPatientAccountInformationByUsername  ##########");
-  doctors.findByUsername(req.params.username, res, function(patient){
+  patients.findByUsername(req.params.username, res, function(patient){
     res.send({
       error:null,
       patientAccountInformation:{
@@ -119,13 +119,13 @@ exports.getPatientAccountInformationByUsername = function (req, res) {
 exports.savePatientAccountInformation = function (req, res){
   console.log("########## exports.savePatientAccountInformation  ##########");
   if(req.body.email && req.body.username && req.body.password){
-    models.patient.create({
+    models.patients.create({
       accountInformation: {
         email: req.body.email,
         username: req.body.username,
-        password: encryptString(req.body.password,"secret-key")
+        password: helpers.encryptString(req.body.password,"secret-key")
       }
-    }, function (err, doctorAI) {
+    }, function (err, patient) {
       if (err) {
         console.log(err);
         if (err.code==11000) {
@@ -162,8 +162,8 @@ exports.savePatientAccountInformation = function (req, res){
           from: "<consulting.cordoba.service@gmail.com>", // sender address
           to: patient.accountInformation.email, // list of receivers
           subject: "Bienvenido a Cosulting", // Subject line
-          text: "Te damos la bienvenida a consulting, nuestra plataforma para que administres todo lo relacionado con consultas medicas. Hola "+patients.accountInformation.username+", es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma consultinn.com", // plaintext body
-          html: "<h1>Te damos la bienvenida a consulting.</h1><h2>Consulting es nuestra plataforma para que administres todo lo relacionado con consultas medicas.</h2> <p>Hola <h3>"+patients.accountInformation.username+".</h3>Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma <h3><a href='http://localhost:3000'>consulting.com</a></h3>"
+          text: "Te damos la bienvenida a consulting, nuestra plataforma para que administres todo lo relacionado con consultas medicas. Hola "+patient.accountInformation.username+", es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma consultinn.com", // plaintext body
+          html: "<h1>Te damos la bienvenida a consulting.</h1><h2>Consulting es nuestra plataforma para que administres todo lo relacionado con consultas medicas.</h2> <p>Hola <h3>"+patient.accountInformation.username+".</h3>Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma <h3><a href='http://localhost:3000'>consulting.com</a></h3>"
         }
 
         mails.sendMail(mailOptions);
@@ -185,7 +185,7 @@ exports.savePatientAccountInformation = function (req, res){
 };
 
 
-/*Doctors Personal Information*/
+/*Patient Personal Information*/
 //get
 exports.getPatientPersonalInformationById = function (req, res){
   console.log("########## exports.getPatientPersonalInformationById  ##########");
@@ -199,7 +199,7 @@ exports.getPatientPersonalInformationByUsername = function (req, res){
   console.log("########## exports.getPatientPersonalInformationByUsername  ##########");
   patients.findByUsername(req.params.username, res, function(PatientPI){
     console.log("datos personales:"+patientPI);
-    res.send(200, {error: null, patientPersonalInformation: doctorPI});
+    res.send(200, {error: null, patientPersonalInformation: patientPI});
   });
 };
 

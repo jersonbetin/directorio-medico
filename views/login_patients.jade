@@ -1,0 +1,62 @@
+extends layout
+
+block content
+  input#csrf_input(type="" value="#{data.csrf}")
+  form#login_patients_form
+    input#patient_email(type="email" placeholder="Email" required)
+    input#patient_password(type="password" placeholder="Contraseña" required)
+    input#remember_me(type="checkbox" value="remember_me")
+    | No cerrar sesion
+    button#login_patient_form_button(type="sumbit") Registrar
+
+block js
+  script.
+    $(document).on("ready", function(){
+      console.log(localStorage);
+      //- alert("documento listo");
+      function loginPatientSuccess(data, textStatus, jqXHR){
+        var isChecked = $("#remember_me").is(":checked");
+        console.log(data);
+        if(data){
+          if(data.error){
+            if(data.error.error=="WrongEmailOrPassword"){
+              alert("El email o contraseña son incorrectos");
+            }
+          }else if(data.accessToken){
+            localStorage.accessToken = data.accessToken.accessToken;
+            localStorage.refreshToken = data.accessToken.refreshToken;
+            localStorage.tokenType = data.accessToken.tokenType;
+            localStorage.expirationDate = data.accessToken.expirationDate;
+            window.location.replace("/");
+          }
+        }
+        }
+
+      $("#login_patient_form_button").on('click', function(e){
+        //- alert("se activo");
+        var isChecked = $("#remember_me").is(":checked");
+        //- alert(isChecked);
+
+        var email = $("#patient_email").val();
+        var password = $("#patient_password").val();
+        if(email != "" && password != ""){
+          //- alert(email+" "+username+" "+password+" ");
+          e.preventDefault();
+          $.ajax({
+            type: "POST",
+            url:"/api/v1/authentication/patients/access-token/",
+            headers: {
+              "csrfToken": $("#csrf_input").val(),
+              "grantType" : "credentials"
+            },
+            data:{
+              email: email,
+              password: password,
+              clientType: "browser",
+              rememberMe: isChecked
+            },
+            success: loginPatientSuccess
+          });
+          }
+        }); // End of signup patient form button on click event
+      }); // End of document on ready event

@@ -1,0 +1,55 @@
+extends layout
+
+block content
+  input#csrf_input(type="" value="#{data.csrf}")
+  form#signup_doctors_form
+    input#patient_email(type="email" placeholder="Email" required)
+    input#patient_username(type="text" placeholder="Nombre de usuario" required)
+    input#patient_password(type="password" placeholder="Contraseña" required)
+    button#signup_patient_form_button(type="sumbit") Registrar
+
+block js
+  script.
+    $(document).on("ready", function(){
+      //- alert("documento listo");
+      function signupPatientSuccess(data, textStatus, jqXHR){
+        console.log(data);
+        if(data){
+          if(data.error){
+            if(data.error.error=="EmailAlreadyExist"){
+              alert("Este email ya esta registrado, por favor ingrese otro");
+            }else if(data.error.error=="UsernameAlreadyExist"){
+              alert("Este username ya esta registrado, por favor ingrese otro");
+            }
+          }else if(data.patientAccountInformation){
+            alert("Paciente registrado satisfactoriamente");
+            window.location.replace("/");
+          }
+        }
+        };
+
+      $("#signup_patient_form_button").on('click', function(e){
+        //- alert("se activo");
+        var email = $("#patient_email").val();
+        var username = $("#patient_username").val();
+        var password = $("#patient_password").val();
+        if(email != "" && username != "" && password != ""){
+          //- alert(email+" "+username+" "+password+" ");
+          e.preventDefault();
+          $.ajax({
+            type: "POST",
+            url:"/signup/patients",
+            headers: {
+              "csrfToken": $("#csrf_input").val()
+            },
+            data:{
+              email: email,
+              username: username,
+              password: password
+            },
+            success: signupPatientSuccess
+            });
+          }
+        }); // End of signup doctor form button on click event
+
+      }); // End of document on ready event

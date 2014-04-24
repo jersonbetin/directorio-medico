@@ -22,16 +22,16 @@ var patientsSchema = new Schema({
   },
   personalInformation:{
     identification: {
-      type : {type: String, required:true, enum: ['ti', 'cc', 'pasaporte']},
-      number : {type : String, index : true, required:true, unique:true}
+      type : {type: String, enum: ['ti', 'cc', 'pasaporte']},
+      number : {type : String, index : true, unique:true}
     },
-    names : { type: String, required:true},
+    names : { type: String},
     lastnames : {
-      first : {type: String, required:true},
-      second : {type: String, required:true}
+      first : {type: String},
+      second : {type: String}
     },
     sex: {type: String, enum: ['masculino', 'femenino']},
-    birthdate: {type: Date, required:true},
+    birthdate: {type: Date},
     contactData:{
       phone:{
         mobile : {type: String},
@@ -169,6 +169,14 @@ var doctorsAccessTokensSchema = new Schema({
   expirationDate: Date
 });
 
+var patientsAccessTokensSchema = new Schema({
+  idDAI: Schema.Types.ObjectId,
+  accessToken: String,
+  tokenType: {type: String, default:"bearer"},
+  refreshToken: String,
+  expirationDate: Date
+});
+
 exports.universities = mongoose.model('universities', universitiesSchema);
 exports.cities = mongoose.model('cities', citiesSchema);
 exports.jobInformation = mongoose.model('jobInformation', jobInformationSchema);
@@ -183,3 +191,4 @@ exports.doctorsAccessTokens = mongoose.model('doctorsAccessTokens', doctorsAcces
 
 
 exports.patients = mongoose.model('patients', patientsSchema);
+exports.patientsAccessTokens = mongoose.model('patientsAccessTokens', patientsAccessTokensSchema);

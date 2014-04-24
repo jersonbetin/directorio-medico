@@ -14,11 +14,19 @@ exports.index = function(req, res){
   
   if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
     console.log("render dashboard from cookie")
-    res.render('dashboard', {data: data});
+    if(req.cookies.userType == "doctor"){
+      res.render('doctors_dashboard', {data: data});
+    }else if(req.cookies.userType == "patient"){
+      res.render('patients_dashboard', {data: data});
+    }
   }else if(req.session && (req.session.isLogged == true || req.session.isLogged == 'true')){
     console.log("render dashboard from session")
     // console.log(req.session);
-    res.render('dashboard', {data: data});
+    if(req.session.userType == "doctor"){
+      res.render('doctors_dashboard', {data: data});
+    }else if(req.session.userType == "patient"){
+      res.render('patients_dashboard', {data: data});
+    }
   }else{
     res.render('index');
   }
