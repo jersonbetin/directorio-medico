@@ -41,28 +41,19 @@ var patientsSchema = new Schema({
   }
 });
 
-var appointmentSchema = new Schema({
+var calendarSchema = new Schema({
   idDAI: {type:Schema.Types.ObjectId, required:true, ref: 'doctorsAccountInformation'},
-  idPatient: {type:Schema.Types.ObjectId, required:true, ref: 'patientInformation'},
   date: {type: Date, required:true},
-  startTIme: Number,
-  endtime: Number
+  startTIme: {type: Number, required: true},
+  endTime: {type: Number, required: true},
+  isAvalible: {type: Boolean, default:true},
+  appointment: {
+    idPatient: {type:Schema.Types.ObjectId, ref: 'patient'},
+    description: String
+  }
 });
 
-var calendarSchemma = new Schema({
-  idDAI: {type:Schema.Types.ObjectId, required:true, ref: 'doctorsAccountInformation'},
-  year: Number,
-  months: [{
-    month: Number,
-    days: [{
-      day: Number,
-      hours: [{
-        hour: Number,
-        appointment: Boolean
-      }]
-    }]
-  }]
-});
+calendarSchema.index({idDAI: 1, date: 1, startTIme:1}, {unique: true});
 
 var universitiesSchema = new Schema({
   nit: {type : String, required: true, unique: true},
@@ -81,8 +72,8 @@ var professionalTypesSchema = new Schema({
 });
 
 var jobInformationSchema = new Schema({
-  nit:{type:String, required:true, unique:true, default:''},
   clinic: {
+    nit:{type:String, required:true, unique:true},
     name: {type: String, required:true, default:''},
     location: {
       city: {type: Schema.Types.ObjectId, required:true},
@@ -192,3 +183,5 @@ exports.doctorsAccessTokens = mongoose.model('doctorsAccessTokens', doctorsAcces
 
 exports.patients = mongoose.model('patients', patientsSchema);
 exports.patientsAccessTokens = mongoose.model('patientsAccessTokens', patientsAccessTokensSchema);
+
+exports.calendar = mongoose.model('calendar', calendarSchema);

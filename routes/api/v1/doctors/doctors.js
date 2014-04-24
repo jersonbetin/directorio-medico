@@ -541,3 +541,70 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
     }
   });
 };
+
+
+var _pi = null;
+var _pi2 = null;
+var _ti = null;
+function finalizar(res) {
+  if (_accountInformation && _personalInformation && _professionalInformation && _titlesInformation) {
+    var data = querystring.stringify({
+      "tIdent": _pi.identification.type,
+      "ident": _pi.identification.number,
+      "nombre": _pi.names,
+      "pApell": _pi.lastnames.first,
+      "sApell": _pi.lastnames.second,
+      "sexo": _pi.sex,
+      "fechaNac": _pi.birthdate,
+      "nacionalidad": _pi.nationality,
+      "tel": _pi.contactData.phone.home,
+      "cel": _pi.contactData.phone.mobile,
+      "muncResid": _pi.contactData.home.city,
+      "direccion": _pi.contactData.home.address,
+      "titulos": ti,
+      "nTarj": _pi2.professionalCard.number,
+      "tipoProfe": _pi2.professionalType,
+      "labora": _pi2.isWorking,
+      "nit": _pi2.jobInformation.clinic.nit,
+      "nombEmpresa": _pi2.jobInformation.clinic.name,
+      "municTrab": _pi2.jobInformation.location.city,
+      "dirEmpr": _pi2.jobInformation.location.address,
+      "telTrab": _pi2.jobInformation.phone.landline
+    });
+
+    var options = {
+      host: 'localhost',
+      port: '4000',
+      path: '/medicos',
+      method: 'POST',
+      headers : {
+        'Content-Type': 'application/json; charset=utf-8'
+      }
+    };
+
+    var httpreq = http.request(options, function (response) {
+      response.setEncoding('utf8');
+      response.on('data', function (chunk) {
+        console.log("body: " + chunk);
+      });
+      response.on('end', function() {
+        res.send(200);
+      })
+    });
+    httpreq.write(data);
+    httpreq.end();
+  }
+}
+/*Subir los datos deldoctor a la secretaria*/
+exports.uploadToSecretary = function(req, res) {
+  
+};
+
+/* Doctor Calendar*/
+exports.addDoctorSpaceDateForAppointment = function(req, res) {
+  console.log(req.body);
+  if(req.body.date && req.body.startTime && req.body.endTime){
+    
+  }
+  res.send(200);
+};

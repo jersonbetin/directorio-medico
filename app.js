@@ -37,28 +37,6 @@ if ('development' == app.get('env')) {
   app.use(app.locals.pretty = true);
 }
 
-// var options = {
-//   host: 'localhost',
-//   port: '4000',
-//   path: '/universidades',
-//   method: 'GET',
-//   headers: {
-//     'Content-Type': 'application/json; charset=utf-8'
-//   }
-// };
-
-// var request = http.request(options, function(response) {
-//   var msg = '';
-
-//   response.setEncoding('utf8');
-//   response.on('data', function(chunk) {
-//     msg += chunk;
-//   });
-//   response.on('end', function() {
-//     console.log(JSON.parse(msg));
-//   });
-// });
-// request.end();
 require("./app_urls")(app);
 
 http.createServer(app).listen(app.get('port'), function(){
