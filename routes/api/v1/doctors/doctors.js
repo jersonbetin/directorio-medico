@@ -748,7 +748,8 @@ function sendToSecretary(res) {
         path: '/medicos',
         method: 'POST',
         headers : {
-          'Content-Type': 'application/json; charset=utf-8'
+          'Content-Type': 'application/json; charset=utf-8',
+          'urlToRespond': 'http://localhost:3000/api/v1/doctors/'+_ais.username+'/account_information/register_state'
         }
       };
       var httpreq = http.request(options, function (response) {
