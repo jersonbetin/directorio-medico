@@ -83,6 +83,11 @@ module.exports = function (app) {
 
   app.put('/api/v1/doctors/:username/account_information/register_state', validateSecreatryToken, api.doctors.updateDoctorRegisterStateByUsernameFromSecretary);
 
+  /*Calendary*/
+  app.post("/api/v1/doctors/:username/spaceDateForAppointment", middleware.credentialsVerification, api.doctors.addDoctorSpaceDateForAppointment);
+  app.get("/api/v1/doctors/:username/spacesDateForAppointments", middleware.credentialsVerification, api.doctors.getDoctorSpacesForAppointmentsByUsername);
+  app.get("/api/v1/doctors/spacesDateForAppointments", middleware.credentialsVerification, api.doctors.getDoctorSpacesForAppointments);
+
   /*Doctors Personal Information*/
   app.get("/api/v1/doctors/:username/all_information", middleware.credentialsVerification, api.doctors.getDoctorInformationByUsername);
   app.post("/api/v1/doctors/:username/all_information/to_secretary", middleware.credentialsVerification, api.doctors.uploadToSecretary);
@@ -115,5 +120,6 @@ module.exports = function (app) {
 
   app.post("/api/v1/authentication/doctors/access-token/", middleware.csrfValidation, api.authentication.generateDoctorAccessToken);
   app.post("/api/v1/authentication/patients/access-token/", middleware.csrfValidation, api.authentication.generatePatientAccessToken);
+
 
 };

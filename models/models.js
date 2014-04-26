@@ -41,19 +41,25 @@ var patientsSchema = new Schema({
   }
 });
 
-var calendarSchema = new Schema({
+var doctorsCalendarSchema = new Schema({
   idDAI: {type:Schema.Types.ObjectId, required:true, ref: 'doctorsAccountInformation'},
-  date: {type: Date, required:true},
-  startTIme: {type: Number, required: true},
-  endTime: {type: Number, required: true},
-  isAvalible: {type: Boolean, default:true},
+  date: {
+    year: {type: Number, required: true},
+    month: {type: Number, required: true},
+    day: {type: Number, required: true}
+  },
+  time: {
+    start: {type: Number, required: true},
+    end: {type: Number, required: true}
+  },
+  isAvailable: {type: Boolean, default:true},
   appointment: {
     idPatient: {type:Schema.Types.ObjectId, ref: 'patient'},
     description: String
   }
 });
 
-calendarSchema.index({idDAI: 1, date: 1, startTIme:1}, {unique: true});
+doctorsCalendarSchema.index({idDAI: 1, date: 1, time:1}, {unique: true});
 
 var universitiesSchema = new Schema({
   nit: {type : String, required: true, unique: true},
@@ -184,4 +190,4 @@ exports.doctorsAccessTokens = mongoose.model('doctorsAccessTokens', doctorsAcces
 exports.patients = mongoose.model('patients', patientsSchema);
 exports.patientsAccessTokens = mongoose.model('patientsAccessTokens', patientsAccessTokensSchema);
 
-exports.calendar = mongoose.model('calendar', calendarSchema);
+exports.doctorsCalendar = mongoose.model('doctorsCalendar', doctorsCalendarSchema);

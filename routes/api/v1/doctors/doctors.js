@@ -818,10 +818,122 @@ exports.uploadToSecretary = function(req, res) {
 };
 /* Doctor Calendar*/
 
-exports.addDoctorSpaceDateForAppointment = function(req, res) {
-  console.log(req.body);
-  if(req.body.date && req.body.startTime && req.body.endTime){
-    
+
+exports.getDoctorSpacesForAppointments = function(req, res){
+  var criteria = {};
+  if(req.query.year){
+    criteria["date.year"] = req.query.year;
   }
-  res.send(200);
+  if(req.query.month){
+    criteria["date.month"] = req.query.month; 
+  }
+  if(req.query.day){
+    criteria["date.day"] = req.query.day; 
+  }
+  if(req.query.start){
+    criteria["time.start"] = req.query.start; 
+  }
+  if(req.query.isAvailable){
+    criteria["isAvailable"] = req.query.isAvailable; 
+  }
+  if(req.query.username){
+    doctors.findAccountInformationByUsername(req.query.username, res, function(doctorAI){
+      criteria["idDAI"] = doctorAI._id; 
+      models.doctorsCalendar.find(criteria, function(err, dates){
+        if (err) {
+          res500Code(res);
+        }else{
+          res.send({error:null, dates: dates});
+        }
+      });
+    });
+  }else{
+    models.doctorsCalendar.find(criteria, function(err, dates){
+      if (err) {
+        res500Code(res);
+      }else{
+        res.send({error:null, dates: dates});
+      }
+    });
+  }
+};
+
+exports.getDoctorSpacesForAppointmentsByUsername = function(req, res){
+  var criteria = {};
+  if(req.query.year){
+    criteria["date.year"] = req.query.year;
+  }
+  if(req.query.month){
+    criteria["date.month"] = req.query.month; 
+  }
+  if(req.query.day){
+    criteria["date.day"] = req.query.day; 
+  }
+  if(req.query.start){
+    criteria["time.start"] = req.query.start; 
+  }
+  if(req.query.isAvailable){
+    criteria["isAvailable"] = req.query.isAvailable; 
+  }
+
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    criteria.idDAI = doctorAI._id;
+    models.doctorsCalendar.find(criteria, function(err, dates){
+      if (err) {
+        res500Code(res);
+      }else{
+        res.send({error:null, dates: dates});
+      }
+    });
+  });
+};
+
+exports.addDoctorSpaceDateForAppointment = function(req, res) {
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    console.log(req.body);
+    if(req.body.date && req.body.time){
+      var d = new Date(req.body.date);
+      models.doctorsCalendar.findOne({
+        idDAI: doctorAI._id, 
+        "date.year" : req.body.date.year, 
+        "date.month" : req.body.date.month, 
+        "date.day" : req.body.date.day, 
+        "time.start": {$lte: req.body.time.start},
+        "time.end": {$gt: req.body.time.start}
+      }, function(err, date){
+        if (err) {
+          console.log(err);
+          res500Code(res);
+        }else{
+          if (date) {
+            console.log(date);
+            res.send("ya existe un espacio apartado ppor este doctor en esta fecha y a esta hora");
+          }else{
+            models.doctorsCalendar.create({
+              idDAI: doctorAI._id, 
+              date: {
+                year: req.body.date.year, 
+                month: req.body.date.month, 
+                day: req.body.date.day
+              },
+              time: {
+                start: req.body.time.start,
+                end: req.body.time.end
+              } 
+            }, function(err, date){
+              if (err) {
+                console.log(err);
+                res500Code(res);
+              }else{
+                console.log(date);
+                res.send(date);
+              }
+            });
+          }
+        }
+      });
+    }else{
+      res.send("you have to send a date, time");
+    }
+  });
 };
