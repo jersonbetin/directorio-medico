@@ -1,3 +1,6 @@
+var helpers = require('../../../../helpers/helpers');
+var isDefined = helpers.isDefined;
+
 var doctorPersonalInformationStructure = {
   "personalInformation" :{
     "identification": {
@@ -60,7 +63,7 @@ var doctorTitlesInformationStructure = {
   }
 }
 
-var testDoctorPersonalInformation = function(personalInformation, next) {
+exports.testDoctorPersonalInformation = function(personalInformation, next) {
   var data = [];
   var testApproved = true;
   // console.log(personalInformation);
@@ -340,14 +343,14 @@ var testDoctorPersonalInformation = function(personalInformation, next) {
   next(testApproved, data);
 };
 
-var testDoctorProfessionalInformation = function(professionalInformation, next) {
+exports.testDoctorProfessionalInformation = function(professionalInformation, next) {
   var data = [];
   var testApproved = true;
-  // console.log(personalInformation);
+  // console.log(professionalInformation);
   if (isDefined(professionalInformation)) {
-    console.log(professionalInformation);
+    // console.log(professionalInformation);
     if (isDefined(professionalInformation.professionalCard)) {
-      console.log(professionalInformation.professionalCard);
+      // console.log(professionalInformation.professionalCard);
       if (isDefined(professionalInformation.professionalCard.number)) {
         data.push({
           "professionalInformation.professionalCard.number":{
@@ -398,7 +401,7 @@ var testDoctorProfessionalInformation = function(professionalInformation, next) 
           "value": professionalInformation.isWorking
         }
       });
-      if(professionalInformation.isWorking == "yes"){
+      if(professionalInformation.isWorking == "si"){
         if (isDefined(professionalInformation.jobInformation)) {
           if (isDefined(professionalInformation.jobInformation.clinic)) {
             if (isDefined(professionalInformation.jobInformation.clinic.nit)) {
@@ -578,7 +581,7 @@ var testDoctorProfessionalInformation = function(professionalInformation, next) 
   next(testApproved, data);
 };
 
-var testDoctorTitleInformation = function(titleInformation, next) {
+exports.testDoctorTitleInformation = function(titleInformation, next) {
   var data = [];
   var testApproved = true;
   console.log(titleInformation);
@@ -662,7 +665,7 @@ var testDoctorTitleInformation = function(titleInformation, next) {
   next(testApproved, data);
 };
 
-var resToIncorrectStructure = function(req, res, structureType, data) {
+exports.resToIncorrectStructure = function(req, res, structureType, data) {
   structureType = structureType || "personalInformation"
   if (structureType=="personalInformation") {
     var structure = doctorPersonalInformationStructure;

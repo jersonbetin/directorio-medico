@@ -17,7 +17,7 @@ var generateAccessToken = function(id, next){
 };
 
 function processDoctorsCredentialsGrant (req, res){
-  console.log("Process PDC");
+  console.log("Process DCG");
   if (req.body.email && req.body.password && req.body.clientType) {
     console.log(req.body.email);
     console.log(req.body.password);
@@ -83,12 +83,67 @@ function processDoctorsCredentialsGrant (req, res){
         });
       }
     });
+  }else if(req.body.accessToken && req.body.refreshToken){
+    if (req.body.clientType=="browser" || req.body.clientType=="nativeApp"){
+      models.doctorsAccessTokens.findOne({accessToken:req.body.accessToken}, function(err, accessToken){
+        if(err){
+          res.send(500);
+        }else if(accessToken){
+          if (accessToken.refreshToken == req.body.refreshToken) {
+            generateAccessToken(accessToken.idDAI, function(at, rt, ed){
+              accessToken.accessToken = at;
+              accessToken.refreshToken = rt;
+              accessToken.expirationDate = ed;
+              accessToken.save(function(err, doctorsAccessToken) {
+                if (err) {
+                  console.log(err);
+                  res.send({error:500});
+                }else{
+                  if (req.body.clientType=="browser"){
+                    if(req.body.rememberMe == 'true' || req.body.rememberMe == true) {
+                      console.log("Guardado en la cookie");
+                      res.cookie("isLogged", true);
+                      res.cookie("userType", "doctor");
+                    }else{
+                      console.log("Guardado en la session")
+                      req.session.isLogged = true;
+                      req.session.userType = "doctor";
+                    }
+                  }
+                  res.send({
+                    error:null,
+                    accessToken:{
+                      accessToken: doctorsAccessToken.accessToken,
+                      refreshToken: doctorsAccessToken.refreshToken,
+                      tokenType: doctorsAccessToken.tokenType,
+                      expirationDate: doctorsAccessToken.expirationDate
+                    }
+                  });
+                }
+              });
+            });
+          }else{
+            res.send("refreshToken not valid")
+          }
+        }else{
+          res.send("accessToken not found");
+        }
+      });
+    }else{
+      res.send({
+        error: {
+          code:400,
+          error:"BadRequest",
+          info:"The clientType value you have sent is wrong, please send a [browser | nativeApp]"
+        }
+      });
+    }
   }else{
     res.send({
       error: {
         code:400,
         error:"MissingValues",
-        info:"You have to send a email, password and clientType"
+        info:"You have to send a email, password and clientType or you have to send a accessToken and refreshToken in the body of request"
       }
     });
   }
@@ -174,7 +229,7 @@ function processPatientsCredentialsGrant (req, res){
 exports.generateDoctorAccessToken = function (req, res) {
   console.log("#################### generateDoctorAccessToken  ####################")
   if (req.header("grantType")){
-    if (req.header("grantType") == "credentials"){
+    if (req.header("grantType") == "credentials" || req.header("grantType") == "refreshToken"){
       processDoctorsCredentialsGrant(req, res);
     }else{
       console.log("grantType != credentials");
@@ -182,7 +237,7 @@ exports.generateDoctorAccessToken = function (req, res) {
         error: {
           code:400,
           error:"WrongGrantType",
-          info:"You must to send a grantType with 'credentials' string in the request header"
+          info:"You must to send a grantType with 'credentials or refreshToken' string in the request header"
         }
       });  
     }

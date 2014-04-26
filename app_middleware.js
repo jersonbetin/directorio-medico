@@ -1,14 +1,18 @@
 var models = require('./models/models');
+var helpers = require('./helpers/helpers');
 
 exports.csrfValidation = function (req, res, next){
   console.log("#################### CSRF VALIDATION  ####################")
   if(req.header("Host") == "localhost:3000"){
-    if (req.session) {
+    if (helpers.isDefined(req.session)) {
       console.log(req.session.csrf);
       console.log(req.header("csrfToken"));
-      if(req.session.csrf == req.header("csrfToken")){
+      if(helpers.isDefined(req.session.csrf) && req.session.csrf == req.header("csrfToken")){
           console.log("Si se encontro un CSRF token")
           next();
+      }else if(req.header("applicationToken") == "POSTMANAplicationToken"){
+        console.log("csrfTokenPOSTMAN sent");
+        next();
       }else{
         console.log("Origen valido pero el csrf token no");
         res.send("Origen valido pero el csrf token no");

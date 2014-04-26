@@ -76,7 +76,7 @@ var jobInformationSchema = new Schema({
     nit:{type:String, required:true, unique:true},
     name: {type: String, required:true, default:''},
     location: {
-      city: {type: Schema.Types.ObjectId, required:true},
+      city: {type: String, required:true},
       address: {type: String, required:true, default:''}
     },
     phone:{
@@ -147,8 +147,8 @@ var doctorsProfessionalInformationSchema = new Schema({
     number: {type: String, required:true, unique:true}
   },
   professionalType: {type: String, required:true},
-  isWorking:{type:String, required:true, enum:['yes', 'no'], default:"no"},
-  jobInformation: {type:Schema.Types.ObjectId, ref:"doctorsJo"},
+  isWorking:{type:String, required:true, enum:['si', 'no'], default:"no"},
+  jobInformation: {type:Schema.Types.ObjectId, ref:"jobInformation"},
   evidence: {type: String}
 });
 

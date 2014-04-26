@@ -6,7 +6,7 @@ var helpers = require('../../../../helpers/helpers');
 var isDefined = helpers.isDefined;
 var encryptString = helpers.encryptString;
 var mails = require("../libs/mails");
-require("./doctors_validation_information");
+var validations = require("./doctors_validation_information");
 
 
 
@@ -91,11 +91,11 @@ doctors.findTitlesInformationById = function(id, res, next) {
 
 doctors.findProfessionalInformationById = function (id, res, next){
   console.log("########## doctors.findProfessionalInformationById  ##########");
-  models.doctorsProfessionalInformation.findOne({idDAI:id}, function (err, doctorPI) {
+  models.doctorsProfessionalInformation.findOne({idDAI:id}).populate("jobInformation").exec(function (err, doctorPI) {
     if (err) {
       console.log(err);
       res500Code(res);
-    }else if (doctorTI){
+    }else if (doctorPI){
       next(doctorPI);
     }else{
       res404Code(res);
@@ -293,7 +293,7 @@ exports.getDoctorPersonalInformationByUsername = function (req, res){
 //post
 exports.saveDoctorPersonalInformation = function (req, res){
   console.log("########## exports.saveDoctorPersonalInformation  ##########");
-  testDoctorPersonalInformation(req.body.personalInformation, function(testApproved,data){
+  validations.testDoctorPersonalInformation(req.body.personalInformation, function(testApproved,data){
     if (testApproved) {
       console.log("Test approved");
       console.log(req.params.username);
@@ -321,7 +321,7 @@ exports.saveDoctorPersonalInformation = function (req, res){
         });
       });
     }else{
-      resToIncorrectStructure(req,res,"personalInformation",data);    
+      validations.resToIncorrectStructure(req,res,"personalInformation",data);    
     }
   });
 };
@@ -329,7 +329,7 @@ exports.saveDoctorPersonalInformation = function (req, res){
 //put
 exports.updateDoctorPersonalInformation = function(req, res) {
   console.log("########## exports.updateDoctorPersonalInformation  ##########");
-  testDoctorPersonalInformation(req.body.personalInformation, function(testApproved,data){
+  validations.testDoctorPersonalInformation(req.body.personalInformation, function(testApproved,data){
     if (testApproved) {
       doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         req.body.personalInformation.idDAI = doctorAI._id;
@@ -350,7 +350,7 @@ exports.updateDoctorPersonalInformation = function(req, res) {
         );
       });
     }else{
-      resToIncorrectStructure(req,res,"personalInformation",data);    
+      validations.resToIncorrectStructure(req,res,"personalInformation",data);    
     }
   });
 };
@@ -378,7 +378,7 @@ exports.getDoctorsTitlesInformationByUsername = function(req, res) {
 //post
 exports.saveDoctorTitleInformation = function (req, res){
   console.log("########## exports.saveDoctorTitleInformation  ##########");
-  testDoctorTitleInformation(req.body.titleInformation, function(testApproved,data){
+  validations.testDoctorTitleInformation(req.body.titleInformation, function(testApproved,data){
     if (testApproved) {
       console.log(req.params.username);
       doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
@@ -423,7 +423,7 @@ exports.saveDoctorTitleInformation = function (req, res){
         });
       });
     }else{
-      resToIncorrectStructure(req,res,"titleInformation", data);    
+      validations.resToIncorrectStructure(req,res,"titleInformation", data);    
     }
   });
 };
@@ -431,7 +431,7 @@ exports.saveDoctorTitleInformation = function (req, res){
 //put
 exports.updateDoctorTitleInformation = function(req, res) {
   console.log("########## exports.updateDoctorTitleInformation  ##########");
-  testDoctorTitleInformation(req.body.titleInformation, function(testApproved,data){
+  validations.testDoctorTitleInformation(req.body.titleInformation, function(testApproved,data){
     if (testApproved) {
       doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         models.universities.findOne({_id:req.body.titleInformation.university}, function(err, university){
@@ -463,7 +463,7 @@ exports.updateDoctorTitleInformation = function(req, res) {
         });
       });
     }else{
-      resToIncorrectStructure(req,res,"titleInformation",data);    
+      validations.resToIncorrectStructure(req,res,"titleInformation",data);    
     }
   });
 };
@@ -490,32 +490,91 @@ exports.getDoctorProfessionalInformationByUsername = function (req, res){
 //post
 exports.saveDoctorProfessionalInformation = function (req, res){
   console.log("########## exports.saveDoctorProfessionalInformation  ##########");
-  testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){
+  console.log(req.body.professionalInformation);
+  validations.testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){
     if (testApproved) {
       console.log("Test approved");
       doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         req.body.professionalInformation.idDAI = doctorAI._id;
-        models.doctorsProfessionalInformation.create(req.body.professionalInformation, function (err, doctorPI) {
-          if (err) {
-            if (err.code == 11000) {
-              res.send({
-                error: {
-                  code:200,
-                  error:"ProfessionalInformationAlreadySaved",
-                  info:"This username already has an asociated personalInformation"
+        if(req.body.professionalInformation.isWorking == "si"){
+          models.jobInformation.create(req.body.professionalInformation.jobInformation, function(err, ji){
+            if (err) {
+              if (err.code == 11000) {
+                models.jobInformation.findOne({"clinic.nit": req.body.professionalInformation.jobInformation.clinic.nit}, function(err, ji){
+                  if(err){
+                    res500Code(res);
+                  }else{
+                    req.body.professionalInformation.jobInformation = ji._id;
+                    models.doctorsProfessionalInformation.create(req.body.professionalInformation, function (err, doctorPI) {
+                      if (err) {
+                        if (err.code == 11000) {
+                          res.send({
+                            error: {
+                              code:200,
+                              error:"ProfessionalInformationAlreadySaved",
+                              info:"This username already has an asociated personalInformation for udate use PUT instead POST"
+                            }
+                          });
+                        }else{  
+                          console.log(err);
+                          res500Code(res);
+                        }
+                      }else{
+                        res.send({error: null, doctorProfessionalInformation: doctorPI});
+                      }
+                    });
+                  }
+                });
+              }else{  
+                console.log(err);
+                res500Code(res);
+              }
+            }else{
+              req.body.professionalInformation.jobInformation = ji._id;
+              models.doctorsProfessionalInformation.create(req.body.professionalInformation, function (err, doctorPI) {
+                if (err) {
+                  if (err.code == 11000) {
+                    res.send({
+                      error: {
+                        code:200,
+                        error:"ProfessionalInformationAlreadySaved",
+                        info:"This username already has an asociated personalInformation for udate use PUT instead POST"
+                      }
+                    });
+                  }else{  
+                    console.log(err);
+                    res500Code(res);
+                  }
+                }else{
+                  res.send({error: null, doctorProfessionalInformation: doctorPI});
                 }
               });
-            }else{  
-              console.log(err);
-              res500Code(res);
             }
-          }else{
-            res.send({error: null, doctorProfessionalInformation: doctorPI});
-          }
-        });
+          })          
+        }else{
+          req.body.personalInformation.jobInformation = null;
+          models.doctorsProfessionalInformation.create(req.body.professionalInformation, function (err, doctorPI) {
+            if (err) {
+              if (err.code == 11000) {
+                res.send({
+                  error: {
+                    code:200,
+                    error:"ProfessionalInformationAlreadySaved",
+                    info:"This username already has an asociated personalInformation"
+                  }
+                });
+              }else{  
+                console.log(err);
+                res500Code(res);
+              }
+            }else{
+              res.send({error: null, doctorProfessionalInformation: doctorPI});
+            }
+          });
+        }
       });
     }else{
-      resToIncorrectStructure(req,res,"professionalInformation",data);    
+      validations.resToIncorrectStructure(req,res,"professionalInformation",data);    
     }
   });
 };
@@ -523,21 +582,62 @@ exports.saveDoctorProfessionalInformation = function (req, res){
 //put
 exports.updateDoctorProfessionalInformation = function(req, res) {
   console.log("########## exports.updateDoctorProfessionalInformation  ##########");
-  testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){
+  validations.testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){
     if (testApproved) {
       doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         req.body.professionalInformation.idDAI = doctorAI._id;
-        models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, req.body.professionalInformation, function (err, doctorPI) {
-          if (err) {
-            console.log(err);
-            res500Code(res);
-          }else{
-            res.send({error: null, doctorProfessionalInformation: doctorPI });
-          }
-        });
+        if(req.body.professionalInformation.isWorking == "si"){
+          models.jobInformation.create(req.body.professionalInformation.jobInformation, function(err, ji){
+            if (err) {
+              console.log("#########################");
+              console.log(err);
+              if (err.code == 11000) {
+                models.jobInformation.findOne({"clinic.nit": req.body.professionalInformation.jobInformation.clinic.nit}, function(err, ji){
+                  if(err){
+                    res500Code(res);
+                  }else{
+                    console.log(ji);
+                    req.body.professionalInformation.jobInformation = ji._id;
+                    models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, req.body.professionalInformation, function (err, doctorPI) {
+                      if (err) {
+                        console.log(err);
+                        res500Code(res);
+                      }else{
+                        res.send({error: null, doctorProfessionalInformation: "updated successfully" });
+                      }
+                    });
+                  }
+                });
+              }else{  
+                console.log(err);
+                res500Code(res);
+              }
+            }else{
+              req.body.professionalInformation.jobInformation = ji._id;
+              models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, req.body.professionalInformation, function (err, doctorPI) {
+                if (err) {
+                  console.log(err);
+                  res500Code(res);
+                }else{
+                  res.send({error: null, doctorProfessionalInformation: "updated successfully" });
+                }
+              });
+            }
+          })           
+        }else{
+          req.body.professionalInformation.jobInformation = null;
+          models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, req.body.professionalInformation, function (err, doctorPI) {
+            if (err) {
+              console.log(err);
+              res500Code(res);
+            }else{
+              res.send({error: null, doctorProfessionalInformation: "updated successfully"});
+            }
+          });
+        }
       });
     }else{
-      resToIncorrectStructure(req,res,"professionalInformation",data);    
+      validations.resToIncorrectStructure(req,res,"professionalInformation",data);    
     }
   });
 };

@@ -68,6 +68,7 @@ module.exports = function (app) {
   app.get("/api/v1/doctors", api.doctors.getDoctorsAccountInformation);
   app.get("/api/v1/doctors/:username/account_information", middleware.credentialsVerification, api.doctors.getDoctorAccountInformationByUsername);
 
+  // url qu permite que la secretaria cambie el estado de registro de un doctor
   function validateSecreatryToken (req, res, next){
     if(req.header("secretaryToken")){
       if ( req.header("secretaryToken") == "healthSecretrySecretToken") {
