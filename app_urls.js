@@ -84,6 +84,9 @@ module.exports = function (app) {
   app.put('/api/v1/doctors/:username/account_information/register_state', validateSecreatryToken, api.doctors.updateDoctorRegisterStateByUsernameFromSecretary);
 
   /*Doctors Personal Information*/
+  app.get("/api/v1/doctors/:username/all_information", middleware.credentialsVerification, api.doctors.getDoctorInformationByUsername);
+  app.post("/api/v1/doctors/:username/all_information/to_secretary", middleware.credentialsVerification, api.doctors.uploadToSecretary);
+
   app.get("/api/v1/doctors/:username/personal_information", middleware.credentialsVerification, api.doctors.getDoctorPersonalInformationByUsername);
   app.post("/api/v1/doctors/:username/personal_information", middleware.credentialsVerification, api.doctors.saveDoctorPersonalInformation);
   app.put("/api/v1/doctors/:username/personal_information", middleware.credentialsVerification, api.doctors.updateDoctorPersonalInformation);

@@ -643,64 +643,180 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
 };
 
 
+var _ai = null;
 var _pi = null;
 var _pi2 = null;
 var _ti = null;
 function finalizar(res) {
-  if (_accountInformation && _personalInformation && _professionalInformation && _titlesInformation) {
-    var data = querystring.stringify({
-      "tIdent": _pi.identification.type,
-      "ident": _pi.identification.number,
-      "nombre": _pi.names,
-      "pApell": _pi.lastnames.first,
-      "sApell": _pi.lastnames.second,
-      "sexo": _pi.sex,
-      "fechaNac": _pi.birthdate,
-      "nacionalidad": _pi.nationality,
-      "tel": _pi.contactData.phone.home,
-      "cel": _pi.contactData.phone.mobile,
-      "muncResid": _pi.contactData.home.city,
-      "direccion": _pi.contactData.home.address,
-      "titulos": ti,
-      "nTarj": _pi2.professionalCard.number,
-      "tipoProfe": _pi2.professionalType,
-      "labora": _pi2.isWorking,
-      "nit": _pi2.jobInformation.clinic.nit,
-      "nombEmpresa": _pi2.jobInformation.clinic.name,
-      "municTrab": _pi2.jobInformation.location.city,
-      "dirEmpr": _pi2.jobInformation.location.address,
-      "telTrab": _pi2.jobInformation.phone.landline
-    });
-
-    var options = {
-      host: 'localhost',
-      port: '4000',
-      path: '/medicos',
-      method: 'POST',
-      headers : {
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    };
-
-    var httpreq = http.request(options, function (response) {
-      response.setEncoding('utf8');
-      response.on('data', function (chunk) {
-        console.log("body: " + chunk);
-      });
-      response.on('end', function() {
-        res.send(200);
-      })
-    });
-    httpreq.write(data);
-    httpreq.end();
+  var data = [];
+  if (_ai && _pi && _pi2 && _ti) {
+    data.push({"doctorProfessionalInformation": _pi2});
+    data.push({"doctorAccountInformation": _ai});
+    data.push({"doctorPersonalInformation": _pi});
+    data.push({"doctorTitlesInformation": _ti});
+    res.send({error:null, information:data});
   }
 }
-/*Subir los datos deldoctor a la secretaria*/
-exports.uploadToSecretary = function(req, res) {
-  
+exports.getDoctorInformationByUsername = function(req, res) {
+  console.log("########## exports.getDoctorInformationByUsername  ##########");
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    _ai = doctorAI;
+    finalizar(res);
+  });
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    models.doctorsPersonalInformation.findOne({idDAI:doctorAI._id}, function (err, doctorPI) {
+      if (err) {
+        console.log(err);
+        res500Code(res);
+      }else if(doctorPI){
+        _pi = doctorPI;
+        finalizar(res);
+      }else{
+        _pi = {};
+        finalizar(res);
+      }
+    });
+  });
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    models.doctorsTitlesInformation.find({idDAI:doctorAI.id}).populate("idUniversity").exec(function (err, doctorTI) {
+      if (err) {
+        console.log(err);
+        res500Code(res);
+      }else{
+        _ti = doctorTI;
+        finalizar(res);
+      }
+    });
+  });
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    models.doctorsProfessionalInformation.findOne({idDAI:doctorAI.id}).populate("jobInformation").exec(function (err, doctorPI) {
+      if (err) {
+        console.log(err);
+        res500Code(res);
+      }else if (doctorPI){
+        _pi2=doctorPI;
+        finalizar(res);
+      }else{
+        _pi2={};
+        finalizar(res);
+      }
+    });
+  });
 };
 
+
+/*Subir los datos deldoctor a la secretaria*/
+var _ais = null;
+var _pis = null;
+var _pi2s = null;
+var _tis = null;
+function sendToSecretary(res) {
+  console.log("########### sendToSecretary ###############");
+  console.log(_ais);
+  console.log(_pis);
+  console.log(_tis);
+  console.log(_pi2s);
+  var data = [];
+  if (_ais && _pis && _pi2s && _tis) {
+    if(_ais != {} && _pis != {} && _pi2s != {} && _tis.length > 0){
+      var data = JSON.stringify({
+        "tIdent": _pis.identification.type,
+        "ident": _pis.identification.number,
+        "nombre": _pis.names,
+        "pApell": _pis.lastnames.first,
+        "sApell": _pis.lastnames.second,
+        "sexo": _pis.sex,
+        "fechaNac": _pis.birthdate,
+        "nacionalidad": _pis.nationality,
+        "tel": _pis.contactData.phone.home,
+        "cel": _pis.contactData.phone.mobile,
+        "muncResid": _pis.contactData.home.city,
+        "direccion": _pis.contactData.home.address,
+        "titulos": _tis,
+        "nTarj": _pi2s.professionalCard.number,
+        "tipoProfe": _pi2s.professionalType,
+        "labora": _pi2s.isWorking,
+        "nit": _pi2s.jobInformation.clinic.nit,
+        "nombEmpresa": _pi2s.jobInformation.clinic.name,
+        "municTrab": _pi2s.jobInformation.location.city,
+        "dirEmpr": _pi2s.jobInformation.location.address,
+        "telTrab": _pi2s.jobInformation.phone.landline
+      });
+      var options = {
+        host: 'localhost',
+        port: '4000',
+        path: '/medicos',
+        method: 'POST',
+        headers : {
+          'Content-Type': 'application/json; charset=utf-8'
+        }
+      };
+      var httpreq = http.request(options, function (response) {
+        response.setEncoding('utf8');
+        response.on('data', function (chunk) {
+          console.log("body: " + chunk);
+        });
+        response.on('end', function() {
+          res.send({error:null, status:"ok", info: "Data sent to secretary successfully"});
+        })
+      });
+      httpreq.write(data);
+      httpreq.end();
+    }else{
+      res.send({error:"emptyField", info:"You have some emmpty field in your information that you have to sent to secretary"});
+    }
+  }else{
+    console.log("variables no completas");
+  }
+}
+exports.uploadToSecretary = function(req, res) {
+  console.log("########## exports.uploadToSecretary  ##########");
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    _ais = doctorAI;
+    sendToSecretary(res);
+  });
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    models.doctorsPersonalInformation.findOne({idDAI:doctorAI._id}, function (err, doctorPI) {
+      if (err) {
+        console.log(err);
+        res500Code(res);
+      }else if(doctorPI){
+        _pis = doctorPI;
+        sendToSecretary(res);
+      }else{
+        _pis = {};
+        sendToSecretary(res);
+      }
+    });
+  });
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    models.doctorsTitlesInformation.find({idDAI:doctorAI.id}).populate("idUniversity").exec(function (err, doctorTI) {
+      if (err) {
+        console.log(err);
+        res500Code(res);
+      }else{
+        _tis = doctorTI;
+        sendToSecretary(res);
+      }
+    });
+  });
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    models.doctorsProfessionalInformation.findOne({idDAI:doctorAI.id}).populate("jobInformation").exec(function (err, doctorPI) {
+      if (err) {
+        console.log(err);
+        res500Code(res);
+      }else if (doctorPI){
+        _pi2s=doctorPI;
+        sendToSecretary(res);
+      }else{
+        _pi2s={};
+        sendToSecretary(res);
+      }
+    });
+  });
+};
 /* Doctor Calendar*/
+
 exports.addDoctorSpaceDateForAppointment = function(req, res) {
   console.log(req.body);
   if(req.body.date && req.body.startTime && req.body.endTime){
