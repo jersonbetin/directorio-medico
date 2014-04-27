@@ -163,7 +163,7 @@ function processPatientsCredentialsGrant (req, res){
       }else if (patient) {
         generateAccessToken(patient.id, function(accessToken, refreshToken, expirationDate){
           models.patientsAccessTokens.create({
-            idDAI: patient._id,
+            idPatient: patient._id,
             accessToken: accessToken,
             refreshToken: refreshToken,
             expirationDate: expirationDate

@@ -66,7 +66,7 @@ module.exports = function (app) {
   /*Doctors Account Information*/
   
   app.get("/api/v1/doctors", api.doctors.getDoctorsAccountInformation);
-  app.get("/api/v1/doctors/:username/account_information", middleware.credentialsVerification, api.doctors.getDoctorAccountInformationByUsername);
+  app.get("/api/v1/doctors/:username/account_information", middleware.doctorsCredentialsVerification, api.doctors.getDoctorAccountInformationByUsername);
 
   // url qu permite que la secretaria cambie el estado de registro de un doctor
   function validateSecreatryToken (req, res, next){
@@ -84,38 +84,39 @@ module.exports = function (app) {
   app.put('/api/v1/doctors/:username/account_information/register_state', validateSecreatryToken, api.doctors.updateDoctorRegisterStateByUsernameFromSecretary);
 
   /*Calendary*/
-  app.post("/api/v1/doctors/:username/spaceDateForAppointment", middleware.credentialsVerification, api.doctors.addDoctorSpaceDateForAppointment);
-  app.get("/api/v1/doctors/:username/spacesDateForAppointments", middleware.credentialsVerification, api.doctors.getDoctorSpacesForAppointmentsByUsername);
-  app.get("/api/v1/doctors/spacesDateForAppointments", middleware.credentialsVerification, api.doctors.getDoctorSpacesForAppointments);
+  app.post("/api/v1/doctors/:username/spaceDateForAppointment", middleware.doctorsCredentialsVerification, api.doctors.addDoctorSpaceDateForAppointment);
+  app.get("/api/v1/doctors/:username/spacesDateForAppointments", middleware.doctorsCredentialsVerification, api.doctors.getDoctorSpacesForAppointmentsByUsername);
+  app.get("/api/v1/doctors/spacesDateForAppointments", middleware.doctorsCredentialsVerification, api.doctors.getDoctorSpacesForAppointments);
 
   /*Doctors Personal Information*/
-  app.get("/api/v1/doctors/:username/all_information", middleware.credentialsVerification, api.doctors.getDoctorInformationByUsername);
-  app.post("/api/v1/doctors/:username/all_information/to_secretary", middleware.credentialsVerification, api.doctors.uploadToSecretary);
+  app.get("/api/v1/doctors/:username/all_information", middleware.doctorsCredentialsVerification, api.doctors.getDoctorInformationByUsername);
+  app.post("/api/v1/doctors/:username/all_information/to_secretary", middleware.doctorsCredentialsVerification, api.doctors.uploadToSecretary);
 
-  app.get("/api/v1/doctors/:username/personal_information", middleware.credentialsVerification, api.doctors.getDoctorPersonalInformationByUsername);
-  app.post("/api/v1/doctors/:username/personal_information", middleware.credentialsVerification, api.doctors.saveDoctorPersonalInformation);
-  app.put("/api/v1/doctors/:username/personal_information", middleware.credentialsVerification, api.doctors.updateDoctorPersonalInformation);
+  app.get("/api/v1/doctors/:username/personal_information", middleware.doctorsCredentialsVerification, api.doctors.getDoctorPersonalInformationByUsername);
+  app.post("/api/v1/doctors/:username/personal_information", middleware.doctorsCredentialsVerification, api.doctors.saveDoctorPersonalInformation);
+  app.put("/api/v1/doctors/:username/personal_information", middleware.doctorsCredentialsVerification, api.doctors.updateDoctorPersonalInformation);
 
   /*Doctor Titles Information*/
-  app.get("/api/v1/doctors/:username/titles_information", middleware.credentialsVerification, api.doctors.getDoctorsTitlesInformationByUsername);
+  app.get("/api/v1/doctors/:username/titles_information", middleware.doctorsCredentialsVerification, api.doctors.getDoctorsTitlesInformationByUsername);
   // app.get("/api/v1/doctors/:username/titles_data/:title_id", api.doctors.getTitleDataDoctorById);
-  app.post("/api/v1/doctors/:username/titles_information", middleware.credentialsVerification, api.doctors.saveDoctorTitleInformation);
-  app.put("/api/v1/doctors/:username/titles_information/:title_id", middleware.credentialsVerification, api.doctors.updateDoctorTitleInformation);
+  app.post("/api/v1/doctors/:username/titles_information", middleware.doctorsCredentialsVerification, api.doctors.saveDoctorTitleInformation);
+  app.put("/api/v1/doctors/:username/titles_information/:title_id", middleware.doctorsCredentialsVerification, api.doctors.updateDoctorTitleInformation);
 
   /*Doctor Professional Information*/
-  app.get("/api/v1/doctors/:username/professional_information", middleware.credentialsVerification, api.doctors.getDoctorProfessionalInformationByUsername);
-  app.post("/api/v1/doctors/:username/professional_information", middleware.credentialsVerification, api.doctors.saveDoctorProfessionalInformation);
-  app.put("/api/v1/doctors/:username/professional_information", middleware.credentialsVerification, api.doctors.updateDoctorProfessionalInformation);
+  app.get("/api/v1/doctors/:username/professional_information", middleware.doctorsCredentialsVerification, api.doctors.getDoctorProfessionalInformationByUsername);
+  app.post("/api/v1/doctors/:username/professional_information", middleware.doctorsCredentialsVerification, api.doctors.saveDoctorProfessionalInformation);
+  app.put("/api/v1/doctors/:username/professional_information", middleware.doctorsCredentialsVerification, api.doctors.updateDoctorProfessionalInformation);
 
 
   /* Patient Account Information */
   app.get("/api/v1/patients", api.patients.getPatientsAccountInformation);
-  app.get("/api/v1/patients/:username/account_information", middleware.credentialsVerification, api.patients.getPatientAccountInformationByUsername);
+  app.get("/api/v1/patients/:username/account_information", middleware.patientsCredentialsVerification, api.patients.getPatientAccountInformationByUsername);
 
   /* Patient Personal Information */
-  app.get("/api/v1/patients/:username/personal_information", middleware.credentialsVerification, api.patients.getPatientPersonalInformationByUsername);
-  app.post("/api/v1/patients/:username/personal_information", middleware.credentialsVerification, api.patients.savePatientPersonalInformation);
-  app.put("/api/v1/patients/:username/personal_information", middleware.credentialsVerification, api.patients.updatePatientPersonalInformation);
+  app.get("/api/v1/patients/:username/personal_information", middleware.patientsCredentialsVerification, api.patients.getPatientPersonalInformationByUsername);
+  app.post("/api/v1/patients/:username/personal_information", middleware.patientsCredentialsVerification, api.patients.savePatientPersonalInformation);
+  app.put("/api/v1/patients/:username/personal_information", middleware.patientsCredentialsVerification, api.patients.updatePatientPersonalInformation);
+  app.post("/api/v1/patients/:username/addAppointmentToDoctor", middleware.patientsCredentialsVerification, api.patients.addAppointmentToDoctorByUsername);
 
 
   app.post("/api/v1/authentication/doctors/access-token/", middleware.csrfValidation, api.authentication.generateDoctorAccessToken);

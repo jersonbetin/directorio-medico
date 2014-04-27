@@ -27,7 +27,7 @@ exports.csrfValidation = function (req, res, next){
   }
 }
 
-exports.credentialsVerification = function (req, res, next){
+exports.doctorsCredentialsVerification = function (req, res, next){
   console.log("#################### CREDENTIALS VERIFICATION  ####################")
   if (req.header("accessToken")) {
     models.doctorsAccessTokens.findOne({accessToken:req.header("accessToken")}, function(err, doctorAccessToken){
@@ -96,6 +96,97 @@ exports.credentialsVerification = function (req, res, next){
         }
       }else{
         console.log("Access token not valid");
+        res.send({
+          error: {
+            code:401,
+            error:"AccessTokenNoValid",
+            info:"The accessToken have you sent doesn't exist in our database, please send another"
+          }
+        });
+      }
+    });  
+  }else{
+    console.log("Access token not sent");
+    res.send({
+      error: {
+        code:401,
+        error:"AccessTokenNotSent",
+        info:"You don't sent an accessToken"
+      }
+    });
+  }
+}
+
+exports.patientsCredentialsVerification = function (req, res, next){
+  console.log("#################### CREDENTIALS VERIFICATION  ####################")
+  if (req.header("accessToken")) {
+    models.patientsAccessTokens.findOne({accessToken:req.header("accessToken")}, function(err, patientAccessToken){
+      if (err) {
+        console.log(err);
+        res.send({error:500});
+      }else if(patientAccessToken){
+        console.log("Access token found");
+        if (Date.now() <= patientAccessToken.expirationDate) {
+          if(req.params.username == "me"){
+            console.log("Se paso el me");
+            models.patients.findOne({_id: patientAccessToken.idPatient}, function(err, patient){
+              if(err){
+                console.log("err");
+                res.send(500);
+              }else if(patient){
+                console.log(patient.accountInformation.username);
+                req.params.username = patient.accountInformation.username;
+                next();
+              }else{
+                console.log("doctorAccountInformation not found")
+                res.send(404);
+              }
+            });
+          }else{
+            if(req.method == "GET"){
+              next();
+            }else{
+              models.patients.findOne({"accountInformation.username": req.params.username}, function(err, patient){
+                if (err) {
+                  console.log(err);
+                  res.send(500);
+                }else if(patient){
+                  console.log(patient);
+                  console.log("PAT: " + patientAccessToken);
+                  if(patientAccessToken.idPatient == patient.id){
+                    next();
+                  }else{
+                    res.send({
+                      error: {
+                        code:401,
+                        error:"InvalidAccessToken",
+                        info:"The access token have you sent is not related to the user that you want to modify"
+                      }    
+                    });
+                  }
+                }else{
+                  res.send({
+                    error: {
+                      code:401,
+                      error:"Username not found",
+                      info:"Username not found"
+                    }    
+                  });
+                }
+              });
+            }
+          }
+        }else{
+          res.send({
+          error: {
+            code:401,
+            error:"AccessTokenExpired",
+            info:"The accessToken have you sent have expired, please get a new accessToken"
+          }
+        });
+        }
+      }else{
+        console.log("Access token not found");
         res.send({
           error: {
             code:401,

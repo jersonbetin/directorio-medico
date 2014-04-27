@@ -46,8 +46,8 @@ patients.findById = function (id, res, next){
 };
 
 patients.findByUsername = function (username, res, next){
-  console.log("########## atinets.findByUsername  ##########");
-  models.patient.findOne({"accountInformation.username":username}, function (err, patient) {
+  console.log("########## patients.findByUsername  ##########");
+  models.patients.findOne({"accountInformation.username":username}, function (err, patient) {
     if (err) {
       console.log(err);
       res500Code(res);
@@ -251,6 +251,64 @@ exports.updatePatientPersonalInformation = function(req, res) {
       });
     }else{
       resToIncorrectStructure(req,res,"personalInformation",data);    
+    }
+  });
+};
+
+exports.addAppointmentToDoctorByUsername = function(req, res) {
+  patients.findByUsername(req.params.username, res, function(patient){
+    if(req.body.idDoctor && req.body.date.year && req.body.date.month && req.body.date.day && req.body.time.start && req.body.time.end && req.body.appointment.description){
+      models.doctorsAccountInformation.findOne({_id:req.body.idDoctor}, function(err, doctorAI){
+        if (err) {
+          console.log(err);
+          res500Code(res);
+        }else if(doctorAI){
+          models.doctorsCalendar.findOne({
+            idDAI: doctorAI._id, 
+            "date.year" : req.body.date.year, 
+            "date.month" : req.body.date.month, 
+            "date.day" : req.body.date.day, 
+            "time.start": {$lte: req.body.time.start},
+            "time.end": {$gt: req.body.time.start}
+          }, function(err, date){
+            if (err) {
+              console.log(err);
+              res500Code(res);
+            }else if (date) {
+              console.log("Se encontro un lugar");
+              console.log(date);
+              if (date.isAvailable == true) {
+                console.log("El lugar esta disponible");
+                var appointment = {};
+
+                appointment.idPatient = patient._id;
+                appointment.description = req.body.appointment.description;
+                date.appointment = appointment;
+                date.isAvailable = false;
+                date.save(function(err, date){
+                  if (err) {
+                    console.log(err);
+                    res500Code(res);
+                  }else{
+                    console.log(date);
+                    res.send(date);
+                  }
+                });
+              }else{
+                console.log(date);
+                res.send("ya existe una cita apartada con este doctor en esta fecha y a esta hora");
+              }
+            }else{
+              console.log(date);
+              res.send("Este doctor no tiene un espacio disponible para una cita en esta fecha y hora");
+            }
+          });
+        }else{
+          res.send("Este idDoctor no esta asociado a ningun doctor de la base de datos");
+        }
+      });
+    }else{
+      res.send("you have to send a date, time and appointment object");
     }
   });
 };

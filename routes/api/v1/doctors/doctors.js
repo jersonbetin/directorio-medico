@@ -918,7 +918,7 @@ exports.addDoctorSpaceDateForAppointment = function(req, res) {
               },
               time: {
                 start: req.body.time.start,
-                end: req.body.time.end
+                end: req.body.time.start+0.3
               } 
             }, function(err, date){
               if (err) {
@@ -937,3 +937,4 @@ exports.addDoctorSpaceDateForAppointment = function(req, res) {
     }
   });
 };
+

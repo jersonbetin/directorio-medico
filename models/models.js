@@ -167,7 +167,7 @@ var doctorsAccessTokensSchema = new Schema({
 });
 
 var patientsAccessTokensSchema = new Schema({
-  idDAI: Schema.Types.ObjectId,
+  idPatient: Schema.Types.ObjectId,
   accessToken: String,
   tokenType: {type: String, default:"bearer"},
   refreshToken: String,
