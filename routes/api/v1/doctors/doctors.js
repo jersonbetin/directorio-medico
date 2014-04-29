@@ -395,7 +395,6 @@ exports.getDoctorTitlesInformationById = function(req, res) {
 
 exports.getDoctorsTitlesInformationByUsername = function(req, res) {
   console.log("########## exports.getDoctorsTitlesInformationByUsername  ##########");
-  criteria.username=req.params.username;
   doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
     doctors.findTitlesInformationById(doctorAI.id, res, function(doctorTI){
       res.send(200, {error: null, doctorTitlesInformation: doctorTI});
