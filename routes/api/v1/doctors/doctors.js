@@ -532,6 +532,17 @@ exports.saveDoctorProfessionalInformation = function (req, res){
                     res500Code(res);
                   }else{
                     req.body.professionalInformation.jobInformation = ji._id;
+
+                    var tmp_path = req.file.evidence.path;//ruta del archivo
+                    var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria
+                    var filename = aleatorio+""+req.file.evidence.name;//nombre del archivo mas variable aleatoria
+                    var target_path='../../../../public/doctors/PDFs/'+nombrearchivo;// hacia donde subiremos nuestro archivo dentro de nuestro servidor
+                    fs.rename(tmp_path,target_path,function (err) {//Escribimos el archivo
+                      fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
+                      });
+                    });
+                    req.body.professionalInformation.evidence = target_path;
+                    
                     models.doctorsProfessionalInformation.create(req.body.professionalInformation, function (err, doctorPI) {
                       if (err) {
                         if (err.code == 11000) {
@@ -625,6 +636,17 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
                   }else{
                     console.log(ji);
                     req.body.professionalInformation.jobInformation = ji._id;
+
+                    var tmp_path = req.file.evidence.path;//ruta del archivo
+                    var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria
+                    var filename = aleatorio+""+req.file.evidence.name;//nombre del archivo mas variable aleatoria
+                    var target_path='../../../../public/doctors/PDFs/'+nombrearchivo;// hacia donde subiremos nuestro archivo dentro de nuestro servidor
+                    fs.rename(tmp_path,target_path,function (err) {//Escribimos el archivo
+                      fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
+                      });
+                    });
+                    req.body.professionalInformation.evidence = target_path;
+
                     models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, req.body.professionalInformation, function (err, doctorPI) {
                       if (err) {
                         console.log(err);

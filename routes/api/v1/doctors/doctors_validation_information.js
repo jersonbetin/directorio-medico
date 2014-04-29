@@ -554,12 +554,24 @@ exports.testDoctorProfessionalInformation = function(professionalInformation, ne
     }
 
     if (isDefined(professionalInformation.evidence)) {
-      data.push({
-        "professionalInformation.evidence":{
-          "status": "ok",
-          "value": professionalInformation.evidence
-        }
-      });
+      var type = professionalInformation.evidence.type;//tipo del archivo
+      if(type=='application/pdf'){
+        //Si es de tipo pdf
+        data.push({
+          "professionalInformation.evidence":{
+            "status": "ok",
+            "value": professionalInformation.evidence
+          }
+        });
+      }else{
+        data.push({
+          "professionalInformation.evidence":{
+            "status": "error",
+            "info": "You must to send a PDF in this field"
+          }
+        });
+        testApproved=false;
+      }
     }else{
       data.push({
         "professionalInformation.evidence":{
