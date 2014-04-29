@@ -118,6 +118,7 @@ exports.getPatientAccountInformationByUsername = function (req, res) {
 //post
 exports.savePatientAccountInformation = function (req, res){
   console.log("########## exports.savePatientAccountInformation  ##########");
+  console.log(req.body);
   if(req.body.email && req.body.username && req.body.password){
     models.patients.create({
       accountInformation: {
@@ -284,7 +285,7 @@ exports.addAppointmentToDoctorByUsername = function(req, res) {
                 appointment.idPatient = patient._id;
                 appointment.description = req.body.appointment.description;
                 date.appointment = appointment;
-                date.isAvailable = false;
+                date.is,Available = false;
                 date.save(function(err, date){
                   if (err) {
                     console.log(err);

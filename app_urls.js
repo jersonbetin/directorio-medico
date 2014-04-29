@@ -65,7 +65,7 @@ module.exports = function (app) {
 
   /*Doctors Account Information*/
   
-  app.get("/api/v1/doctors", api.doctors.getDoctorsAccountInformation);
+  app.get("/api/v1/doctors", api.doctors.getDoctorsInformation);
   app.get("/api/v1/doctors/:username/account_information", middleware.doctorsCredentialsVerification, api.doctors.getDoctorAccountInformationByUsername);
 
   // url qu permite que la secretaria cambie el estado de registro de un doctor
@@ -121,6 +121,4 @@ module.exports = function (app) {
 
   app.post("/api/v1/authentication/doctors/access-token/", middleware.csrfValidation, api.authentication.generateDoctorAccessToken);
   app.post("/api/v1/authentication/patients/access-token/", middleware.csrfValidation, api.authentication.generatePatientAccessToken);
-
-
 };

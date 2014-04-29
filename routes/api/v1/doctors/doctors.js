@@ -106,10 +106,38 @@ doctors.findProfessionalInformationById = function (id, res, next){
 
 /*Doctors Account Information*/
 //get
+
+
+exports.getDoctorsInformation = function (req, res){
+  var criteriaPersonal = {};
+  if(req.query.name_like){
+    criteriaPersonal.names = {
+      $regex: req.query.name_like
+    }
+  }
+  if(req.query.name){
+    criteriaPersonal.names = req.query.name
+  }
+  if(req.query.city){
+    criteriaPersonal["contactData.home.city"] = req.query.name;
+  }
+  if(req.query.nationality){
+    criteriaPersonal.nationality = req.query.nationality;
+  }
+
+  models.doctorsPersonalInformation.find(criteriaPersonal).populate("idDAI").exec(function(err, doctors) {
+    if (err) {
+      console.log(err);
+      res500Code(res);
+    }else{
+      res.send(doctors);
+    }
+  });
+};
+
 exports.getDoctorsAccountInformation = function (req, res) {
   console.log("########## exports.getDoctorsAccountInformation  ##########");
   var criteria = {};
-  var projection = {};
   if(req.query.registerState) {
     if (req.query.registerState == 0 || req.query.registerState == 1 
       || req.query.registerState == 2 || req.query.registerState == 3) {

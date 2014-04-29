@@ -23,7 +23,7 @@ var patientsSchema = new Schema({
   personalInformation:{
     identification: {
       type : {type: String, enum: ['ti', 'cc', 'pasaporte']},
-      number : {type : String, index : true, unique:true}
+      number : {type : String}
     },
     names : { type: String},
     lastnames : {
