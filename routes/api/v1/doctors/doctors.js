@@ -590,7 +590,7 @@ exports.saveDoctorProfessionalInformation = function (req, res){
             }
           })          
         }else{
-          req.body.personalInformation.jobInformation = null;
+          // req.body.personalInformation.jobInformation = null;
           models.doctorsProfessionalInformation.create(req.body.professionalInformation, function (err, doctorPI) {
             if (err) {
               if (err.code == 11000) {
@@ -674,7 +674,7 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
             }
           })           
         }else{
-          req.body.professionalInformation.jobInformation = null;
+          // req.body.professionalInformation.jobInformation = null;
           models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, req.body.professionalInformation, function (err, doctorPI) {
             if (err) {
               console.log(err);
