@@ -325,6 +325,7 @@ exports.saveDoctorPersonalInformation = function (req, res){
     if (testApproved) {
       console.log("Test approved");
       console.log(req.params.username);
+      console.log(req.body);
       doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         req.body.personalInformation.idDAI = doctorAI._id;
         models.doctorsPersonalInformation.create(req.body.personalInformation, function (err, doctorPI) {
@@ -338,6 +339,7 @@ exports.saveDoctorPersonalInformation = function (req, res){
                 }
               });
             }else{  
+              console.log(err);
               res500Code(res);
             }
           }else{
