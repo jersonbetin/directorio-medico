@@ -800,7 +800,8 @@ function sendToSecretary(res) {
         method: 'POST',
         headers : {
           'Content-Type': 'application/json; charset=utf-8',
-          'urlToRespond': 'http://localhost:3000/api/v1/doctors/'+_ais.username+'/account_information/register_state'
+          'urlToRespond': 'http://localhost:3000/api/v1/doctors/'+_ais.username+'/account_information/register_state',
+          'sentFrom': "medicalDirectory"
         }
       };
       var httpreq = http.request(options, function (response) {
