@@ -62,17 +62,19 @@ var doctorsCalendarSchema = new Schema({
 doctorsCalendarSchema.index({idDAI: 1, date: 1, time:1}, {unique: true});
 
 var universitiesSchema = new Schema({
-  nit: {type : String, required: true, unique: true},
-  name : {type : String, required: true},
+  _id: String,
+  name: {type : String, required: true},
   department : {type : String, required: true},// traer de una tabla
   city: {type : String, required: true}// traer de una tabla
 });
 
 var citiesSchema = new Schema({
+  _id: String,
   name : {type: String, required: true}
 });
 
 var professionalTypesSchema = new Schema({
+  _id: String,
   type : {type : String, required: true},
   description: {type : String, default:''}
 });
@@ -82,7 +84,7 @@ var jobInformationSchema = new Schema({
     nit:{type:String, required:true, unique:true},
     name: {type: String, required:true, default:''},
     location: {
-      city: {type: String, required:true},
+      city: {type: String, required:true, ref: "cities"},
       address: {type: String, required:true, default:''}
     },
     phone:{
@@ -113,7 +115,7 @@ var doctorsTitlesInformationSchema = new Schema({
   idDAI: {type:Schema.Types.ObjectId, required:true, ref: 'doctorsAccountInformation'},
   title : {type : String, required: true},
   description : {type: String, defaul:''},
-  idUniversity : { type: Schema.Types.ObjectId, ref: 'universities' },
+  idUniversity : { type: String, ref: 'universities' },
   graduationDate : {type: Date, required:true}
 });
 
