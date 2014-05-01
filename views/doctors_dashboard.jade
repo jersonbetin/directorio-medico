@@ -1,38 +1,71 @@
 extends layout
 
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li.active
+        a() 
+          i.fa.fa-bars
+          |  Dashboard
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
+          i.fa.fa-info-circle
+          |   Mi informacion
+          b.caret
+        ul.dropdown-menu
+          li
+            a(href="/me/personal_information")
+              i.fa.fa-star
+              |   Personal
+          li
+            a(href="/me/professional_information")
+              i.fa.fa-star
+              |  Profesional
+          li
+            a(href="/me/titles_information")
+              i.fa.fa-star
+              |  Titulos
+      li
+        a#logout_doctor(href="#")
+          i.fa.fa-sign-out
+          |  Cerrar session
+
 block content
-  h1 dashboard
-  h2#username_h2 username: 
-  h2 Verificar en secretaria de salud
-  form
-    label Cedula: 
-    input#identification(type="text", placeholder="cedula")
-    input#verify_identification_button(type="submit" value="verificar y llenar datos")
-  div#datos_de_secretaria
+  .container.general-content
+    .row
+      .col-lg-8
+        .page-header.title-header
+          h2#username_h2 username: 
+        h2 Verificar en secretaria de salud
+        form
+          label Cedula: 
+          input#identification(type="text", placeholder="cedula")
+          input#verify_identification_button(type="submit", value="verificar y llenar datos")
+        div#datos_de_secretaria
 
-  input#csrf_input(type="hidden" value="#{data.csrf}")
-  h3
-    a(href="/me/personal_information") Mi Informacion Personal
-  h3  
-    a(href="/me/professional_information") Mi Informacion profesional
-  h3  
-    a(href="/me/titles_information") Mis Titulos
-  h3
-    a#logout_doctor(href="#") Cerrar session
-
-  div
-    table#my_calendar
-      caption Calendario   
-      thead
-        tr(matriz_row=0)
-          th Lunes 
-          th Martes  
-          th Miercoles 
-          th Jueves 
-          th Viernes 
-          th Sabado 
-          th Domingo
-      tbody#my_calendar_tbody 
+        input#csrf_input(type="hidden", value="#{data.csrf}")
+        div
+          table#my_calendar
+            caption Calendario   
+            thead
+              tr(matriz_row=0)
+                th Lunes 
+                th Martes  
+                th Miercoles 
+                th Jueves 
+                th Viernes 
+                th Sabado 
+                th Domingo
+            tbody#my_calendar_tbody 
            
 
 block js_up

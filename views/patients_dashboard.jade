@@ -2,3 +2,34 @@ extends layout
 
 block content
   h1 Patients Dashboard
+  input#csrf_input(type="", value="#{data.csrf}")
+  a#logout_patient(href="#") cerrar session
+
+block js
+  script.
+    function logoutDoctorSuccess(data, textStatus, jqXHR){
+        console.log(data);
+        if(data){
+          if(data.error){
+            console.log(error);
+          }else{
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("tokenType");
+            localStorage.removeItem("expirationDate");
+            window.location.replace("/");
+          }
+        }
+      }
+      
+      $("#logout_patient").on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+          type: "DELETE",
+          url:"/login/patients",
+          headers: {
+            "csrfToken": $("#csrf_input").val()
+          },
+          success: logoutDoctorSuccess
+        });
+      }); // End of logout doctor on click event

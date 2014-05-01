@@ -1,49 +1,141 @@
 extends layout
 
-block content
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
 
-  h1 Personal Information
-  form#perosnal_information_form
-    input#csrf_input(type="text" value="#{data.csrf}")
-    label(for="first_name_input") Primer nombre: 
-    input(type="text", id="first_name_input", placeholder="Primer nombre", required)
-    label(for="second_name_input") Segundo nombre: 
-    input(type="text" id="second_name_input" placeholder="Segundo nombre" required)
-    label(for="first_lastname_input") Primer apellido: 
-    input(type="text" id="first_lastname_input" placeholder="Primer apellido" required)
-    label(for="second_lastname_input") Segundo apellido: 
-    input(type="text" id="second_lastname_input" placeholder="Segundo apellido" required)
-    label(for="identification_type_select") Tipo de identification: 
-    select(id="identification_type_select")
-      option(value="CC") Cedula de ciudadania
-      option(value="TI") Targeta de identidad
-      option(value="Pasaporte") Pasaporte
-    label(for="identification_number_input") Numero de identificacion: 
-    input(type="text" id="identification_number_input" placeholder="Numero de identificacion" required)
-    label(for="sex_select") Sexo:
-    select(id="sex_select")
-      option(value="Masculino") Masculino
-      option(value="Femenino") Femenino    
-    label(for="birthdate_input") Fecha de nacimiento
-    input(type="date" id="birthdate_input" placeholder="Fecha de nacimiento" required)
-    label(for="home_city_input") Ciudad de residencia:
-    input(type="text" id="home_city_input" placeholder="Ciudad de residencia" required)
-    label(for="home_address_input") Direccion de residencia:
-    input(type="text" id="home_address_input" placeholder="Direccion de residencia:" required)
-    label(for="mobile_input") Numeros de celular: 
-    input(type="text" id="mobile_input" placeholder="Celular" required)
-    label(for="landline_input") Numero de telefono fijo: 
-    input(type="text" id="landline_input" placeholder="Fijo" required)
-    label(for="nationality_input") Nacionalidad:
-    select(id="nationality_select")
-      option(value="Colombiano") Colombiano
-      option(value="Extranjero") Extranjero
-      option(value="Nacionalizado") Nacionalizado
-    button(type="submit" id="button_save_personal_information_form") Guardar
-  h3
-    a(href="/") Home
-  h3
-    a#logout_doctor(href="#") Cerrar session
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li
+        a(href="/") 
+          i.fa.fa-bars
+          |  Dashboard
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
+          i.fa.fa-info-circle
+          |   Mi informacion
+          b.caret
+        ul.dropdown-menu
+          li.active
+            a()
+              i.fa.fa-star
+              |   Personal
+          li
+            a(href="/me/professional_information")
+              i.fa.fa-star
+              |  Profesional
+          li
+            a(href="/me/titles_information")
+              i.fa.fa-star
+              |  Titulos
+      li
+        a#logout_doctor(href="#")
+          i.fa.fa-sign-out
+          |  Cerrar session
+
+
+block content
+  .container.general-content
+    .row
+      .col-lg-12
+        .page-header.title-header
+          h1 Personal Information
+      .col-lg-9
+        form#perosnal_information_form
+          input#csrf_input(type="hidden", value="#{data.csrf}")
+          table.table
+            .form-group
+              tr
+                td
+                  label(for="first_name_input" , class="control-label") Primer nombre:
+                td
+                  input(type="text", id="first_name_input", class="form-control", placeholder="Primer nombre", required)
+                td
+                  label(for="second_name_input", class="control-label") Segundo nombre: 
+                td
+                  input(type="text", id="second_name_input", class="form-control" , placeholder="Segundo nombre", required)
+            .form-group
+              tr
+                td
+                  label(for="first_lastname_input", class="control-label") Primer apellido: 
+                td
+                  input(type="text", id="first_lastname_input", class="form-control" , placeholder="Primer apellido", required)
+                td
+                  label(for="second_lastname_input", class="control-label") Segundo apellido: 
+                td
+                  input(type="text", id="second_lastname_input", class="form-control" , placeholder="Segundo apellido", required)
+            .form-group
+              tr
+                td
+                  label(for="identification_type_select", class="control-label") Tipo de identification:
+                td
+                  select(id="identification_type_select", class="form-control" )
+                    option(value="cc") Cedula de ciudadania
+                    option(value="ti") Tarjeta de identidad
+                    option(value="pasaporte") Pasaporte
+                td
+                  label(for="identification_number_input", class="control-label") Numero de identificacion: 
+                td
+                  input(type="text", id="identification_number_input", class="form-control" , placeholder="Numero de identificacion", required)
+            .form-group
+              tr
+                td
+                  label(for="sex_select", class="control-label") Sexo:
+                td
+                  select(id="sex_select", class="form-control" )
+                    option(value="masculino") Masculino
+                    option(value="femenino") Femenino
+                td
+                  label(for="birthdate_input", class="control-label") Fecha de nacimiento
+                td
+                  input(type="date", id="birthdate_input", class="form-control" , placeholder="Fecha de nacimiento", required)
+            .form-group
+              tr
+                td
+                  label(for="home_city_input", class="control-label") Ciudad de residencia:
+                td
+                  input(type="text", id="home_city_input", class="form-control" , placeholder="Ciudad de residencia", required)
+                td
+                  label(for="home_address_input", class="control-label") Direccion de residencia:
+                td
+                  input(type="text", id="home_address_input", class="form-control" , placeholder="Direccion de residencia:", required)
+            .form-group
+              tr
+                td
+                  label(for="mobile_input", class="control-label") Numeros de celular: 
+                td
+                  input(type="text", id="mobile_input", class="form-control" , placeholder="Celular", required)
+                td
+                  label(for="landline_input", class="control-label") Numero de telefono fijo: 
+                td
+                  input(type="text", id="landline_input", class="form-control" , placeholder="Fijo", required)
+            .form-group
+              tr
+                td
+                  label(for="nationality_input", class="control-label") Nacionalidad:
+                td
+                  select(id="nationality_select", class="form-control" )
+                    option(value="colombiano") Colombiano
+                    option(value="extranjero") Extranjero
+                    option(value="nacionalizado") Nacionalizado
+                td
+                td
+            .form-group
+              tr
+                td
+                td
+                  button.btn.btn-primary.col-lg-12(type="submit", id="button_save_personal_information_form") Guardar
+                td
+                   button.btn.btn-default.col-lg-12(type="reset") Borrar
+                td
+      .col-lg-3
+        img(src="/images/personal.png", alt="", style="width:100%;")
 
 
 block js
@@ -154,14 +246,24 @@ block js
           },
           success: function(data){
             console.log(data);
+            var cumple = new Date(data.doctorPersonalInformation.birthdate);
+            var day = ("0" + cumple.getDate()).slice(-2);
+            var month = ("0" + (cumple.getMonth() + 1)).slice(-2);
+            var fechaCumple = cumple.getFullYear()+"-"+(month)+"-"+(day) ;
             if(data.doctorPersonalInformation){
               //- console.log(data.doctorPersonalInformation);
               $("#first_name_input").val(data.doctorPersonalInformation.names.first);
               $("#second_name_input").val(data.doctorPersonalInformation.names.second);
               $("#first_lastname_input").val(data.doctorPersonalInformation.lastnames.first);
               $("#second_lastname_input").val(data.doctorPersonalInformation.lastnames.second);
+              $("#identification_type_select option").filter(function (){
+                  return $(this).val()==data.doctorPersonalInformation.identification.type;
+                }).prop('selected', true);
+              $("#sex_select option").filter(function (){
+                  return $(this).val()==data.doctorPersonalInformation.sex;
+                }).prop('selected', true);
               $("#identification_number_input").val(data.doctorPersonalInformation.identification.number);
-              $("#birthdate_input").val(data.doctorPersonalInformation.birthdate);
+              $("#birthdate_input").val(fechaCumple);
               $("#home_city_input").val(data.doctorPersonalInformation.contactData.home.city);
               $("#home_address_input").val(data.doctorPersonalInformation.contactData.home.address);
               $("#mobile_input").val(data.doctorPersonalInformation.contactData.phone.mobile);

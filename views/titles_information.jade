@@ -1,25 +1,105 @@
 extends layout
 
-block content
-  h1 Mis titulos
-  div#table_titles_information
-    table.table.table-bordered.table-hover.table-condensed
-      caption 
-      thead
-        tr
-          th Titulo
-          th Descripcion
-          th Fecha de graduacion
-          th Universidad
-          th Ciudad
-          th Departamento
-      tbody#table_titles_body
-        
-  h3
-    a(href="/") Home
-  h3
-    a#logout_doctor(href="#") Cerrar session
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/less/titles_doctor/titles.css')
 
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li
+        a(href="/") 
+          i.fa.fa-bars
+          |  Dashboard
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
+          i.fa.fa-info-circle
+          |   Mi informacion
+          b.caret
+        ul.dropdown-menu
+          li
+            a(href="/me/personal_information")
+              i.fa.fa-star
+              |   Personal
+          li
+            a(href="/me/professional_information")
+              i.fa.fa-star
+              |  Profesional
+          li.active
+            a()
+              i.fa.fa-star
+              |  Titulos
+          li
+            a(href="/me/register_end")
+              i.fa.fa-star
+              |  finalizar registro
+      li
+        a#logout_doctor(href="#")
+          i.fa.fa-sign-out
+          |  Cerrar session
+
+block content
+  .container.general-content
+    .row
+      .col-lg-12
+        .page-header.title-header
+          h1 Mis titulos
+      .col-lg-9
+        table.table
+            form#save_title_information
+                  .form-group
+                    tr
+                      td
+                        label.control-label.col-sm-12(for="titulo") Nombres titulo:
+                      td
+                        input.form-control(type="text", name="titulo", id="titulo", Placeholder="Ingrese nombre del titulo", required)
+                      td
+                        label.control-label.col-sm-12(for="fechaObtencion") fecha Obtencion:
+                      td
+                        input.form-control(type="date", name="fechaObtencion", id="fechaObtencion", Placeholder="Ingrese fecha de optencion", required)
+                  .form-group
+                    tr
+                      td
+                        label.control-label.col-sm-12(for="universidad") Universidad:
+                      td(colspan="3")
+                        #content_universidad
+                    tr
+                      td
+                        label.control-label.col-sm-12(for="descripcion") Descripcion:
+                      td(colspan="3")
+                        textarea.form-control(name="descripcion", id="descripcion")
+                  .form-group
+                    .col-sm-offset-2.col-sm-10
+                      tr
+                        td
+                        td
+                          button.btn.btn-primary.input-form.col-lg-12(type="submit", id="add_titulo") Agregar
+                        td
+                          button.btn.btn-default.input-form.col-lg-12(type="reset", id="Clear") Borrar
+                        td
+
+      .col-lg-3
+        img(src="/images/Diploma.png", alt="", style="width:100%;")
+    .row
+      .col-lg-12
+        div#table_titles_information
+          table.table.table-bordered.table-hover.table-condensed
+            caption  Titulos Registrados
+            thead
+              tr
+                th Titulo
+                th Descripcion
+                th Fecha de graduacion
+                th Universidad
+                th Ciudad
+                th Departamento
+            tbody#table_titles_body
 
 block js
   script.
@@ -38,6 +118,21 @@ block js
           }
         }
       }
+
+      $(function (){
+        $.ajax({
+            method:'get',
+            url:'/universidad',
+            success:function(data){
+              var select = '<select class="form-control" name="universidad" id="universidad">'
+                for(var i=0; i<data.universidades.length;i++){
+                    select+='<option value="'+data.universidades[i]._id+'">'+data.universidades[i].name+'</option>'
+                }
+                    select += '</select>'
+                document.getElementById('content_universidad').innerHTML=select;
+            }
+          });
+      });
       
       $("#logout_doctor").on('click', function(e){
         e.preventDefault();
@@ -51,75 +146,38 @@ block js
         });
       }); // End of logout doctor on click event
 
-      //- $("#button_save_personal_information_form").on("click", function(e) {
-      //-   console.log($(this).html());
-      //-   var requestType = "POST";
-      //-   if($(this).html() == "Actualizar"){
-      //-     console.log("Si es Actualizar");
-      //-     requestType = "PUT";
-      //-   }
-      //-   var firstName = $("#first_name_input").val();
-      //-   var secondName = $("#second_name_input").val();
-      //-   var firstLastname = $("#first_lastname_input").val();
-      //-   var secondLastname = $("#second_lastname_input").val();
-      //-   var identificationType = $("#identification_type_select").val();
-      //-   var identificationNumber = $("#identification_number_input").val();
-      //-   var birthdate = $("#birthdate_input").val();
-      //-   var sex = $("#sex_select").val();
-      //-   var homeCity = $("#home_city_input").val();
-      //-   var homeAddress = $("#home_address_input").val();
-      //-   var mobile = $("#mobile_input").val();
-      //-   var landline = $("#landline_input").val();
-      //-   var nationality = $("#nationality_select").val();
-      //-   console.log("Datos:",firstName,secondName,firstLastname,secondLastname,identificationType,identificationNumber, birthdate, sex, homeCity, homeAddress, mobile, landline, nationality);
-      //-   if(firstName != "" && secondName != "" && firstLastname != "" && secondLastname != "" && identificationType != "" && identificationNumber != "" && birthdate != "" && sex != "" && homeCity != "" && homeAddress != "" && mobile != "" &&  landline != "" && nationality != ""){
-      //-     console.log("se pasaron todos los datos");
-      //-     e.preventDefault();
-      //-     var personalInformation = {
-      //-       "identification": {
-      //-         "type" : identificationType,
-      //-         "number" : identificationNumber
-      //-       },
-      //-       "names" : {
-      //-         "first": firstName,
-      //-         "second": secondName
-      //-       },
-      //-       "lastnames" : {
-      //-         "first" : firstLastname,
-      //-         "second" : secondLastname
-      //-       },
-      //-       "sex": sex,
-      //-       "birthdate": birthdate,
-      //-       "contactData":{
-      //-         "home" : {
-      //-           "city": homeCity,
-      //-           "address": homeAddress
-      //-         },
-      //-         "phone":{
-      //-           "mobile" : mobile,
-      //-           "home": landline
-      //-         }
-      //-       },
-      //-       "nationality": nationality
-      //-     }
-      //-     //- console.log(personalInformation);
-      //-     $.ajax({
-      //-       type: requestType,
-      //-       url:"/api/v1/doctors/me/personal_information?errors=verbose",
-      //-       headers: {
-      //-         "accessToken": localStorage.accessToken
-      //-       },
-      //-       data:{
-      //-         personalInformation: personalInformation
-      //-       },
-      //-       success: function(data){
-      //-         console.log(data);
-      //-       }
-      //-     });
-      //-   }else{
-      //-     console.log("No se pasaron todos los datos")
-      //-   }
-      //- });
+      $('#add_titulo').on('click', function(e){
+          var nombre_titulo=$('#titulo').val();
+          var fecha_title = $('#fechaObtencion').val();
+          var universidad_title = $('#universidad').val();
+          var descripcion_title = $('#descripcion').val();
+          if(nombre_titulo!="" && fecha_title!="" && universidad_title!="" && descripcion_title!=""){
+            console.log("se pasaron todos los datos");
+            e.preventDefault();
+            var titleInformation={
+                "title" : nombre_titulo,
+                "description" :descripcion_title ,
+                "university" : universidad_title,
+                "graduationDate" : fecha_title
+            }
+            $.ajax({
+                method:'Post',
+                url:"/api/v1/doctors/me/titles_information?errors=verbose",
+                headers: {
+                  "accessToken": localStorage.accessToken
+                },
+                data:{
+                  titleInformation:titleInformation
+                },
+                success:function(data){
+                  console.log(data);
+                  window.location.replace('/me/titles_information');
+                }
+              });
+          }else{
+            console.log("No se pasaron todos los datos")
+          }
+        });
 
       function getDoctorTitlesInformation(){
         $.ajax({
@@ -132,7 +190,11 @@ block js
             if(data.doctorTitlesInformation){
               //- console.log(data.doctorPersonalInformation);
               for(var i=0; i<data.doctorTitlesInformation.length; i++){
-                var cadena = "<tr><td>"+data.doctorTitlesInformation[i].title+"</td><td>"+data.doctorTitlesInformation[i].description+"</td><td>"+data.doctorTitlesInformation[i].graduationDate+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.name+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.city+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.department+"</td></tr>"
+                var fecha=new Date(data.doctorTitlesInformation[i].graduationDate);
+                var day = ("0" + fecha.getDate()).slice(-2);
+                var month = ("0" + (fecha.getMonth() + 1)).slice(-2);
+                var graduationDate = (day)+"-"+(month)+"-"+fecha.getFullYear();
+                var cadena = "<tr><td>"+data.doctorTitlesInformation[i].title+"</td><td>"+data.doctorTitlesInformation[i].description+"</td><td>"+graduationDate+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.name+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.city+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.department+"</td></tr>"
                 $("#table_titles_body").append(cadena);
                 //- console.log(data.doctorTitlesInformation[i]);
               }

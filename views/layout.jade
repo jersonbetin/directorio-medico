@@ -2,11 +2,109 @@ doctype html
 html
   head
     title Directorio Medico
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    block css
+    block meta
+      meta(charset='utf-8')
+      meta(name='description', content='')
+      meta(name='viewport', content='width=device-width')
+
+      link(rel='stylesheet', href='/stylesheets/css/slider.css')
+      link(rel='stylesheet', href='/stylesheets/css/font-awesome.css')
+      link(rel='stylesheet', href='/stylesheets/less/bootstrap/bootstrap.css')
+    block  css
     block js_up
   body
-    block content
+      block header
+        .container
+          .row.cssw
+            .col-lg-12
+              .callbacks_container
+                ul.rslides#slider4
+                  li.content-slider
+                    img(src="/images/slider1.png", alt="")
+                    div(class="caption")
+                      ul
+                        li
+                          a(href="#")
+                            img(src="/images/facebook.png", alt="") 
+                            span Facebook
+                        li
+                          a(href="#")
+                            img(src="/images/twitter.png", alt="") 
+                            span Twitter
+                         li
+                          a(href="#")
+                            img(src="/images/contact.png", alt="") 
+                            span Contactenos
+                  li.content-slider
+                    img(src="/images/slider2.jpg", alt="")
+                    div(class="caption")
+                      ul
+                        li
+                          a(href="#")
+                            img(src="/images/facebook.png", alt="") 
+                            span Facebook
+                        li
+                          a(href="#")
+                            img(src="/images/twitter.png", alt="") 
+                            span Twitter
+                         li
+                          a(href="#")
+                            img(src="/images/contact.png", alt="") 
+                            span Contactenos
+                  li.content-slider
+                    img(src="/images/slider3.png", alt="")
+                    div(class="caption")
+                      ul
+                        li
+                          a(href="#")
+                            img(src="/images/facebook.png", alt="") 
+                            span Facebook
+                        li
+                          a(href="#")
+                            img(src="/images/twitter.png", alt="") 
+                            span Twitter
+                         li
+                          a(href="#")
+                            img(src="/images/contact.png", alt="") 
+                            span Contactenos
+            .col-lg-12
+              .navbar.navbar-default(role="navigation")
+                .container
+                  block nav
+                    .navbar-header
 
-    script(src="/javascripts/jquery-2.1.0.min.js")
-    block js
+
+
+      block content
+
+      block footer
+        .container
+            .modal-footer.panel-footer
+              .text-center 
+                p
+                  |Copyright © 2013 Consulting Todos los derechos reservados.
+                  br
+                  |CONSULTORIO MEDICO
+                  br
+                  |Sahagun- Cordoba-Colombia 
+
+  script(src="/javascripts/bootstrap/jquery.js")
+  script(src="/javascripts/bootstrap/bootstrap.js")
+  script(src="/javascripts/responsiveslides.min.js")
+  script.
+    $(function(){
+        $("#slider4").responsiveSlides({
+            auto: true,
+            pager: false,
+            nav: false,
+            speed: 3000,
+            namespace: "callbacks",
+            before: function () {
+              $('.events').append("<li>before event fired.</li>");
+            },
+            after: function () {
+              $('.events').append("<li>after event fired.</li>");
+            }
+          });
+      });
+block js

@@ -1,13 +1,101 @@
 extends layout
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/less/login/login.css')
+
+
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li
+        a(href="/")
+          i.fa.fa-home
+          |  Inicio
+      li
+        a(href="#")
+          i.fa.fa-search
+          |  Consultar Medicos
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown")
+          i.fa.fa-pencil-square
+          |   Registrarse
+          b.caret
+        ul.dropdown-menu
+          li
+            a(href="/signup/doctors")
+              i.fa.fa-user-md
+              |   Medico
+          li
+            a(href="/signup/patients")
+              i.fa.fa-user
+              |  Paciente
+      li.active
+        a()
+          i.fa.fa-sign-in
+          |  Iniciar Session
 
 block content
-  input#csrf_input(type="" value="#{data.csrf}")
-  form#login_doctors_form
-    input#doctor_email(type="email" placeholder="Email" required)
-    input#doctor_password(type="password" placeholder="Contraseña" required)
-    input#remember_me(type="checkbox" value="remember_me")
-    | No cerrar sesion
-    button#login_doctor_form_button(type="sumbit") Registrar
+  .container.general-content
+    .row
+      .col-lg-6
+        input#csrf_input(type="hidden", value="#{data.csrf}")
+        form#login_doctors_form.form-horizontal.form-externos
+          fieldset
+            .title-header
+              h2 Login medico
+            .form-group
+              #alert-email-doctor.alert-danger.alertas
+                p El email o contraseña del doctor son incorrectos
+            .form-group
+              img.doctor-login(src="/images/doctor-icon.png", alt="")
+            .form-group
+              label(for="doctor_email", class="col-lg-3 control-label") Emal:
+              .col-lg-9
+                input#doctor_email(type="email", class="form-control", placeholder="Email del doctor", required)
+            .form-group
+              label(for="doctor_password", class="col-lg-3 control-label") Contraseña:
+              .col-lg-9
+                input#doctor_password(type="password" , class="form-control", placeholder="Contraseña del doctor", required)
+            .form-group
+              .col-lg-9.col-lg-offset-3
+                input#remember_me(type="checkbox", value="remember_me")
+                |  No cerrar sesion
+            .form-group
+              .col-lg-10.col-lg-offset-2
+                button#login_doctor_form_button.btn.btn-primary.col-lg-5(type="sumbit") Registrar
+                button(type="reset", class="btn btn-default col-lg-5") Limpiar
+      .col-lg-6
+        form#login_patients_form.form-horizontal.form-externos
+          fieldset
+            .title-header
+              h2 Login paciente
+            .form-group
+              #alert-email-paciente.alert-danger.alertas
+                p El email o contraseña del paciente son incorrectos
+            .form-group
+              img.doctor-login(src="/images/Patient-icon.png", alt="")
+            .form-group
+              label(for="doctor_email", class="col-lg-3 control-label") Emal:
+              .col-lg-9
+                input#patient_email(type="email", class="form-control", placeholder="Email del paciente", required)
+            .form-group
+              label(for="doctor_password", class="col-lg-3 control-label") Contraseña:
+              .col-lg-9
+                input#patient_password(type="password" , class="form-control", placeholder="Contraseña del paciente", required)
+            .form-group
+              .col-lg-9.col-lg-offset-3
+                input#remember_me_patient(type="checkbox", value="remember_me")
+                |  No cerrar sesion
+            .form-group
+              .col-lg-10.col-lg-offset-2
+                button#login_patient_form_button.btn.btn-primary.col-lg-5(type="sumbit") Registrar
+                button(type="reset", class="btn btn-default col-lg-5") Limpiar
 
 block js
   script.
@@ -59,4 +147,50 @@ block js
           });
           }
         }); // End of signup doctor form button on click event
+
+      function loginPatientSuccess(data, textStatus, jqXHR){
+        var isChecked = $("#remember_me_patient").is(":checked");
+        console.log(data);
+        if(data){
+          if(data.error){
+            if(data.error.error=="WrongEmailOrPassword"){
+              alert("El email o contraseña son incorrectos");
+            }
+          }else if(data.accessToken){
+            localStorage.accessToken = data.accessToken.accessToken;
+            localStorage.refreshToken = data.accessToken.refreshToken;
+            localStorage.tokenType = data.accessToken.tokenType;
+            localStorage.expirationDate = data.accessToken.expirationDate;
+            window.location.replace("/");
+          }
+        }
+      }
+
+      $("#login_patient_form_button").on('click', function(e){
+        //- alert("se activo");
+        var isChecked = $("#remember_me_patient").is(":checked");
+        //- alert(isChecked);
+
+        var email = $("#patient_email").val();
+        var password = $("#patient_password").val();
+        if(email != "" && password != ""){
+          //- alert(email+" "+username+" "+password+" ");
+          e.preventDefault();
+          $.ajax({
+            type: "POST",
+            url:"/api/v1/authentication/patients/access-token/",
+            headers: {
+              "csrfToken": $("#csrf_input").val(),
+              "grantType" : "credentials"
+            },
+            data:{
+              email: email,
+              password: password,
+              clientType: "browser",
+              rememberMe: isChecked
+            },
+            success: loginPatientSuccess
+          });
+          }
+        }); // End of signup patient form button on click event
       }); // End of document on ready event

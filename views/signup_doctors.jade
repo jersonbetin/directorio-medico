@@ -1,55 +1,131 @@
 extends layout
 
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+
+
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li
+        a(href="/")
+          i.fa.fa-home
+          |  Inicio
+      li
+        a(href="#")
+          i.fa.fa-search
+          |  Consultar Medicos
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown")
+          i.fa.fa-pencil-square
+          |   Registrarse
+          b.caret
+        ul.dropdown-menu
+          li.active
+            a()
+              i.fa.fa-user-md
+              |   Medico
+          li
+            a(href="/signup/patients")
+              i.fa.fa-user
+              |  Paciente
+      li
+        a(href="/login/doctors")
+          i.fa.fa-sign-in
+          |  Iniciar Session
+
 block content
-  input#csrf_input(type="" value="#{data.csrf}")
-  form#signup_doctors_form
-    input#doctor_email(type="email" placeholder="Email" required)
-    input#doctor_username(type="text" placeholder="Nombre de usuario" required)
-    input#doctor_password(type="password" placeholder="Contraseña" required)
-    button#signup_doctor_form_button(type="sumbit") Registrar
+  .container.general-content
+    .row
+      .col-lg-12
+        .page-header.title-header
+          h1 Bienvenido a Consulting
+      .col-lg-8
+        p.info-consulting
+          |En los últimos años ha aumentado el numero de procedimientos médicos realizados por el sector privado, en especial por médicos independientes, este auge es bueno y provechoso para la salud de los colombianos y la economía del país, pero a la vez ha generado la proliferación de clínicas  ilegales y lo que es más grave,  que personas sin la preparación medica necesaria y sin un titulo, ejerzan actividades medicas, colocando en riesgo la vida de muchas personas.
+          br
+          br
+          |Existe una gran preocupación en la población por la legalidad y seguridad de los servicios médicos que ofrecen los profesionales de forma privada en pequeñas clínicas o consultorios privados,  cuyo número va en auge, esto también, debido a las deficiencias del sistema de salud publica, que ha generado en la ciudadanía la certeza de que el medico de forma privada ofrece un mejor servicio, sin importar el costo, al fin lo que se busca es preservar la salud, aspecto esencial de la vida  que prima ante otras necesidades.
+          br
+          br
+          |Atendiendo a  la necesidad de construir un sitio, donde los profesionales independientes de la salud, puedan registrarse y hacer publico  su perfil profesional, además de  publicitar sus servicios,      
+      .col-lg-4
+        input#csrf_input(type="hidden", value="#{data.csrf}")
+        form#signup_doctors_form.form-horizontal.form-externos
+          fieldset
+            .form-group
+              #email-registrado.alert-danger.alertas
+                p Este email ya esta registrado, por favor ingrese otro
+              #user-registrado.alert-danger.alertas
+                p Este username ya esta registrado, por favor ingrese otro
+            .form-group
+              label(for="doctor_email", class="col-lg-3 control-label") Emal:
+              .col-lg-9
+                input(type="email", class="form-control", id="doctor_email", placeholder="Ingrese su email", required)
+            .form-group
+              label(for="doctor_username", class="col-lg-3 control-label") Usuario:
+              .col-lg-9
+                input(type="text", class="form-control", id="doctor_username", placeholder="Ingrese usuario", required)
+            .form-group
+              label(for="doctor_password", class="col-lg-3 control-label") Contraseña:
+              .col-lg-9
+                input(type="password", class="form-control", id="doctor_password", placeholder="Ingrese su contraseña", required)
+            .form-group
+              .col-lg-10.col-lg-offset-2
+                button#signup_doctor_form_button(type="sumbit", class="btn btn-primary col-lg-5") Registrar
+                button(type="reset", class="btn btn-default col-lg-5") Borrar
 
 block js
   script.
     $(document).on("ready", function(){
       //- alert("documento listo");
-      function signupDoctorSuccess(data, textStatus, jqXHR){
-        console.log(data);
-        if(data){
-          if(data.error){
-            if(data.error.error=="EmailAlreadyExist"){
-              alert("Este email ya esta registrado, por favor ingrese otro");
-            }else if(data.error.error=="UsernameAlreadyExist"){
-              alert("Este username ya esta registrado, por favor ingrese otro");
+        function signupDoctorSuccess(data, textStatus, jqXHR){
+          console.log(data);
+          if(data){
+            if(data.error){
+              if(data.error.error=="EmailAlreadyExist"){
+                //alert("Este email ya esta registrado, por favor ingrese otro");
+                $('#email-registrado').css('display', 'block');
+                $('#user-registrado').css('display', 'none');
+              }else if(data.error.error=="UsernameAlreadyExist"){
+                //alert("Este username ya esta registrado, por favor ingrese otro");
+                $('#email-registrado').css('display', 'none');
+                $('#user-registrado').css('display', 'block');
+              }
+            }else if(data.doctorAccountInformation){
+              alert("Usuario registrado");
+              window.location.replace("/");
             }
-          }else if(data.doctorAccountInformation){
-            alert("Usuario registrado");
-            window.location.replace("/");
           }
-        }
         };
 
-      $("#signup_doctor_form_button").on('click', function(e){
-        //- alert("se activo");
-        var email = $("#doctor_email").val();
-        var username = $("#doctor_username").val();
-        var password = $("#doctor_password").val();
-        if(email != "" && username != "" && password != ""){
-          //- alert(email+" "+username+" "+password+" ");
-          e.preventDefault();
-          $.ajax({
-            type: "POST",
-            url:"/signup/doctors",
-            headers: {
-              "csrfToken": $("#csrf_input").val()
-            },
-            data:{
-              email: email,
-              username: username,
-              password: password
-            },
-            success: signupDoctorSuccess
+        $("#signup_doctor_form_button").on('click', function(e){
+          //- alert("se activo");
+          var email = $("#doctor_email").val();
+          var username = $("#doctor_username").val();
+          var password = $("#doctor_password").val();
+          if(email != "" && username != "" && password != ""){
+            //- alert(email+" "+username+" "+password+" ");
+            e.preventDefault();
+            $.ajax({
+              type: "POST",
+              url:"/signup/doctors",
+              headers: {
+                "csrfToken": $("#csrf_input").val()
+              },
+              data:{
+                email: email,
+                username: username,
+                password: password
+              },
+              success: signupDoctorSuccess
             });
           }
         }); // End of signup doctor form button on click event
-
       }); // End of document on ready event

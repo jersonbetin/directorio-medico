@@ -1,14 +1,63 @@
 extends layout
 
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li.active
+        a() 
+          i.fa.fa-home
+          |  Inicio
+      li
+        a(href="#")
+          i.fa.fa-search
+          |  Consultar Medicos
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
+          i.fa.fa-pencil-square
+          |   Registrarse
+          b.caret
+        ul.dropdown-menu
+          li
+            a(href="/signup/doctors")
+              i.fa.fa-user-md
+              |   Medico
+          li
+            a(href="/signup/patients") 
+              i.fa.fa-user
+              |  Paciente
+      li
+        a(href="/login/doctors")
+          i.fa.fa-sign-in
+          |  Iniciar Session
+
 block content
-  h2
-    a(href="/login/doctors") Iniciar Sesion como doctor
-  h2
-    a(href="/signup/doctors") Registrarse como doctor
-  h2
-    a(href="/login/patients") Iniciar Sesion como paciente
-  h2
-    a(href="/signup/patients") Registrarse como paciente
+  .container.general-content
+    .row
+      .col-lg-8
+        .page-header.title-header
+          h1 Bienvenido a Consulting
+        p.info-consulting
+          |En los últimos años ha aumentado el numero de procedimientos médicos realizados por el sector privado, en especial por médicos independientes, este auge es bueno y provechoso para la salud de los colombianos y la economía del país, pero a la vez ha generado la proliferación de clínicas  ilegales y lo que es más grave,  que personas sin la preparación medica necesaria y sin un titulo, ejerzan actividades medicas, colocando en riesgo la vida de muchas personas.
+          br
+          br
+          |Existe una gran preocupación en la población por la legalidad y seguridad de los servicios médicos que ofrecen los profesionales de forma privada en pequeñas clínicas o consultorios privados,  cuyo número va en auge, esto también, debido a las deficiencias del sistema de salud publica, que ha generado en la ciudadanía la certeza de que el medico de forma privada ofrece un mejor servicio, sin importar el costo, al fin lo que se busca es preservar la salud, aspecto esencial de la vida  que prima ante otras necesidades.
+          br
+          br
+          |Atendiendo a  la necesidad de construir un sitio, donde los profesionales independientes de la salud, puedan registrarse y hacer publico  su perfil profesional, además de  publicitar sus servicios,      
+      .col-lg-4
+        .page-header.title-header
+          h1 Doctores
+        img(src="images/doctora.png", class="img-title", alt="")
+
 
 block js
   script.

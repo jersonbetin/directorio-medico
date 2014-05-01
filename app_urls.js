@@ -11,6 +11,7 @@ api.authentication = require('./routes/api/'+api.version+'/authentication');
 var routes = require('./routes');
 var renderTemplates = require('./routes/render_templates');
 var sessions = require('./routes/sessions.js');
+var test = require('./routes/test');
 
 
 module.exports = function (app) {
@@ -124,4 +125,6 @@ module.exports = function (app) {
 
   app.post("/api/v1/authentication/doctors/access-token/", middleware.csrfValidation, api.authentication.generateDoctorAccessToken);
   app.post("/api/v1/authentication/patients/access-token/", middleware.csrfValidation, api.authentication.generatePatientAccessToken);
+  // app.get('/universidades', test.universidades);
+  // app.get('/municipios', test.municipios);
 };

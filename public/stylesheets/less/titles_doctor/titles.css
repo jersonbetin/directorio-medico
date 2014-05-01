@@ -1,0 +1,27 @@
+#table_titles_information {
+  width: 100%;
+  margin-top: 10px;
+  height: auto;
+  font-size: 16px;
+}
+#table_titles_information table caption {
+  font-size: 22px;
+  color: #317eac;
+  text-shadow: 1px 1px 1px #317eac;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+#table_titles_information table tr {
+  text-align: center;
+}
+#table_titles_information table tr th,
+#table_titles_information table tr td {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 1%;
+}
+#table_titles_information table tr th {
+  color: #317eac;
+}
