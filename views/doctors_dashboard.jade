@@ -34,6 +34,10 @@ block nav
             a(href="/me/titles_information")
               i.fa.fa-star
               |  Titulos
+          li
+            a(href="/me/register_end")
+              i.fa.fa-star
+              |  finalizar registro
       li
         a#logout_doctor(href="#")
           i.fa.fa-sign-out
@@ -44,8 +48,7 @@ block content
     .row
       .col-lg-8
         .page-header.title-header
-          h2#username_h2 username: 
-        h2 Verificar en secretaria de salud
+          h2#username_h2 username:
 
         input#csrf_input(type="hidden", value="#{data.csrf}")
         div
@@ -104,8 +107,8 @@ block js
         console.log(list[col-1]+" "+hour);
       });
 
-      var doctorAI = {};
       function getDoctorAccountInformationSuccess(data){
+        var doctorAI = {};
         doctorAI = data.doctorAccountInformation;
         $("#username_h2").html("Username: "+doctorAI.username);
       }

@@ -699,7 +699,7 @@ var _ai = null;
 var _pi = null;
 var _pi2 = null;
 var _ti = null;
-function finalizar(res) {
+function finalizar(res) {// error al cargar todos los datos del paciente porque se enviavan 4  send como respueta
   var data = [];
   if (_ai && _pi && _pi2 && _ti) {
     data.push({"doctorProfessionalInformation": _pi2});
@@ -707,9 +707,14 @@ function finalizar(res) {
     data.push({"doctorPersonalInformation": _pi});
     data.push({"doctorTitlesInformation": _ti});
     res.send({error:null, information:data});
+    _ai = null;
+    _pi = null;
+    _pi2 = null;
+    _ti = null;
   }
 }
 exports.getDoctorInformationByUsername = function(req, res) {
+  debugger;
   console.log("########## exports.getDoctorInformationByUsername  ##########");
   doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
     _ai = doctorAI;
