@@ -34,6 +34,10 @@ block nav
             a(href="/me/titles_information")
               i.fa.fa-star
               |  Titulos
+          li
+            a(href="/me/register_end")
+              i.fa.fa-star
+              |  finalizar registro
       li
         a#logout_doctor(href="#")
           i.fa.fa-sign-out
@@ -58,7 +62,7 @@ block content
                 td
                   label(for="evidence_input", class="control-label") Evidencia: 
                 td
-                  input(type="text", id="evidence_input", class="form-control", placeholder="evidencia", required)
+                  input(type="file", id="evidence_input", class="form-control", accept="application/pdf", required)
             .form-group
               tr
                 td
@@ -86,7 +90,7 @@ block content
                   td
                     label(for="city_clinica", class="control-label") Ciudad: 
                   td
-                    input(type="text", id="city_clinica", class="form-control", placeholder="ciudad de la clinica", required)
+                    #div_municipios_clinica
                   td
                     label(for="address_clinica", class="control-label") Direccion de la clinica: 
                   td
@@ -102,17 +106,36 @@ block content
                   td
                     input(type="text", id="mobile_clinica", class="form-control", placeholder="Celular de la clinca", required)
             .form-group
-                tr
-            .form-group
               tr
                 td
                 td
                   button.btn.btn-primary.col-lg-12(type="submit", id="button_save_professional_information_form") Guardar
                 td
                    button.btn.btn-default.col-lg-12(type="reset") Borrar
-                td
       .col-lg-3
         img(src="/images/profesion.png", alt="", style="width:100%;")
+
+       #myModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myLargeModalLabel", aria-hidden="true")
+            .modal-dialog.modal-lg( style="width: 60%;")
+              .modal-content
+                .modal-header
+                  button(type="button", class="close", data-dismiss="modal", aria-hidden="true")&times;
+                  h4(class="modal-title", id="myModalLabel") Verificar en secretaria de salud
+                .modal-body
+                  form(name="inf-otros", id="inf-otros", method="post", action="/medicos/inf-otros")
+                    table.table
+                      .form-group
+                        tr
+                          td
+                          td
+                            label.control-label.col-sm-12(for="identification") Cedula:
+                          td
+                            input.form-control#identification(type="text", placeholder="cedula", required)
+                          td
+                    .modal-footer
+                        button(type="button", class="btn btn-default", data-dismiss="modal") Cancelar
+                        button(type="submit", id="verify_identification_button", class="btn btn-primary") Consultar
+
 block js
   script.
     $(document).on("ready", function(){
@@ -130,6 +153,21 @@ block js
           }
         }
       }
+
+      $(function municipios(){
+          $.ajax({
+              method:'get',
+              url:'/municipios',
+              success:function(data){
+                 var select = '<select class="form-control" name="city_clinica" id="city_clinica">';
+                  for(var i=0; i<data.municipios.length;i++){
+                      select+='<option value="'+data.municipios[i]._id+'">'+data.municipios[i].name+'</option>';
+                  }
+                      select += '</select>';
+                  document.getElementById('div_municipios_clinica').innerHTML=select;
+                }
+            });
+        });
       
       $("#logout_doctor").on('click', function(e){
         e.preventDefault();
@@ -155,7 +193,8 @@ block js
         console.log(professionalCardExpeditionDate);
         var professionalType = $("#professional_type_input").val();
         var isWorking = $("#is_working_input").val();
-        var evidence = $("#evidence_input").val();
+        var inputFileImage = document.getElementById("evidence_input");
+        var evidence  = inputFileImage.files[0];
         var nit= $('#nit_clinica').val();
         var name_clinica=$('#name_clinica').val();
         var city_clinica=$('#city_clinica').val();
@@ -165,38 +204,48 @@ block js
         if(professionalCardNumber != "" && professionalCardExpeditionDate != "" && professionalType != "" && is_working_input != "" && evidence != ""){
           console.log("se pasaron todos los datos");
           e.preventDefault();
-          var professionalInformation = {
-            "professionalCard": {
-              "number": professionalCardNumber
-            },
-            "professionalType": professionalType,
-            "isWorking":isWorking,
-            "evidence": evidence,
-            "jobInformation":{
-              "clinic": {
-                "nit":nit,
-                "name": name_clinica,
-                "location": {
-                  "city": city_clinica,
-                  "address": address_clinica
-                },
-                "phone":{
-                  "mobile" :mobile_clinica,
-                  "landline":landline_clinica
+          if(isWorking=='si'){
+            var professionalInformation = {
+              "professionalCard": {
+                "number": professionalCardNumber
+              },
+              "professionalType": professionalType,
+              "isWorking":isWorking,
+              "evidence": evidence,
+              "jobInformation":{
+                "clinic": {
+                  "nit":nit,
+                  "name": name_clinica,
+                  "location": {
+                    "city": city_clinica,
+                    "address": address_clinica
+                  },
+                  "phone":{
+                    "mobile" :mobile_clinica,
+                    "landline":landline_clinica
+                  }
                 }
               }
             }
+          }else{
+             var professionalInformation = {
+              "professionalCard": {
+                "number": professionalCardNumber
+              },
+              "professionalType": professionalType,
+              "isWorking":isWorking,
+              "evidence": evidence
+            }
           }
-          //- console.log(personalInformation);
+          console.log(professionalInformation);
           $.ajax({
             type: requestType,
             url:"/api/v1/doctors/me/professional_information?errors=verbose",
             headers: {
+              "content-type":'application/json',
               "accessToken": localStorage.accessToken
             },
-            data:{
-              professionalInformation: professionalInformation
-            },
+            data:JSON.stringify({professionalInformation:professionalInformation}),
             success: function(data){
               console.log(data);
             }
@@ -220,7 +269,7 @@ block js
               $("#professional_car_expedition_date_input").val(data.doctorProfessionalInformation.professionalCard.expeditionDate);
               $("#professional_type_input").val(data.doctorProfessionalInformation.professionalType);
               $("#is_working_input").val(data.doctorProfessionalInformation.isWorking);
-              $("#evidence_input").val(data.doctorProfessionalInformation.evidence);
+              //$("#evidence_input").val(data.doctorProfessionalInformation.evidence);
               $("#button_save_professional_information_form").html("Actualizar");
               if(data.doctorProfessionalInformation.isWorking=='si'){
                 $('#nit_clinica').attr('disabled',false);
@@ -244,13 +293,14 @@ block js
                 $('#landline_clinica').attr('disabled',true);
                 $('#nit_clinica').val('');
                 $('#name_clinica').val('');
-                $('#city_clinica').val('');
+                //$('#city_clinica').val('');
                 $('#address_clinica').val('');
                 $('#mobile_clinica').val('');
                 $('#landline_clinica').val('');
               }
             }else{
-              console.log("No se ha guardado aun informacion personal de este doctor")
+              console.log("No se ha guardado aun informacion personal de este doctor");
+              $('#myModal').modal();
             }
             //- if (data.userdataDoctor){
             //-   console.log(data.userdataDoctor):
@@ -276,6 +326,31 @@ block js
             $('#landline_clinica').attr('disabled',false);
           }
         });
+
+      $("#verify_identification_button").on("click", function(e){
+        e.preventDefault();
+        console.log("click click click");
+        console.log($("#identification").val());
+        e.preventDefault();
+        $.ajax({
+          type: "GET",
+          url:"/secretary/verify/"+$("#identification").val(),
+          headers: {
+            "csrfToken": $("#csrf_input").val()
+          },
+          success: function(data){
+            console.log(data);
+            console.log(data.registrado);
+            if(data.registrado == "no"){
+              alert("Usuario no registrado en la secretaria");
+            }else if(data.registrado == "si"){
+              alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
+            }else{
+              alert("hubo un error xp");
+            }
+          }
+        });
+      });
 
       getDoctorProfessionalInformation();
     }); // End of document on ready event

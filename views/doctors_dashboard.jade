@@ -46,11 +46,6 @@ block content
         .page-header.title-header
           h2#username_h2 username: 
         h2 Verificar en secretaria de salud
-        form
-          label Cedula: 
-          input#identification(type="text", placeholder="cedula")
-          input#verify_identification_button(type="submit", value="verificar y llenar datos")
-        div#datos_de_secretaria
 
         input#csrf_input(type="hidden", value="#{data.csrf}")
         div

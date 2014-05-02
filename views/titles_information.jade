@@ -100,6 +100,26 @@ block content
                 th Ciudad
                 th Departamento
             tbody#table_titles_body
+       #myModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myLargeModalLabel", aria-hidden="true")
+            .modal-dialog.modal-lg( style="width: 60%;")
+              .modal-content
+                .modal-header
+                  button(type="button", class="close", data-dismiss="modal", aria-hidden="true")&times;
+                  h4(class="modal-title", id="myModalLabel") Verificar en secretaria de salud
+                .modal-body
+                  form(name="inf-otros", id="inf-otros", method="post", action="/medicos/inf-otros")
+                    table.table
+                      .form-group
+                        tr
+                          td
+                          td
+                            label.control-label.col-sm-12(for="identification") Cedula:
+                          td
+                            input.form-control#identification(type="text", placeholder="cedula", required)
+                          td
+                    .modal-footer
+                        button(type="button", class="btn btn-default", data-dismiss="modal") Cancelar
+                        button(type="submit", id="verify_identification_button", class="btn btn-primary") Consultar
 
 block js
   script.
@@ -122,7 +142,7 @@ block js
       $(function (){
         $.ajax({
             method:'get',
-            url:'/universidad',
+            url:'/universidades',
             success:function(data){
               var select = '<select class="form-control" name="universidad" id="universidad">'
                 for(var i=0; i<data.universidades.length;i++){
@@ -147,13 +167,13 @@ block js
       }); // End of logout doctor on click event
 
       $('#add_titulo').on('click', function(e){
+          e.preventDefault();
           var nombre_titulo=$('#titulo').val();
           var fecha_title = $('#fechaObtencion').val();
           var universidad_title = $('#universidad').val();
           var descripcion_title = $('#descripcion').val();
-          if(nombre_titulo!="" && fecha_title!="" && universidad_title!="" && descripcion_title!=""){
+          if(nombre_titulo!="" && fecha_title!="" && universidad_title!=""){
             console.log("se pasaron todos los datos");
-            e.preventDefault();
             var titleInformation={
                 "title" : nombre_titulo,
                 "description" :descripcion_title ,
@@ -199,7 +219,8 @@ block js
                 //- console.log(data.doctorTitlesInformation[i]);
               }
             }else{
-              console.log("No se ha guardado aun informacion personal de este doctor")
+              console.log("No se ha guardado aun informacion personal de este doctor");
+              $('#myModal').modal();
             }
             //- if (data.userdataDoctor){
             //-   console.log(data.userdataDoctor):

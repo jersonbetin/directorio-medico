@@ -518,6 +518,7 @@ exports.getDoctorProfessionalInformationByUsername = function (req, res){
 
 //post
 exports.saveDoctorProfessionalInformation = function (req, res){
+  debugger;
   console.log("########## exports.saveDoctorProfessionalInformation  ##########");
   console.log(req.body.professionalInformation);
   validations.testDoctorProfessionalInformation(req.body.professionalInformation, function(testApproved,data){

@@ -17,6 +17,7 @@ var test = require('./routes/test');
 module.exports = function (app) {
   /*PRUEBA*/
   app.get('/secretary/verify/:identification', function (req, res) {
+    debugger;
     var options = {
       host: 'localhost',
       port: '4000',
@@ -60,6 +61,7 @@ module.exports = function (app) {
   app.get('/:username/personal_information', renderTemplates.renderPersonalInformation)
   app.get('/:username/professional_information', renderTemplates.renderProfessionalInformation)
   app.get('/:username/titles_information', renderTemplates.renderTitlesInformation)
+  app.get('/:username/register_end', renderTemplates.renderRegisterEnd)
 
 
   // API v1 
@@ -125,6 +127,29 @@ module.exports = function (app) {
 
   app.post("/api/v1/authentication/doctors/access-token/", middleware.csrfValidation, api.authentication.generateDoctorAccessToken);
   app.post("/api/v1/authentication/patients/access-token/", middleware.csrfValidation, api.authentication.generatePatientAccessToken);
-  // app.get('/universidades', test.universidades);
+  // app.get('/universidad', test.universidades);
   // app.get('/municipios', test.municipios);
+  
+  // agrege consultas para hacer pruebas sobre las univerdades y tipos de profesion
+  app.get('/universidades', function(req,res){
+    models.universities.find(function(err, universidades){
+      if (err) {
+        console.log(err);
+        res.send({err:500});
+      }else{
+        res.send({err:null, universidades:universidades});
+      }
+    });
+  });
+
+  app.get('/municipios', function(req,res){
+    models.cities.find(function(err, municipios){
+      if (err) {
+        console.log(err);
+        res.send({err:500});
+      }else{
+        res.send({err:null, municipios:municipios});
+      }
+    });
+  });
 };

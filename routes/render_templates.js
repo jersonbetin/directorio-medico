@@ -107,3 +107,22 @@ exports.renderTitlesInformation = function (req, res){
     res.redirect('/');
   } 
 };
+
+exports.renderRegisterEnd = function (req, res){
+  console.log("#################### renderRegisterEnd  ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render register_Ends from cookie");
+    res.render('register_Ends', {data: data});
+  }else if(req.session && req.session.isLogged == true || req.session.isLogged == 'true'){
+    console.log("render register_Ends from session");
+    res.render('register_Ends', {data: data});
+  }else{
+    res.redirect('/');
+  } 
+};

@@ -34,6 +34,10 @@ block nav
             a(href="/me/titles_information")
               i.fa.fa-star
               |  Titulos
+          li
+            a(href="/me/register_end")
+              i.fa.fa-star
+              |  finalizar registro
       li
         a#logout_doctor(href="#")
           i.fa.fa-sign-out
@@ -53,23 +57,26 @@ block content
             .form-group
               tr
                 td
-                  label(for="first_name_input" , class="control-label") Primer nombre:
+                  label(for="first_name_input" , class="control-label") Nombres:
                 td
                   input(type="text", id="first_name_input", class="form-control", placeholder="Primer nombre", required)
-                td
-                  label(for="second_name_input", class="control-label") Segundo nombre: 
-                td
-                  input(type="text", id="second_name_input", class="form-control" , placeholder="Segundo nombre", required)
-            .form-group
-              tr
                 td
                   label(for="first_lastname_input", class="control-label") Primer apellido: 
                 td
                   input(type="text", id="first_lastname_input", class="form-control" , placeholder="Primer apellido", required)
+            .form-group
+              tr
                 td
                   label(for="second_lastname_input", class="control-label") Segundo apellido: 
                 td
                   input(type="text", id="second_lastname_input", class="form-control" , placeholder="Segundo apellido", required)
+                td
+                  label(for="nationality_input", class="control-label") Nacionalidad:
+                td
+                  select(id="nationality_select", class="form-control" )
+                    option(value="colombiano") Colombiano
+                    option(value="extranjero") Extranjero
+                    option(value="nacionalizado") Nacionalizado
             .form-group
               tr
                 td
@@ -118,17 +125,6 @@ block content
             .form-group
               tr
                 td
-                  label(for="nationality_input", class="control-label") Nacionalidad:
-                td
-                  select(id="nationality_select", class="form-control" )
-                    option(value="colombiano") Colombiano
-                    option(value="extranjero") Extranjero
-                    option(value="nacionalizado") Nacionalizado
-                td
-                td
-            .form-group
-              tr
-                td
                 td
                   button.btn.btn-primary.col-lg-12(type="submit", id="button_save_personal_information_form") Guardar
                 td
@@ -136,6 +132,28 @@ block content
                 td
       .col-lg-3
         img(src="/images/personal.png", alt="", style="width:100%;")
+
+      #myModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myLargeModalLabel", aria-hidden="true")
+            .modal-dialog.modal-lg( style="width: 60%;")
+              .modal-content
+                .modal-header
+                  button(type="button", class="close", data-dismiss="modal", aria-hidden="true")&times;
+                  h4(class="modal-title", id="myModalLabel") Verificar en secretaria de salud
+                .modal-body
+                  form(name="inf-otros", id="inf-otros", method="post", action="/medicos/inf-otros")
+                    table.table
+                      input.form-control
+                      .form-group
+                        tr
+                          td
+                          td
+                            label.control-label.col-sm-12(for="identification") Cedula:
+                          td
+                            input.form-control#identification(type="text", placeholder="cedula", required)
+                          td
+                    .modal-footer
+                        button(type="button", class="btn btn-default", data-dismiss="modal") Cancelar
+                        button(type="submit", id="verify_identification_button", class="btn btn-primary") Consultar
 
 
 block js
@@ -176,7 +194,6 @@ block js
           requestType = "PUT";
         }
         var firstName = $("#first_name_input").val();
-        var secondName = $("#second_name_input").val();
         var firstLastname = $("#first_lastname_input").val();
         var secondLastname = $("#second_lastname_input").val();
         var identificationType = $("#identification_type_select").val();
@@ -188,8 +205,8 @@ block js
         var mobile = $("#mobile_input").val();
         var landline = $("#landline_input").val();
         var nationality = $("#nationality_select").val();
-        console.log("Datos:",firstName,secondName,firstLastname,secondLastname,identificationType,identificationNumber, birthdate, sex, homeCity, homeAddress, mobile, landline, nationality);
-        if(firstName != "" && secondName != "" && firstLastname != "" && secondLastname != "" && identificationType != "" && identificationNumber != "" && birthdate != "" && sex != "" && homeCity != "" && homeAddress != "" && mobile != "" &&  landline != "" && nationality != ""){
+        console.log("Datos:",firstName,firstLastname,secondLastname,identificationType,identificationNumber, birthdate, sex, homeCity, homeAddress, mobile, landline, nationality);
+        if(firstName != "" && firstLastname != "" && secondLastname != "" && identificationType != "" && identificationNumber != "" && birthdate != "" && sex != "" && homeCity != "" && homeAddress != "" && mobile != "" &&  landline != "" && nationality != ""){
           console.log("se pasaron todos los datos");
           e.preventDefault();
           var personalInformation = {
@@ -197,7 +214,7 @@ block js
               "type" : identificationType,
               "number" : identificationNumber
             },
-            "names" : firstName+' '+secondName,
+            "names" : firstName,
             "lastnames" : {
               "first" : firstLastname,
               "second" : secondLastname
@@ -243,14 +260,13 @@ block js
           },
           success: function(data){
             console.log(data);
-            var cumple = new Date(data.doctorPersonalInformation.birthdate);
-            var day = ("0" + cumple.getDate()).slice(-2);
-            var month = ("0" + (cumple.getMonth() + 1)).slice(-2);
-            var fechaCumple = cumple.getFullYear()+"-"+(month)+"-"+(day) ;
             if(data.doctorPersonalInformation){
+              var cumple = new Date(data.doctorPersonalInformation.birthdate);
+              var day = ("0" + cumple.getDate()).slice(-2);
+              var month = ("0" + (cumple.getMonth() + 1)).slice(-2);
+              var fechaCumple = cumple.getFullYear()+"-"+(month)+"-"+(day) ;
               //- console.log(data.doctorPersonalInformation);
-              $("#first_name_input").val(data.doctorPersonalInformation.names.first);
-              $("#second_name_input").val(data.doctorPersonalInformation.names.second);
+              $("#first_name_input").val(data.doctorPersonalInformation.names);
               $("#first_lastname_input").val(data.doctorPersonalInformation.lastnames.first);
               $("#second_lastname_input").val(data.doctorPersonalInformation.lastnames.second);
               $("#identification_type_select option").filter(function (){
@@ -267,7 +283,8 @@ block js
               $("#landline_input").val(data.doctorPersonalInformation.contactData.phone.home);
               $("#button_save_personal_information_form").html("Actualizar");
             }else{
-              console.log("No se ha guardado aun informacion personal de este doctor")
+              console.log("No se ha guardado aun informacion personal de este doctor");
+              $('#myModal').modal();
             }
             //- if (data.userdataDoctor){
             //-   console.log(data.userdataDoctor):
@@ -275,6 +292,31 @@ block js
           }
         });
       }
+
+      $("#verify_identification_button").on("click", function(e){
+        e.preventDefault();
+        console.log("click click click");
+        console.log($("#identification").val());
+        e.preventDefault();
+        $.ajax({
+          type: "GET",
+          url:"/secretary/verify/"+$("#identification").val(),
+          headers: {
+            "csrfToken": $("#csrf_input").val()
+          },
+          success: function(data){
+            console.log(data);
+            console.log(data.registrado);
+            if(data.registrado == "no"){
+              alert("Usuario no registrado en la secretaria");
+            }else if(data.registrado == "si"){
+              alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
+            }else{
+              alert("hubo un error xp");
+            }
+          }
+        });
+      });
 
       getDoctorPersonalInformation();
     }); // End of document on ready event
