@@ -307,7 +307,7 @@ block js
           success: function(data){
             console.log(data);
             console.log(data.registrado);
-            if(data.registrado == "no"){
+            if(data.estado== "no registrado"){
               alert("Usuario no registrado en la secretaria");
             }else if(data.registrado == "si"){
               alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");

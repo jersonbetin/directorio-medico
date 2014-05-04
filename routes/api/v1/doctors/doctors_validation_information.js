@@ -66,7 +66,7 @@ var doctorTitlesInformationStructure = {
 exports.testDoctorPersonalInformation = function(personalInformation, next) {
   var data = [];
   var testApproved = true;
-  // console.log(personalInformation);
+  //nsole.log(personalInformation);
   if (isDefined(personalInformation)) {
     if (isDefined(personalInformation.identification)) {
       if (isDefined(personalInformation.identification.type)) {
