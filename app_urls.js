@@ -1,4 +1,5 @@
 var middleware = require("./app_middleware");
+var http = require('http');
 
 var models = require('./models/models');
 var api = {};
@@ -13,11 +14,9 @@ var renderTemplates = require('./routes/render_templates');
 var sessions = require('./routes/sessions.js');
 var test = require('./routes/test');
 
-
 module.exports = function (app) {
   /*PRUEBA*/
   app.get('/secretary/verify/:identification', function (req, res) {
-    debugger;
     var options = {
       host: 'localhost',
       port: '4000',

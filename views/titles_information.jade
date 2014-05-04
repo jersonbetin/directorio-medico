@@ -207,7 +207,7 @@ block js
           },
           success: function(data){
             console.log(data);
-            if(data.doctorTitlesInformation){
+            if(data.doctorTitlesInformation.length){
               //- console.log(data.doctorPersonalInformation);
               for(var i=0; i<data.doctorTitlesInformation.length; i++){
                 var fecha=new Date(data.doctorTitlesInformation[i].graduationDate);
@@ -228,6 +228,31 @@ block js
           }
         });
       }
+
+      $("#verify_identification_button").on("click", function(e){
+        e.preventDefault();
+        console.log("click click click");
+        console.log($("#identification").val());
+        e.preventDefault();
+        $.ajax({
+          type: "GET",
+          url:"/secretary/verify/"+$("#identification").val(),
+          headers: {
+            "csrfToken": $("#csrf_input").val()
+          },
+          success: function(data){
+            console.log(data);
+            console.log(data.estado);
+            if(data.estado == "no registrado"){
+              alert("Usuario no registrado en la secretaria");
+            }else if(data.estado == "si registrado"){
+              alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
+            }else{
+              alert("hubo un error xp");
+            }
+          }
+        });
+      });
 
       getDoctorTitlesInformation();
     }); // End of document on ready event

@@ -49,7 +49,7 @@ block content
     .row
       .col-lg-12
         .page-header.title-header
-          h1 Personal Information
+          h1 Informacion personal
       .col-lg-9
         form#perosnal_information_form
           input#csrf_input(type="hidden", value="#{data.csrf}")
@@ -142,7 +142,6 @@ block content
                 .modal-body
                   form(name="inf-otros", id="inf-otros", method="post", action="/medicos/inf-otros")
                     table.table
-                      input.form-control
                       .form-group
                         tr
                           td
@@ -306,10 +305,10 @@ block js
           },
           success: function(data){
             console.log(data);
-            console.log(data.registrado);
-            if(data.registrado == "no"){
+            console.log(data.estado);
+            if(data.estado == "no registrado"){
               alert("Usuario no registrado en la secretaria");
-            }else if(data.registrado == "si"){
+            }else if(data.estado == "si registrado"){
               alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
             }else{
               alert("hubo un error xp");

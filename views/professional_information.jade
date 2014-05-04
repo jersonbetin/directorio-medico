@@ -340,10 +340,10 @@ block js
           },
           success: function(data){
             console.log(data);
-            console.log(data.registrado);
-            if(data.registrado == "no"){
+            console.log(data.estado);
+            if(data.estado == "no registrado"){
               alert("Usuario no registrado en la secretaria");
-            }else if(data.registrado == "si"){
+            }else if(data.estado == "si registrado"){
               alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
             }else{
               alert("hubo un error xp");

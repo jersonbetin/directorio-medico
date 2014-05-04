@@ -1,0 +1,26 @@
+.panel-title > a {
+  font-weight: bold;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.table-information {
+  background: #f8f8f8;
+  text-align: center;
+  border-radius: 10px;
+}
+.table-information tr td {
+  box-shadow: 1px 1px 1px #d3d3d3, -1px -1px 1px #d3d3d3;
+}
+.table-information tr td p {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.table-information tr td p span {
+  font-weight: bold;
+  color: #317eac;
+}
+.span_title {
+  font-weight: bold;
+  color: #317eac;
+  text-transform: uppercase;
+}
