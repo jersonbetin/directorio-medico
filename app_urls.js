@@ -1,9 +1,6 @@
 var middleware = require("./app_middleware");
-<<<<<<< HEAD
 var http = require('http');
 
-=======
->>>>>>> ce283081206ff76f8fffa428ae8e49eb41b242ce
 var models = require('./models/models');
 var api = {};
 api.version = 'v1';
@@ -20,10 +17,7 @@ var test = require('./routes/test');
 module.exports = function (app) {
   /*PRUEBA*/
   app.get('/secretary/verify/:identification', function (req, res) {
-<<<<<<< HEAD
-=======
     var http = require('http');
->>>>>>> ce283081206ff76f8fffa428ae8e49eb41b242ce
     var options = {
       host: "secretariadesalud-cordoba.herokuapp.com",
       path: "/SWMedicos/"+req.params.identification,
