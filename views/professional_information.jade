@@ -155,19 +155,19 @@ block js
       }
 
       $(function municipios(){
-          $.ajax({
-              method:'get',
-              url:'/municipios',
-              success:function(data){
-                 var select = '<select class="form-control" name="city_clinica" id="city_clinica">';
-                  for(var i=0; i<data.municipios.length;i++){
-                      select+='<option value="'+data.municipios[i]._id+'">'+data.municipios[i].name+'</option>';
-                  }
-                      select += '</select>';
-                  document.getElementById('div_municipios_clinica').innerHTML=select;
-                }
-            });
+        $.ajax({
+          method:'get',
+          url:'/municipios',
+          success:function(data){
+            var select = '<select class="form-control" name="city_clinica" id="city_clinica">';
+            for(var i=0; i<data.municipios.length;i++){
+              select+='<option value="'+data.municipios[i]._id+'">'+data.municipios[i].name+'</option>';
+            }
+            select += '</select>';
+            document.getElementById('div_municipios_clinica').innerHTML=select;
+          }
         });
+      });
       
       $("#logout_doctor").on('click', function(e){
         e.preventDefault();
@@ -180,72 +180,54 @@ block js
           success: logoutDoctorSuccess
         });
       }); // End of logout doctor on click event
-
+       
       $("#button_save_professional_information_form").on("click", function(e) {
-        console.log($(this).html());
+        e.preventDefault();
         var requestType = "POST";
         if($(this).html() == "Actualizar"){
           console.log("Si es Actualizar");
           requestType = "PUT";
         }
+        
         var professionalCardNumber = $("#professional_card_number_input").val();
-        var professionalCardExpeditionDate = $("#professional_car_expedition_date_input").val();
-        console.log(professionalCardExpeditionDate);
         var professionalType = $("#professional_type_input").val();
         var isWorking = $("#is_working_input").val();
+        console.log(isWorking);
         var inputFileImage = document.getElementById("evidence_input");
-        var evidence  = inputFileImage.files[0];
+        var evidence  = inputFileImage.files[0]; 
+        console.log(evidence);
         var nit= $('#nit_clinica').val();
         var name_clinica=$('#name_clinica').val();
         var city_clinica=$('#city_clinica').val();
         var address_clinica=$('#address_clinica').val();
         var mobile_clinica=$('#mobile_clinica').val();
         var landline_clinica=$('#landline_clinica').val();
-        if(professionalCardNumber != "" && professionalCardExpeditionDate != "" && professionalType != "" && is_working_input != "" && evidence != ""){
+        if(professionalCardNumber != "" && professionalType != "" && is_working_input != "" && evidence != ""){
           console.log("se pasaron todos los datos");
           e.preventDefault();
+          var data = new FormData();
+          data.append("professionalCard.number", professionalCardNumber);
+          data.append("professionalType", professionalType);
+          data.append("isWorking", isWorking);
+          data.append("evidence", evidence);
           if(isWorking=='si'){
-            var professionalInformation = {
-              "professionalCard": {
-                "number": professionalCardNumber
-              },
-              "professionalType": professionalType,
-              "isWorking":isWorking,
-              "evidence": evidence,
-              "jobInformation":{
-                "clinic": {
-                  "nit":nit,
-                  "name": name_clinica,
-                  "location": {
-                    "city": city_clinica,
-                    "address": address_clinica
-                  },
-                  "phone":{
-                    "mobile" :mobile_clinica,
-                    "landline":landline_clinica
-                  }
-                }
-              }
-            }
-          }else{
-             var professionalInformation = {
-              "professionalCard": {
-                "number": professionalCardNumber
-              },
-              "professionalType": professionalType,
-              "isWorking":isWorking,
-              "evidence": evidence
-            }
+            data.append("clinic.nit", nit);
+            data.append("clinic.name", name_clinica);
+            data.append("city_clinica", city_clinica);
+            data.append("address_clinica", address_clinica);
+            data.append("mobile_clinica", mobile_clinica);
+            data.append("landline_clinica", landline_clinica);
           }
-          console.log(professionalInformation);
+          console.log(data);
           $.ajax({
             type: requestType,
             url:"/api/v1/doctors/me/professional_information?errors=verbose",
             headers: {
-              "content-type":'application/json',
               "accessToken": localStorage.accessToken
             },
-            data:JSON.stringify({professionalInformation:professionalInformation}),
+            data: data, 
+            processData: false, // Don't process the files
+            contentType: false, 
             success: function(data){
               console.log(data);
             }

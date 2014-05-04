@@ -305,8 +305,13 @@ block js
           },
           success: function(data){
             console.log(data);
+<<<<<<< HEAD
             console.log(data.estado);
             if(data.estado == "no registrado"){
+=======
+            console.log(data.registrado);
+            if(data.estado== "no registrado"){
+>>>>>>> ce283081206ff76f8fffa428ae8e49eb41b242ce
               alert("Usuario no registrado en la secretaria");
             }else if(data.estado == "si registrado"){
               alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");

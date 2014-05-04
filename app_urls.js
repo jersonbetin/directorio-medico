@@ -1,6 +1,9 @@
 var middleware = require("./app_middleware");
+<<<<<<< HEAD
 var http = require('http');
 
+=======
+>>>>>>> ce283081206ff76f8fffa428ae8e49eb41b242ce
 var models = require('./models/models');
 var api = {};
 api.version = 'v1';
@@ -17,28 +20,28 @@ var test = require('./routes/test');
 module.exports = function (app) {
   /*PRUEBA*/
   app.get('/secretary/verify/:identification', function (req, res) {
+<<<<<<< HEAD
+=======
+    var http = require('http');
+>>>>>>> ce283081206ff76f8fffa428ae8e49eb41b242ce
     var options = {
-      host: 'localhost',
-      port: '4000',
-      path: '/SWMedicos/'+req.params.identification,
+      host: "secretariadesalud-cordoba.herokuapp.com",
+      path: "/SWMedicos/"+req.params.identification,
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8'
-      }
     };
-
-    var request = http.request(options, function(response) {
-      var msg = '';
-
-      response.setEncoding('utf8');
-      response.on('data', function(chunk) {
-        msg += chunk;
+    http.request(options, function (response) {
+      response.on('data', function (d) {
+        console.log("body: " + d);
+        res.send({error:null, data: d});
       });
-      response.on('end', function() {
-        res.send(JSON.parse(msg));
+      response.on('end', function(e) {
+        console.log(e);
+        res.send({error:null, data: e});
       });
-    });
-    request.end();
+      response.on('error', function(e) {
+        res.send({error:e});
+      });
+    }).end();
   });
 
 
