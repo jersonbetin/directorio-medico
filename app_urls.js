@@ -22,14 +22,15 @@ module.exports = function (app) {
       path: "/SWMedicos/"+req.params.identification,
       method: 'GET',
     };
+    var data = "";
     http.request(options, function (response) {
       response.on('data', function (d) {
-        console.log("body: " + d);
-        res.send({error:null, data: d});
+        data += d;
       });
-      response.on('end', function(e) {
-        console.log(e);
-        res.send({error:null, data: e});
+      response.on('end', function() {
+        data = JSON.parse(data);
+        console.log(data);
+        res.send({error:null, data: data});
       });
       response.on('error', function(e) {
         res.send({error:e});
@@ -127,7 +128,7 @@ module.exports = function (app) {
   
   // agrege consultas para hacer pruebas sobre las univerdades y tipos de profesion
   app.get('/universidades', function(req,res){
-    models.universities.find(function(err, universidades){
+    models.universities.find().sort({name:1}).exec(function(err, universidades){
       if (err) {
         console.log(err);
         res.send({err:500});
