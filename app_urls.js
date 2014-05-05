@@ -24,23 +24,13 @@ module.exports = function (app) {
     };
     var data = "";
     http.request(options, function (response) {
-      var msg='';
       response.on('data', function (d) {
-<<<<<<< HEAD
-        console.log("body: " + d);
-         msg+=d;
-      });
-      response.on('end', function(e) {
-        // console.log(e);
-        res.send(JSON.parse(msg));
-=======
-        data += d;
+         data+=d;
       });
       response.on('end', function() {
         data = JSON.parse(data);
         console.log(data);
         res.send({error:null, data: data});
->>>>>>> 85352ce38926f77cad690b7243e9a522ccb27a4b
       });
       response.on('error', function(e) {
         res.send({error:e});
