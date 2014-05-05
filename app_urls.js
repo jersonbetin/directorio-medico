@@ -1,6 +1,4 @@
 var middleware = require("./app_middleware");
-var http = require('http');
-
 var models = require('./models/models');
 var api = {};
 api.version = 'v1';
@@ -17,6 +15,7 @@ var test = require('./routes/test');
 module.exports = function (app) {
   /*PRUEBA*/
   app.get('/secretary/verify/:identification', function (req, res) {
+    debugger;
     var http = require('http');
     var options = {
       host: "secretariadesalud-cordoba.herokuapp.com",
@@ -24,13 +23,14 @@ module.exports = function (app) {
       method: 'GET',
     };
     http.request(options, function (response) {
+      var msg='';
       response.on('data', function (d) {
         console.log("body: " + d);
-        res.send({error:null, data: d});
+         msg+=d;
       });
       response.on('end', function(e) {
-        console.log(e);
-        res.send({error:null, data: e});
+        // console.log(e);
+        res.send(JSON.parse(msg));
       });
       response.on('error', function(e) {
         res.send({error:e});

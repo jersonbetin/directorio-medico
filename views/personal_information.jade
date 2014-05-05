@@ -294,9 +294,8 @@ block js
 
       $("#verify_identification_button").on("click", function(e){
         e.preventDefault();
-        console.log("click click click");
-        console.log($("#identification").val());
-        e.preventDefault();
+        //- console.log("click click click");
+        //- console.log($("#identification").val());
         $.ajax({
           type: "GET",
           url:"/secretary/verify/"+$("#identification").val(),
