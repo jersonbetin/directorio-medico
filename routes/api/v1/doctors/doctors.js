@@ -563,7 +563,7 @@ exports.saveDoctorProfessionalInformation = function (req, res){
         fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
         });
       });
-      professionalInformation.evidence = target_path;
+      professionalInformation.evidence = "/doctors/PDFs/"+filename;
       
       doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
         console.log("DoctorAI: "+doctorAI);
@@ -705,7 +705,7 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
           fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
           });
         });
-        professionalInformation.evidence = target_path;
+        professionalInformation.evidence = "/doctors/PDFs/"+filename;
 
         if(professionalInformation.isWorking == "si"){
           console.log("Si esta trabajando");
@@ -840,10 +840,6 @@ var _pi2s = null;
 var _tis = null;
 function sendToSecretary(res) {
   console.log("########### sendToSecretary ###############");
-  console.log(_ais);
-  console.log(_pis);
-  console.log(_tis);
-  console.log(_pi2s);
   var data = [];
   if (_ais && _pis && _pi2s && _tis) {
     if(_ais != {} && _pis != {} && _pi2s != {} && _tis.length > 0){
@@ -866,12 +862,12 @@ function sendToSecretary(res) {
         "labora": _pi2s.isWorking,
         "nit": _pi2s.jobInformation.clinic.nit,
         "nombEmpresa": _pi2s.jobInformation.clinic.name,
-        "municTrab": _pi2s.jobInformation.location.city,
-        "dirEmpr": _pi2s.jobInformation.location.address,
-        "telTrab": _pi2s.jobInformation.phone.landline
+        "municTrab": _pi2s.jobInformation.clinic.location.city,
+        "dirEmpr": _pi2s.jobInformation.clinic.location.address,
+        "telTrab": _pi2s.jobInformation.clinic.phone.landline
       });
       var options = {
-        host: 'secretariadesalud-cordoba.herokuapp.com/SWMedicos/',
+        host: 'secretariadesalud-cordoba.herokuapp.com',
         path: '/medicos',
         method: 'POST',
         headers : {
@@ -880,14 +876,19 @@ function sendToSecretary(res) {
           'sentFrom': "medicalDirectory"
         }
       };
+      var http = require("http");
       var httpreq = http.request(options, function (response) {
-        response.setEncoding('utf8');
         response.on('data', function (chunk) {
           console.log("body: " + chunk);
         });
-        response.on('end', function() {
+        response.on('end', function(e) {
           res.send({error:null, status:"ok", info: "Data sent to secretary successfully"});
-        })
+        });
+        response.on('error', function(e) {
+          console.log("Ha ocurrido un error");
+          console.log(e);
+          res.send({error:e});
+        });
       });
       httpreq.write(data);
       httpreq.end();
