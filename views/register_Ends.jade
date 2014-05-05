@@ -2,6 +2,7 @@ extends layout
 
 block css
   link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/less/register_ends/registe.css')
 
 block nav
   button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
@@ -31,7 +32,7 @@ block nav
               i.fa.fa-star
               |  Profesional
           li
-            a(herf="/me/titles_information")
+            a(href="/me/titles_information")
               i.fa.fa-star
               |  Titulos
           li.active
@@ -57,27 +58,81 @@ block content
                 a(data-toggle="collapse" data-parent="#accordion" href="#collapseOne") Informacion personal
             #collapseOne.panel-collapse.collapse.in
               .panel-body
-                table.table
+                table.table.table-information
                   tr
                     td
-                      p#inf_nombres Nombres: Jerson
+                      p#inf_nombres 
+                          span Nombres: 
                     td
-                      p#inf_apellido_primero Primer apellido: Betin
+                      p#inf_Papellido 
+                        span Primer apellido: 
+                    td
+                      p#inf_Sapellido 
+                          span Segudno apellido: 
+                    td
+                      p#inf_tidentificacion 
+                        span Tipo de identificacion: 
+                  tr
+                    td
+                      p#inf_identificacion 
+                          span identificacion: 
+                    td
+                      p#inf_sexo 
+                        span sexo: 
+                    td
+                      p#inf_fecha_nacimiento 
+                          span fecha de nacimiento: 
+                    td
+                      p#inf_ciudad_residencia 
+                        span ciudad de residencia: 
+                  tr
+                    td
+                      p#inf_dir_residencia 
+                          span Direccion: 
+                    td
+                      p#inf_celular 
+                        span Celular: 
+                    td
+                      p#inf_fijo 
+                          span fijo: 
+                    td
+                      p#inf_nacionalidad 
+                        span Primer apellido: 
           .panel.panel-default
             .panel-heading
               h4.panel-title
                 a(data-toggle="collapse" data-parent="#accordion" href="#collapsetwo") Informacion profesional
              #collapsetwo.panel-collapse.collapse.in
               .panel-body
-                | Lorem ipsum Amet amet sit enim sit dolore commodo elit do velit anim cupidatat qui in dolor sit dolor ea pariatur commodo.
+                table.table.table-information
+                  tr
+                    td
+                      p#inf_tarjeta 
+                          span Tarjeta profesional: 
+                    td
+                      p#inf_tipoProfesion 
+                        span Tipo de profesion: 
+                    td
+                      p#inf_trabaja 
+                          span Esta trabajando?: 
+                  tr#data_job1
+                  tr#data_job2
           .panel.panel-default
             .panel-heading
               h4.panel-title
                 a(data-toggle="collapse" data-parent="#accordion" href="#collapsethree") Informacion titulos
             #collapsethree.panel-collapse.collapse.in
               .panel-body
-                | Al contrario del pensamiento popular, el texto de Lorem Ipsum no es simplemente texto aleatorio. Tiene sus raices en una pieza cl´sica de la literatura del Latin, que data del año 45 antes de Cristo, haciendo que este adquiera mas de 2000 años de antiguedad. Richard McClintock, un profesor de Latin de la Universidad de Hampden-Sydney en Virginia, encontró una de las palabras más oscuras de la lengua del latín, "consecteur", en un pasaje de Lorem Ipsum, y al seguir leyendo distintos textos del latín, descubrió la fuente indudable. Lorem Ipsum viene de las secciones 1.10.32 y 1.10.33 de "de Finnibus Bonorum 
-
+                table.table.table-information
+                  thead
+                    tr
+                      td.span_title Titulo
+                      td.span_title Descripcion
+                      td.span_title Fecha de graduacion
+                      td.span_title Universidad
+                      td.span_title Ciudad
+                      td.span_title Departamento
+                  tbody#table_titles_body
 block js
   script.
     $(document).on('ready', function(){
@@ -95,10 +150,54 @@ block js
                 "accessToken": localStorage.accessToken
               },
               success: function (data){
+                console.log(data);
+                showInfo(data);
                 getDoctorAccountInformationSuccess(data.information[1]);
               }
             });
           });
+
+        function showInfo(data){
+          var personal = data.information[2].doctorPersonalInformation;
+          var profesional = data.information[0].doctorProfessionalInformation;
+          var titles =data.information[3].doctorTitlesInformation;
+          document.getElementById('inf_nombres').innerHTML +=personal.names;
+          document.getElementById('inf_Papellido').innerHTML +=personal.lastnames.first;
+          document.getElementById('inf_Sapellido').innerHTML +=personal.lastnames.second;
+          document.getElementById('inf_tidentificacion').innerHTML +=personal.identification.type;
+          document.getElementById('inf_identificacion').innerHTML +=personal.identification.number;
+          document.getElementById('inf_sexo').innerHTML +=personal.sex;
+          var fecha = new Date(personal.birthdate);
+          document.getElementById('inf_fecha_nacimiento').innerHTML +=fecha.getDate()+'-'+fecha.getMonth()+'-'+fecha.getYear();
+          document.getElementById('inf_ciudad_residencia').innerHTML +=personal.contactData.home.city;
+          document.getElementById('inf_dir_residencia').innerHTML +=personal.contactData.home.address;
+          document.getElementById('inf_celular').innerHTML +=personal.contactData.phone.mobile;
+          document.getElementById('inf_fijo').innerHTML +=personal.contactData.phone.mobile;
+          document.getElementById('inf_nacionalidad').innerHTML +=personal.nationality;
+          document.getElementById('inf_tarjeta').innerHTML +=profesional.professionalCard.number;
+          document.getElementById('inf_tipoProfesion').innerHTML +=profesional.professionalType;
+          document.getElementById('inf_trabaja').innerHTML +=profesional.isWorking;
+          if(profesional.isWorking=='si'){
+            var infoJob='<td>'+profesional.jobInformation.clinic.nit+'</td>';
+            var infoJob='<td>'+profesional.jobInformation.clinic.name+'</td>';
+            var infoJob='<td>'+profesional.jobInformation.clinic.location.city+'</td>';
+            var infoJob='<td>'+profesional.jobInformation.clinic.location.address+'</td>';
+            var infoJob='<td>'+profesional.jobInformation.clinic.phone.mobile+'</td>';
+            var infoJob='<td>'+profesional.jobInformation.clinic.phone.landline+'</td>';
+          }
+          if(titles.length){
+              //- console.log(data.doctorPersonalInformation);
+              for(var i=0; i<titles.length; i++){
+                var fecha=new Date(titles[i].graduationDate);
+                var day = ("0" + fecha.getDate()).slice(-2);
+                var month = ("0" + (fecha.getMonth() + 1)).slice(-2);
+                var graduationDate = (day)+"-"+(month)+"-"+fecha.getFullYear();
+                var cadena = "<tr><td>"+titles[i].title+"</td><td>"+titles[i].description+"</td><td>"+graduationDate+"</td><td>"+titles[i].idUniversity.name+"</td><td>"+titles[i].idUniversity.city+"</td><td>"+titles[i].idUniversity.department+"</td></tr>"
+                $("#table_titles_body").append(cadena);
+                //- console.log(data.doctorTitlesInformation[i]);
+              }
+            }
+        }
 
         function logoutDoctorSuccess(data, textStatus, jqXHR){
           console.log(data);
