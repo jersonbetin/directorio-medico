@@ -144,7 +144,7 @@ block content
 block js
   script.
     $(document).on("ready", function(){
-      function logoutDoctorSuccess(data, textStatus, jqXHR){
+    function logoutDoctorSuccess(data, textStatus, jqXHR){
         console.log(data);
         if(data){
           if(data.error){
@@ -159,7 +159,7 @@ block js
         }
       }
 
-      $(function municipios(){
+    $(function municipios(){
         $.ajax({
           method:'get',
           url:'/municipios',
@@ -198,7 +198,7 @@ block js
         var professionalType = $("#professional_type_input").val();
         var isWorking = $("#is_working_input").val();
         console.log(isWorking);
-        var inputFileImage = document.getDoctorProfessionalInformationElementById("evidence_input");
+        var inputFileImage = document.getElementById("evidence_input");
         var evidence  = inputFileImage.files[0]; 
         console.log(evidence);
         var nit= $('#nit_clinica').val();
