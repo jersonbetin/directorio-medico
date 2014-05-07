@@ -120,7 +120,7 @@ exports.getDoctorsInformation = function (req, res){
     criteriaPersonal.names = req.query.name
   }
   if(req.query.city){
-    criteriaPersonal["contactData.home.city"] = req.query.name;
+    criteriaPersonal["contactData.home.city"] = req.query.city;
   }
   if(req.query.nationality){
     criteriaPersonal.nationality = req.query.nationality;
