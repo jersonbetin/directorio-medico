@@ -38,6 +38,34 @@ module.exports = function (app) {
     }).end();
   });
 
+  app.get("/pdf", function(req, res){
+    var fs = require('fs');
+    var http = require('http');
+    var data = "";
+    http.get("http://localhost:3000/doctors/PDFs/7847.registro extendido.pdf", function (response) {
+      console.log("dentro de get");
+      response.setEncoding('binary')
+      response.on('data', function (d) {
+        data+=d;
+      });
+      response.on('end', function() {
+        // data = JSON.parse(data);
+        fs.writeFile("prueba.pdf", data, 'binary', function(err){
+          if (err){
+            throw err;
+            console.log(err);
+          } else{
+            console.log('File saved.')
+            res.send("FIle Saved");
+          }
+        })
+      });
+      response.on('error', function(e) {
+        res.send(e);
+      });
+    });
+  });
+
 
   // Render Templates
   app.get('/', routes.index);

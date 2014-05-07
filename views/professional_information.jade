@@ -73,7 +73,7 @@ block content
                 td
                   label(for="professional_type_input", class="control-label") Tipo de profesion: 
                 td
-                  input(type="text", id="professional_type_input", class="form-control", placeholder="Tipo de profesion", required)
+                  #div_professional_type
                 td
                   label(for="is_working_input", class="control-label") Esta trabajando?: 
                 td
@@ -173,6 +173,23 @@ block js
           }
         });
       });
+      $(function tipo_profesional(){
+        $.ajax({
+            method:'get',
+            dataType: 'json',
+            url:'http://localhost:4000/tipoProfesional',
+            success:function(data){
+              console.log(data);
+              var profesionales=data.profesionales;
+              var select = '<select class="form-control" name="professional_type_input" id="professional_type_input">';
+              for(var i=0; i<profesionales.length;i++){
+                select+='<option value="'+profesionales[i]._id+'">'+profesionales[i].tipo+'</option>';
+              }
+              select += '</select>';
+              document.getElementById('div_professional_type').innerHTML=select;
+            }
+          });
+        });
       
       $("#logout_doctor").on('click', function(e){
         e.preventDefault();
