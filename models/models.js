@@ -108,7 +108,10 @@ var doctorsAccountInformationSchema = new Schema({
   createdDate: {
     type: Date, 
     default: Date.now
-  }
+  },
+  pei: {type:Schema.Types.ObjectId, ref: 'doctorsPersonalInformation'},
+  pri: {type:Schema.Types.ObjectId, ref: 'doctorsProfessionalInformation'},
+  ti: [{type:Schema.Types.ObjectId, ref: 'doctorsTitlesInformation'}]
 });
 
 var doctorsTitlesInformationSchema = new Schema({
@@ -154,7 +157,7 @@ var doctorsProfessionalInformationSchema = new Schema({
   professionalCard: {
     number: {type: String, required:true, unique:true}
   },
-  professionalType: {type: String, required:true},
+  professionalType: {type: String, required:true, ref:"professionalTypes"},
   isWorking:{type:String, required:true, enum:['si', 'no'], default:"no"},
   jobInformation: {type:Schema.Types.ObjectId, ref:"jobInformation"},
   evidence: {type: String}

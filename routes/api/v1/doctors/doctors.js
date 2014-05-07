@@ -92,7 +92,7 @@ doctors.findTitlesInformationById = function(id, res, next) {
 
 doctors.findProfessionalInformationById = function (id, res, next){
   console.log("########## doctors.findProfessionalInformationById  ##########");
-  models.doctorsProfessionalInformation.findOne({idDAI:id}).populate("jobInformation").exec(function (err, doctorPI) {
+  models.doctorsProfessionalInformation.findOne({idDAI:id}).populate("jobInformation").populate("professionalType").exec(function (err, doctorPI) {
     if (err) {
       console.log(err);
       res500Code(res);
@@ -110,8 +110,8 @@ doctors.findProfessionalInformationById = function (id, res, next){
 
 
 exports.getDoctorsInformation = function (req, res){
-  debugger
   var criteriaPersonal = {};
+  var criteriaProfesional = {};
   if(req.query.name_like){
     criteriaPersonal.names = {
       $regex: req.query.name_like
@@ -120,14 +120,15 @@ exports.getDoctorsInformation = function (req, res){
   if(req.query.name){
     criteriaPersonal.names = req.query.name
   }
-  if(req.query.city){
-    criteriaPersonal["contactData.home.city"] = req.query.city;
-  }
   if(req.query.nationality){
     criteriaPersonal.nationality = req.query.nationality;
   }
 
-  models.doctorsPersonalInformation.find(criteriaPersonal).populate("idDAI").exec(function(err, doctors) {
+  // if (req.query.job_city) {
+  //   criteriaProfesional.
+  // };
+
+  models.doctorsAccountInformation.find(criteriaPersonal).populate("pei").populate("pri").populate("jobInformation").populate("ti").exec(function(err, doctors) {
     if (err) {
       console.log(err);
       res500Code(res);
@@ -345,6 +346,9 @@ exports.saveDoctorPersonalInformation = function (req, res){
               res500Code(res);
             }
           }else{
+            doctorAI.pei = doctorPI._id;
+            doctorAI.save();
+            // console.log(doctorAI);
             res.send({
               error: null,
               doctorPersonalInformation: doctorPI
@@ -441,6 +445,8 @@ exports.saveDoctorTitleInformation = function (req, res){
                 });
                 }
               }else{
+                doctorAI.ti.push(doctorTI._id);
+                doctorAI.save();
                 res.send({
                   error: null,
                   doctorTitleInformation: doctorTI
@@ -598,6 +604,8 @@ exports.saveDoctorProfessionalInformation = function (req, res){
                           res500Code(res);
                         }
                       }else{
+                        doctorAI.pri = doctorPI._id;
+                        doctorAI.save();
                         res.send({error: null, doctorProfessionalInformation: doctorPI});
                       }
                     });
@@ -625,6 +633,8 @@ exports.saveDoctorProfessionalInformation = function (req, res){
                     res500Code(res);
                   }
                 }else{
+                  doctorAI.pri = doctorPI._id;
+                  doctorAI.save();        
                   res.send({error: null, doctorProfessionalInformation: doctorPI});
                 }
               });
@@ -903,6 +913,7 @@ function sendToSecretary(res) {
     console.log("variables no completas");
   }
 }
+
 exports.uploadToSecretary = function(req, res) {
   console.log("########## exports.uploadToSecretary  ##########");
   doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){

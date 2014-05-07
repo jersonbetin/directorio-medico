@@ -150,4 +150,33 @@ module.exports = function (app) {
       }
     });
   });
+
+  // app.get("/pdf", function(req, res){
+  //   var fs = require('fs');
+  //   var http = require('http');
+  //   var options = {
+  //     host: "localhost",
+  //     port: 3000,
+  //     path: "/doctors/PDFs/8131.Certificate-MongoDB-NodejsDevelopers.pdf",
+  //     method: 'GET',
+  //   };
+  //   var data = "";
+  //   http.request(options, function (response) {
+  //     response.setEncoding('binary')
+  //     response.on('data', function (d) {
+  //       data+=d;
+  //     });
+  //     response.on('end', function() {
+  //       // data = JSON.parse(data);
+  //       fs.writeFile('/home/pedro/prueba.pdf', data, 'binary', function(err){
+  //         if (err) throw err
+  //         console.log('File saved.')
+  //         res.send("FIle Saved");
+  //       })
+  //     });
+  //     response.on('error', function(e) {
+  //       res.send(e);
+  //     });
+  //   }).end();
+  // });
 };
