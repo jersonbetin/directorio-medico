@@ -858,6 +858,7 @@ function sendToSecretary(res) {
         "muncResid": _pis.contactData.home.city,
         "direccion": _pis.contactData.home.address,
         "titulos": _tis,
+        "evidencias": _pi2s.evidence,
         "nTarj": _pi2s.professionalCard.number,
         "tipoProfe": _pi2s.professionalType,
         "labora": _pi2s.isWorking,
