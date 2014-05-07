@@ -1,0 +1,27 @@
+.board-search {
+  border-right: 1px solid lightgray;
+}
+.radio {
+  font-size: 15px;
+  font-weight: bolder;
+  text-transform: uppercase;
+}
+.table-search {
+  box-shadow: 2px 2px 3px lightgray;
+}
+.table-search tr th,
+.table-search tr td {
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+}
+.table-search tr th {
+  font-size: 16px;
+  color: #2FA4E7;
+}
+.table-search tr td {
+  font-size: 14px;
+}
+.board-avanced {
+  display: none;
+}

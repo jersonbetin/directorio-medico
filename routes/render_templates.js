@@ -126,3 +126,14 @@ exports.renderRegisterEnd = function (req, res){
     res.redirect('/');
   } 
 };
+
+exports.renderSearchDoctorTemplate = function (req, res){
+  console.log("#################### renderSearchDoctor  ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  res.render('search_doctors', {data: data});
+};

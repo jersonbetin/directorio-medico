@@ -110,6 +110,7 @@ doctors.findProfessionalInformationById = function (id, res, next){
 
 
 exports.getDoctorsInformation = function (req, res){
+  debugger
   var criteriaPersonal = {};
   if(req.query.name_like){
     criteriaPersonal.names = {
@@ -120,7 +121,7 @@ exports.getDoctorsInformation = function (req, res){
     criteriaPersonal.names = req.query.name
   }
   if(req.query.city){
-    criteriaPersonal["contactData.home.city"] = req.query.name;
+    criteriaPersonal["contactData.home.city"] = req.query.city;
   }
   if(req.query.nationality){
     criteriaPersonal.nationality = req.query.nationality;
