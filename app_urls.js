@@ -1,6 +1,4 @@
 var middleware = require("./app_middleware");
-var http = require('http');
-
 var models = require('./models/models');
 var api = {};
 api.version = 'v1';
@@ -17,6 +15,7 @@ var test = require('./routes/test');
 module.exports = function (app) {
   /*PRUEBA*/
   app.get('/secretary/verify/:identification', function (req, res) {
+    debugger;
     var http = require('http');
     var options = {
       host: "secretariadesalud-cordoba.herokuapp.com",
@@ -26,7 +25,7 @@ module.exports = function (app) {
     var data = "";
     http.request(options, function (response) {
       response.on('data', function (d) {
-        data += d;
+         data+=d;
       });
       response.on('end', function() {
         data = JSON.parse(data);
@@ -44,6 +43,8 @@ module.exports = function (app) {
   app.get('/', routes.index);
   app.get('/signup/doctors', renderTemplates.renderSigupDoctorTemplate);
   app.post('/signup/doctors', middleware.csrfValidation, api.doctors.saveDoctorAccountInformation);
+  
+  app.get('/search/doctors', renderTemplates.renderSearchDoctorTemplate);
 
   app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);

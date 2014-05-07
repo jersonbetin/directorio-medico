@@ -2,6 +2,7 @@ extends layout
 
 block css
   link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/less/information/information.css')
 
 block nav
   button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
@@ -53,6 +54,10 @@ block content
         form#perosnal_information_form
           input#csrf_input(type="hidden", value="#{data.csrf}")
           table.table
+            #alert_registrado.alert-info
+              span Usuario registrado En secretaria de salud y se cargaron los datos personales en el formulario
+            #alert_no_registrado.alert-info
+              span Usuario no esta registrado tiene que guardar sus datos y enviarlos a la secretaria de salud
             .form-group
               tr
                 td
@@ -139,7 +144,7 @@ block content
 block js
   script.
     $(document).on("ready", function(){
-      function logoutDoctorSuccess(data, textStatus, jqXHR){
+    function logoutDoctorSuccess(data, textStatus, jqXHR){
         console.log(data);
         if(data){
           if(data.error){
@@ -154,7 +159,7 @@ block js
         }
       }
 
-      $(function municipios(){
+    $(function municipios(){
         $.ajax({
           method:'get',
           url:'/municipios',
@@ -180,7 +185,7 @@ block js
           success: logoutDoctorSuccess
         });
       }); // End of logout doctor on click event
-       
+
       $("#button_save_professional_information_form").on("click", function(e) {
         e.preventDefault();
         var requestType = "POST";
@@ -188,12 +193,12 @@ block js
           console.log("Si es Actualizar");
           requestType = "PUT";
         }
-        
+
         var professionalCardNumber = $("#professional_card_number_input").val();
         var professionalType = $("#professional_type_input").val();
         var isWorking = $("#is_working_input").val();
         console.log(isWorking);
-        var inputFileImage = document.getDoctorProfessionalInformationElementById("evidence_input");
+        var inputFileImage = document.getElementById("evidence_input");
         var evidence  = inputFileImage.files[0]; 
         console.log(evidence);
         var nit= $('#nit_clinica').val();
@@ -248,7 +253,6 @@ block js
             if(data.doctorProfessionalInformation){
               console.log(data.doctorProfessionalInformation);
               $("#professional_card_number_input").val(data.doctorProfessionalInformation.professionalCard.number);
-              $("#professional_car_expedition_date_input").val(data.doctorProfessionalInformation.professionalCard.expeditionDate);
               $("#professional_type_input").val(data.doctorProfessionalInformation.professionalType);
               $("#is_working_input").val(data.doctorProfessionalInformation.isWorking);
               //$("#evidence_input").val(data.doctorProfessionalInformation.evidence);
@@ -321,12 +325,20 @@ block js
             "csrfToken": $("#csrf_input").val()
           },
           success: function(data){
-            console.log(data);
-            console.log(data.estado);
-            if(data.estado == "no registrado"){
-              alert("Usuario no registrado en la secretaria");
-            }else if(data.estado == "si registrado"){
-              alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
+              console.log(data);
+              var medico=data.data;
+              console.log(medico.registrado);
+              if(medico.estado=="no registrado"){
+                $('.close').trigger('click');
+                $('#alert_no_registrado').css('display', 'block');
+              }else if(medico.registrado == "si"){
+                $('.close').trigger('click');
+                $('#alert_registrado').css('display', 'block');
+                var profesional=medico.infoPersonal;
+                $("#professional_card_number_input").val(profesional.tarjetaPofesional);
+                $("#professional_card_number_input").attr('readonly', true);
+                $("#professional_type_input").val(profesional.tipoProfesional);
+                $('#evidence_input').attr('disabled',true);
             }else{
               alert("hubo un error xp");
             }

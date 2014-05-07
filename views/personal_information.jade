@@ -2,6 +2,7 @@ extends layout
 
 block css
   link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/less/information/information.css')
 
 block nav
   button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
@@ -54,6 +55,10 @@ block content
         form#perosnal_information_form
           input#csrf_input(type="hidden", value="#{data.csrf}")
           table.table
+            #alert_registrado.alert-info
+              span Usuario registrado En secretaria de salud y se cargaron los datos personales en el formulario
+            #alert_no_registrado.alert-info
+              span Usuario no esta registrado tiene que guardar sus datos y enviarlos a la secretaria de salud
             .form-group
               tr
                 td
@@ -294,9 +299,9 @@ block js
 
       $("#verify_identification_button").on("click", function(e){
         e.preventDefault();
-        console.log("click click click");
-        console.log($("#identification").val());
-        e.preventDefault();
+        var cedula=$('#identification').val();
+        //- console.log("click click click");
+        //- console.log($("#identification").val());
         $.ajax({
           type: "GET",
           url:"/secretary/verify/"+$("#identification").val(),
@@ -305,18 +310,40 @@ block js
           },
           success: function(data){
               console.log(data);
-              console.log(data.estado);
-              if(data.estado == "no registrado"){
-              console.log(data.registrado);
-              if(data.estado== "no registrado"){
-                alert("Usuario no registrado en la secretaria");
-              }else if(data.estado == "si registrado"){
-                alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
+              var medico=data.data;
+              console.log(medico.registrado);
+              if(medico.estado=="no registrado"){
+                $('.close').trigger('click');
+                $('#alert_no_registrado').css('display', 'block');
+              }else if(medico.registrado == "si"){
+                $('.close').trigger('click');
+                $('#alert_registrado').css('display', 'block');
+                var personal=medico.infoPersonal;
+                var cumple = new Date(personal.fechaNac);
+                var day = ("0" + (cumple.getDate()+1)).slice(-2);
+                var month = ("0" + (cumple.getMonth() + 1)).slice(-2);
+                var fechaCumple = cumple.getFullYear()+"-"+(month)+"-"+(day) ;
+                $("#first_name_input").val(personal.nombre);
+                $("#first_lastname_input").val(personal.apellido.primero);
+                $("#second_lastname_input").val(personal.apellido.segundo);
+                $("#identification_type_select option").filter(function (){
+                    return $(this).val()=='cc';
+                  }).prop('selected', true);
+                if(personal.sexo=='M'){
+                  $("#sex_select option").filter(function (){
+                      return $(this).val()=='masculino';
+                    }).prop('selected', true);
+                }else{
+                  $("#sex_select option").filter(function (){
+                      return $(this).val()=='femenino';
+                    }).prop('selected', true);
+                }
+                $("#identification_number_input").val(cedula);
+                $("#birthdate_input").val(fechaCumple);
               }else{
                 alert("hubo un error xp");
               }
             }
-           }
         });
       });
 

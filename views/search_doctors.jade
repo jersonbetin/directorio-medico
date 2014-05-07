@@ -1,0 +1,123 @@
+extends layout
+
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/less/search/search.css')
+
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li
+        a(href="/") 
+          i.fa.fa-home
+          |  Inicio
+      li.active
+        a()
+          i.fa.fa-search
+          |  Consultar Medicos
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
+          i.fa.fa-pencil-square
+          |   Registrarse
+          b.caret
+        ul.dropdown-menu
+          li
+            a(href="/signup/doctors")
+              i.fa.fa-user-md
+              |   Medico
+          li
+            a(href="/signup/patients") 
+              i.fa.fa-user
+              |  Paciente
+      li
+        a(href="/login/doctors")
+          i.fa.fa-sign-in
+          |  Iniciar Session
+
+block content
+  .container.general-content
+    .row
+      .col-lg-12
+        .page-header.title-header
+          h1 Busqueda de medicos en Cordoba
+      .col-lg-4.board-search
+        h4
+          center Datos del medico
+        .board-single
+          form
+            .form-group
+              label.control-label(for="name_like") Nombre: 
+              input.form-control#name_like(type="text", placeholder="Nombre del doctor")
+        .board-avanced
+          .form-group
+            label.control-label(for="name") Nombre: 
+            input.form-control#name(type="text", placeholder="Nombre del doctor")
+          .form-group
+            label.control-label(for="city") Ciudad de trabajo: 
+            input.form-control#city(type="text", placeholder="Nombre del doctor")
+          .form-group
+            label.control-label(for="nationality") Nacionalidad: 
+            input.form-control#nationality(type="text", placeholder="Nombre del doctor")
+          .form-group
+            button.btn.btn-info.form-control#button_search BUSQUEDA
+        .board-radio
+          .radio
+            label
+              input.radio-search#radio_single(type="radio", name="search", value="simple", checked)
+              | busqueda por nombre
+            br
+            label
+              input.radio-search#radio_avanced(type="radio", name="search", value="avanzada")
+              |busqueda avanzada
+
+
+      .col-lg-8.board-view-search
+        table.table.table-hover.table-search
+          thead
+            tr
+              th Identificacion
+              th Nombre
+              th Telefono
+              th Celular
+          tbody#result_search
+
+block js
+  script.
+    $(document).on('ready', function(){
+        $('input[name=search]').on('click', function(){
+            if($(this).val()=='simple'){
+              $('.board-avanced').css('display', 'none');
+              $('.board-single').css('display', 'block');
+            }else{
+              $('.board-single').css('display', 'none');
+              $('.board-avanced').css('display', 'block');
+            }
+          });
+        $('#name_like').on('keyup', function(){
+            var data=$(this).val();
+            $.ajax({
+                method:'get',
+                url:'/api/v1/doctors?name_like='+data,
+                success:function(data){
+                  console.log(data);
+                  if(data!=null){
+                    var table='<table>';
+                      for(var i=0; i<data.length; i++){
+                          table+='<tr><td>'+data[i].identification.number+'</td><td>'+data[i].names+' '+data[i].lastnames.first+' '+data[i].lastnames.second+'</td><td>'+data[i].contactData.phone.home+'</td><td>'+data[i].contactData.phone.mobile+'</td></tr>';
+                      }
+                          table+='</table>';
+                      document.getElementById('result_search').innerHTML=table;
+                  }
+                },
+                processData:function(){
+                  document.getElementById('result_search').innerHTML='esperando...';
+                }
+              });
+          });
+      });

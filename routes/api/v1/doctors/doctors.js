@@ -110,6 +110,7 @@ doctors.findProfessionalInformationById = function (id, res, next){
 
 
 exports.getDoctorsInformation = function (req, res){
+  debugger
   var criteriaPersonal = {};
   if(req.query.name_like){
     criteriaPersonal.names = {

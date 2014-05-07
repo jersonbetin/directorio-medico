@@ -51,6 +51,9 @@ block content
         .page-header.title-header
           h2#username_h2 Informacion general del doctor:
       .col-lg-12
+        #alert_registrado.alert-info
+           span El usuario esta registrado asi que no es necesario enviar los datos a secretaria
+
         #accordion.panel-group
           .panel.panel-default
             .panel-heading
@@ -97,7 +100,7 @@ block content
                           span fijo: 
                     td
                       p#inf_nacionalidad 
-                        span Primer apellido: 
+                        span Nacionalidad: 
           .panel.panel-default
             .panel-heading
               h4.panel-title
@@ -133,6 +136,10 @@ block content
                       td.span_title Ciudad
                       td.span_title Departamento
                   tbody#table_titles_body
+    br
+    .row
+      .col-lg-12
+        button.btn.btn-primary.col-lg-6.col-lg-offset-3#button_send_secretary Enviar datos a secretaria
 block js
   script.
     $(document).on('ready', function(){
@@ -161,43 +168,84 @@ block js
           var personal = data.information[2].doctorPersonalInformation;
           var profesional = data.information[0].doctorProfessionalInformation;
           var titles =data.information[3].doctorTitlesInformation;
-          document.getElementById('inf_nombres').innerHTML +=personal.names;
-          document.getElementById('inf_Papellido').innerHTML +=personal.lastnames.first;
-          document.getElementById('inf_Sapellido').innerHTML +=personal.lastnames.second;
-          document.getElementById('inf_tidentificacion').innerHTML +=personal.identification.type;
-          document.getElementById('inf_identificacion').innerHTML +=personal.identification.number;
-          document.getElementById('inf_sexo').innerHTML +=personal.sex;
-          var fecha = new Date(personal.birthdate);
-          document.getElementById('inf_fecha_nacimiento').innerHTML +=fecha.getDate()+'-'+fecha.getMonth()+'-'+fecha.getYear();
-          document.getElementById('inf_ciudad_residencia').innerHTML +=personal.contactData.home.city;
-          document.getElementById('inf_dir_residencia').innerHTML +=personal.contactData.home.address;
-          document.getElementById('inf_celular').innerHTML +=personal.contactData.phone.mobile;
-          document.getElementById('inf_fijo').innerHTML +=personal.contactData.phone.mobile;
-          document.getElementById('inf_nacionalidad').innerHTML +=personal.nationality;
-          document.getElementById('inf_tarjeta').innerHTML +=profesional.professionalCard.number;
-          document.getElementById('inf_tipoProfesion').innerHTML +=profesional.professionalType;
-          document.getElementById('inf_trabaja').innerHTML +=profesional.isWorking;
-          if(profesional.isWorking=='si'){
-            var infoJob='<td>'+profesional.jobInformation.clinic.nit+'</td>';
-            var infoJob='<td>'+profesional.jobInformation.clinic.name+'</td>';
-            var infoJob='<td>'+profesional.jobInformation.clinic.location.city+'</td>';
-            var infoJob='<td>'+profesional.jobInformation.clinic.location.address+'</td>';
-            var infoJob='<td>'+profesional.jobInformation.clinic.phone.mobile+'</td>';
-            var infoJob='<td>'+profesional.jobInformation.clinic.phone.landline+'</td>';
+          var statusRegister=true;
+          if(personal._id!=undefined){
+            document.getElementById('inf_nombres').innerHTML +=personal.names;
+            document.getElementById('inf_Papellido').innerHTML +=personal.lastnames.first;
+            document.getElementById('inf_Sapellido').innerHTML +=personal.lastnames.second;
+            document.getElementById('inf_tidentificacion').innerHTML +=personal.identification.type;
+            document.getElementById('inf_identificacion').innerHTML +=personal.identification.number;
+            document.getElementById('inf_sexo').innerHTML +=personal.sex;
+            var fecha = new Date(personal.birthdate);
+            document.getElementById('inf_fecha_nacimiento').innerHTML +=fecha.getDate()+'-'+fecha.getMonth()+'-'+fecha.getYear();
+            document.getElementById('inf_ciudad_residencia').innerHTML +=personal.contactData.home.city;
+            document.getElementById('inf_dir_residencia').innerHTML +=personal.contactData.home.address;
+            document.getElementById('inf_celular').innerHTML +=personal.contactData.phone.mobile;
+            document.getElementById('inf_fijo').innerHTML +=personal.contactData.phone.mobile;
+            document.getElementById('inf_nacionalidad').innerHTML +=personal.nationality;
+          }else{
+            statusRegister=false;
+          }
+          if(profesional._id!=undefined){
+            document.getElementById('inf_tarjeta').innerHTML +=profesional.professionalCard.number;
+            document.getElementById('inf_tipoProfesion').innerHTML +=profesional.professionalType;
+            document.getElementById('inf_trabaja').innerHTML +=profesional.isWorking;
+            if(profesional.isWorking=='si'){
+              var infoJob1='<tr>';
+                infoJob1+='<td><p><span>Nit: </span>'+profesional.jobInformation.clinic.nit+'</p></td>';
+                infoJob1+='<td><p><span>Clinica: </span>'+profesional.jobInformation.clinic.name+'</p></td>';
+                infoJob1+='<td><p><span>Lugar de trabajo: </span>'+profesional.jobInformation.clinic.location.city+'</p></td>';
+                infoJob1+='</tr>';
+
+              var infoJob2='<tr>';
+                infoJob2+='<td><p><span>Direccion:</span> '+profesional.jobInformation.clinic.location.address+'</p></td>';
+                infoJob2+='<td><p><span>Celular de la clinica: </span>'+profesional.jobInformation.clinic.phone.mobile+'</p></td>';
+                infoJob2+='<td><p><span>Fijo de la clinica: </span>'+profesional.jobInformation.clinic.phone.landline+'</p></td>';
+                infoJob2+='</tr>';
+              document.getElementById('data_job1').innerHTML+=infoJob1;
+              document.getElementById('data_job2').innerHTML+=infoJob2;
+            }
+          }else{
+            statusRegister=false;
           }
           if(titles.length){
               //- console.log(data.doctorPersonalInformation);
-              for(var i=0; i<titles.length; i++){
-                var fecha=new Date(titles[i].graduationDate);
-                var day = ("0" + fecha.getDate()).slice(-2);
-                var month = ("0" + (fecha.getMonth() + 1)).slice(-2);
-                var graduationDate = (day)+"-"+(month)+"-"+fecha.getFullYear();
-                var cadena = "<tr><td>"+titles[i].title+"</td><td>"+titles[i].description+"</td><td>"+graduationDate+"</td><td>"+titles[i].idUniversity.name+"</td><td>"+titles[i].idUniversity.city+"</td><td>"+titles[i].idUniversity.department+"</td></tr>"
-                $("#table_titles_body").append(cadena);
-                //- console.log(data.doctorTitlesInformation[i]);
+            for(var i=0; i<titles.length; i++){
+              var fecha=new Date(titles[i].graduationDate);
+              var day = ("0" + fecha.getDate()).slice(-2);
+              var month = ("0" + (fecha.getMonth()+1)).slice(-2);
+              var graduationDate = (day)+"-"+(month)+"-"+fecha.getFullYear();
+              var cadena = "<tr><td>"+titles[i].title+"</td><td>"+titles[i].description+"</td><td>"+graduationDate+"</td><td>"+titles[i].idUniversity.name+"</td><td>"+titles[i].idUniversity.city+"</td><td>"+titles[i].idUniversity.department+"</td></tr>"
+              $("#table_titles_body").append(cadena);
+              //- console.log(data.doctorTitlesInformation[i]);
+            }
+          }else{
+            statusRegister=false;
+          }
+          var cedula = (personal.identification.number!=null) ? personal.identification.number : '';
+          $.ajax({
+            type: "GET",
+            url:"/secretary/verify/"+cedula,
+            headers: {
+              "csrfToken": $("#csrf_input").val()
+            },
+            success:function(data){
+              var medico=data.data;
+              console.log(medico.registrado);
+              if(medico.registrado == "si"){
+                statusRegister=false;
+                $('#alert_registrado').css('display', 'block');
               }
             }
+          });
+          if(statusRegister){
+            $('#button_send_secretary').css('display', 'block');
+          }
         }
+
+        $('#button_send_secretary').on('click', function(){
+            alert('se enviaron los datos');
+          });
 
         function logoutDoctorSuccess(data, textStatus, jqXHR){
           console.log(data);
