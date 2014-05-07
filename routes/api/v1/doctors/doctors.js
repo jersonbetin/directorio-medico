@@ -869,7 +869,9 @@ function sendToSecretary(res) {
         "telTrab": _pi2s.jobInformation.clinic.phone.landline
       });
       var options = {
-        host: 'secretariadesalud-cordoba.herokuapp.com',
+        // host: 'secretariadesalud-cordoba.herokuapp.com',
+        host: 'localhost',
+        port: 4000,
         path: '/medicos',
         method: 'POST',
         headers : {
