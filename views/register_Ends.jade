@@ -244,7 +244,23 @@ block js
         }
 
         $('#button_send_secretary').on('click', function(){
-            alert('se enviaron los datos');
+            $.ajax({
+              type: "POST",
+              url:"/api/v1/doctors/me/all_information/to_secretary",
+              headers: {
+                "accessToken": localStorage.accessToken
+              },
+              success:function(data){
+                console.log(data);
+                if(data.error==null){
+                  alert('se agrego con exito');
+                }else if(data.error){
+                  alert('error al enviar');
+                }else{
+                  alert('un error que no se conoce');
+                }
+              }
+            });
           });
 
         function logoutDoctorSuccess(data, textStatus, jqXHR){

@@ -854,9 +854,15 @@ function sendToSecretary(res) {
   var data = [];
   if (_ais && _pis && _pi2s && _tis) {
     if(_ais != {} && _pis != {} && _pi2s != {} && _tis.length > 0){
+      if (_pis.sex=='masculino') {
+        _pis.sex='m';
+      }else{
+        _pis.sex='f';
+      }
       var data = JSON.stringify({
         "tIdent": _pis.identification.type,
-        "ident": _pis.identification.number,
+        "identif": _pis.identification.number,
+        "correo":_ais.email,
         "nombre": _pis.names,
         "pApell": _pis.lastnames.first,
         "sApell": _pis.lastnames.second,
@@ -873,7 +879,7 @@ function sendToSecretary(res) {
         "tipoProfe": _pi2s.professionalType,
         "labora": _pi2s.isWorking,
         "nit": _pi2s.jobInformation.clinic.nit,
-        "nombEmpresa": _pi2s.jobInformation.clinic.name,
+        "nombEmpres": _pi2s.jobInformation.clinic.name,
         "municTrab": _pi2s.jobInformation.clinic.location.city,
         "dirEmpr": _pi2s.jobInformation.clinic.location.address,
         "telTrab": _pi2s.jobInformation.clinic.phone.landline
@@ -882,7 +888,7 @@ function sendToSecretary(res) {
         // host: 'secretariadesalud-cordoba.herokuapp.com',
         host: 'localhost',
         port: 4000,
-        path: '/medicos',
+        path: '/doctor/directorio',
         method: 'POST',
         headers : {
           'Content-Type': 'application/json; charset=utf-8',
@@ -896,12 +902,21 @@ function sendToSecretary(res) {
           console.log("body: " + chunk);
         });
         response.on('end', function(e) {
+          console.log(e);
           res.send({error:null, status:"ok", info: "Data sent to secretary successfully"});
+          // _ais = null;
+          // _pis = null;
+          // _pi2s = null;
+          // _tis = null;
         });
         response.on('error', function(e) {
           console.log("Ha ocurrido un error");
           console.log(e);
           res.send({error:e});
+          // _ais = null;
+          // _pis = null;
+          // _pi2s = null;
+          // _tis = null;
         });
       });
       httpreq.write(data);
