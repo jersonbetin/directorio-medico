@@ -172,25 +172,26 @@ block js
             document.getElementById('div_municipios_clinica').innerHTML=select;
           }
         });
+    });
+    $(function tipo_profesional(){
+      console.log("Se llamo a esta vaina");
+      $.ajax({
+        method:'get',
+        dataType: 'json',
+        url:'http://secretariadesalud-cordoba.herokuapp.com/tipoProfesional',
+        success:function(data){
+          console.log(data);
+          var profesionales=data.profesionales;
+          var select = '<select class="form-control" name="professional_type_input" id="professional_type_input">';
+          for(var i=0; i<profesionales.length;i++){
+            select+='<option value="'+profesionales[i]._id+'">'+profesionales[i].tipo+'</option>';
+          }
+          select += '</select>';
+          document.getElementById('div_professional_type').innerHTML=select;
+        }
       });
-      $(function tipo_profesional(){
-        $.ajax({
-            method:'get',
-            dataType: 'json',
-            url:'http://localhost:4000/tipoProfesional',
-            success:function(data){
-              console.log(data);
-              var profesionales=data.profesionales;
-              var select = '<select class="form-control" name="professional_type_input" id="professional_type_input">';
-              for(var i=0; i<profesionales.length;i++){
-                select+='<option value="'+profesionales[i]._id+'">'+profesionales[i].tipo+'</option>';
-              }
-              select += '</select>';
-              document.getElementById('div_professional_type').innerHTML=select;
-            }
-          });
-        });
-      
+    });
+    
       $("#logout_doctor").on('click', function(e){
         e.preventDefault();
         $.ajax({

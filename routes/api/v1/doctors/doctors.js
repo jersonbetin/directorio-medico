@@ -107,35 +107,133 @@ doctors.findProfessionalInformationById = function (id, res, next){
 
 /*Doctors Account Information*/
 //get
+var r;
+
+var professionCriteria = {};
+function process2(doc, callback){
+  models.doctorsProfessionalInformation.findOne({idDAI:doc._id})
+  .populate({
+    path: "jobInformation",
+    match: jobCriteria,
+  }).populate({
+    path: "professionalType",
+    match: professionCriteria,
+  }).exec(function(err, d){
+    if(err){
+      console.log(err);
+    }else{
+      if(d){
+        doc.pri = d;
+      }
+      callback(null, doc);
+    }
+  });
+}
+
+var personalCriteria = {};
+var o = {};
+function process1(doc, callback){ 
+  personalCriteria.idDAI = doc._id;
+  o=doc;
+  console.log(personalCriteria);
+  models.doctorsPersonalInformation.findOne(personalCriteria, function(err, dpi){
+    if(err){
+      console.log(err);
+    }else{
+      if(dpi){
+        console.log("todo normal");
+        // console.log(dpi);
+        // console.log(doc);
+        o.prototype.pei = "dpi";
+      }else{
+        console.log("entre aqui");
+        if(personalCriteria.names || personalCriteria.lastnames){
+          console.log("No hay coincidencias con el nombre o apellido");
+          o = null;
+        }
+      }
+      callback(null, o);
+    }
+  });
+}
+
+function f1(err, docs){
+  personalCriteria = {};
+  r.send(docs);
+  // async.map(doctors, process2, f2);
+}
+// var jobCriteria = {};
+
+// function process2(doc, callback){ 
+//   models.doctorsPersonalInformation.findOne({idDAI:doc._id})
+//   .populate({
+//     path: "jobInformation",
+//     match: jobCriteria,
+//   }).populate({
+//     path: "professionalType",
+//     match: professionCriteria,
+//   }).exec(function(err, dpi){
+//     if(err){
+//       console.log(err);
+//     }else{
+//       if(dpi){
+//         doc.pri = dpi;
+//       }else{
+//         doc = null;
+//       }
+//       callback(null, doc);
+//     }
+//   });
+// }
 
 
 exports.getDoctorsInformation = function (req, res){
-  var criteriaPersonal = {};
-  var criteriaProfesional = {};
+  var criteria = {};
+  if (req.query.register_state) {
+    criteria.registerState = req.query.register_state;
+  }
   if(req.query.name_like){
-    criteriaPersonal.names = {
+    personalCriteria.names = {
       $regex: req.query.name_like
     }
   }
-  if(req.query.name){
-    criteriaPersonal.names = req.query.name
+  if(req.query.lastname_like){
+    personalCriteria["lastnames.firs"] = {
+      $regex: req.query.lastname_like
+    }
   }
-  if(req.query.nationality){
-    criteriaPersonal.nationality = req.query.nationality;
-  }
+  // if(req.query.job_city){
+  //   jobCriteria["clinic.location.city"] = req.query.job_city; 
+  // }
+  // var professionCriteria = {};  
+  // if(req.query.profesion){
+  //   professionCriteria._id = req.query.profession; 
+  // }
 
-  // if (req.query.job_city) {
-  //   criteriaProfesional.
-  // };
+  // console.log(personalCriteria);
 
-  models.doctorsAccountInformation.find(criteriaPersonal).populate("pei").populate("pri").populate("jobInformation").populate("ti").exec(function(err, doctors) {
+  var async = require("async");
+  models.doctorsAccountInformation.find(criteria)
+  .exec(function(err, doctors) {
     if (err) {
       console.log(err);
       res500Code(res);
     }else{
+      // console.log(doctors);
+      // r = res;
+      // async.map(doctors, process1, f1);
       res.send(doctors);
     }
   });
+
+
+  // .populate({
+  //   path: "pri",
+  //   match: professionCriteria,
+  // }).populate({
+  //   path: "pei",
+  //   match: personalCriteria
+  // }).populate("ti")
 };
 
 exports.getDoctorsAccountInformation = function (req, res) {
@@ -554,40 +652,91 @@ exports.saveDoctorProfessionalInformation = function (req, res){
   validations.testDoctorProfessionalInformation(professionalInformation, function(testApproved,data){
     if (testApproved) {
       console.log("Test approved");
-      var tmp_path = req.files.evidence.path;//ruta del archivo
-      var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria
-      var filename = random+"."+req.files.evidence.name;//nombre del archivo mas variable aleatoria
-      var target_path=__dirname+"/../../../../public/doctors/PDFs/"+filename;// hacia donde subiremos nuestro archivo dentro de nuestro servidor
-      console.log("Se va guardar en: "+target_path);
-      
-      fs.rename(tmp_path,target_path,function (err) {//Escribimos el archivo
-        if (err) {
-          console.log("hubo algun error guardando el archivo pdf"); 
-          console.log(err);
-        }else{
-          console.log("Se guardo el archivo en: "+target_path);
-        }
-        fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
+      var http = require('http');
+      http.get("secretariadesalud-cordoba.herokuapp.com/tipoProfesional/", function(response){
+        var resp = "";
+        response.on('data', function (d) {
+          resp+=d;
         });
-      });
-      professionalInformation.evidence = "/doctors/PDFs/"+filename;
-      
-      doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
-        console.log("DoctorAI: "+doctorAI);
+        response.on('end', function() {
+          resp = JSON.parse(resp);
+          var is = false;
+          var type = {};
+          for(var i=0; i<resp.profesionales.length;i++){
+            console.log(resp.profesionales[i]._id);;
+            if(resp.profesionales[i]._id == professionalInformation.professionalType){
+              is = true;
+              type["_id"] = resp.profesionales[i]._id;
+              type["type"] = resp.profesionales[i].tipo;
+              type["decription"] = resp.profesionales[i].decripcion;
+              break;
+            }
+          }
+          if(is){
+            var tmp_path = req.files.evidence.path;//ruta del archivo
+            var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria
+            var filename = random+"."+req.files.evidence.name;//nombre del archivo mas variable aleatoria
+            var target_path=__dirname+"/../../../../public/doctors/PDFs/"+filename;// hacia donde subiremos nuestro archivo dentro de nuestro servidor
+            console.log("Se va guardar en: "+target_path);
+            
+            fs.rename(tmp_path,target_path,function (err) {//Escribimos el archivo
+              if (err) {
+                console.log("hubo algun error guardando el archivo pdf"); 
+                console.log(err);
+              }else{
+                console.log("Se guardo el archivo en: "+target_path);
+              }
+              fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
+              });
+            });
+            professionalInformation.evidence = "/doctors/PDFs/"+filename;
+            
+            models.professionalTypes.save(type);
 
-        professionalInformation.idDAI = doctorAI._id;
-        console.log(professionalInformation.isWorking);
-        professionalInformation.isWorking = professionalInformation.isWorking.toLowerCase();
-        if(professionalInformation.isWorking == "si"){
-          console.log("si esta trabajando");
-          console.log(professionalInformation.jobInformation);
-          models.jobInformation.create(professionalInformation.jobInformation, function(err, ji){
-            if (err) {
-              if (err.code == 11000) {
-                models.jobInformation.findOne({"clinic.nit": professionalInformation.jobInformation.clinic.nit}, function(err, ji){
-                  if(err){
-                    res500Code(res);
+            doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+              console.log("DoctorAI: "+doctorAI);
+              professionalInformation.idDAI = doctorAI._id;
+              console.log(professionalInformation.isWorking);
+              professionalInformation.isWorking = professionalInformation.isWorking.toLowerCase();
+              if(professionalInformation.isWorking == "si"){
+                console.log("si esta trabajando");
+                console.log(professionalInformation.jobInformation);
+                models.jobInformation.create(professionalInformation.jobInformation, function(err, ji){
+                  if (err) {
+                    if (err.code == 11000) {
+                      models.jobInformation.findOne({"clinic.nit": professionalInformation.jobInformation.clinic.nit}, function(err, ji){
+                        if(err){
+                          res500Code(res);
+                        }else{
+                          professionalInformation.jobInformation = ji._id;
+                          models.doctorsProfessionalInformation.create(professionalInformation, function (err, doctorPI) {
+                            if (err) {
+                              if (err.code == 11000) {
+                                res.send({
+                                  error: {
+                                    code:200,
+                                    error:"ProfessionalInformationAlreadySaved",
+                                    info:"This username already has an asociated personalInformation for udate use PUT instead POST"
+                                  }
+                                });
+                              }else{  
+                                console.log(err);
+                                res500Code(res);
+                              }
+                            }else{
+                              doctorAI.pri = doctorPI._id;
+                              doctorAI.save();
+                              res.send({error: null, doctorProfessionalInformation: doctorPI});
+                            }
+                          });
+                        }
+                      });
+                    }else{  
+                      console.log(err);
+                      res500Code(res);
+                    }
                   }else{
+                    console.log("se guardo la informacion de trabajo");
                     professionalInformation.jobInformation = ji._id;
                     models.doctorsProfessionalInformation.create(professionalInformation, function (err, doctorPI) {
                       if (err) {
@@ -605,63 +754,43 @@ exports.saveDoctorProfessionalInformation = function (req, res){
                         }
                       }else{
                         doctorAI.pri = doctorPI._id;
-                        doctorAI.save();
+                        doctorAI.save();        
                         res.send({error: null, doctorProfessionalInformation: doctorPI});
                       }
                     });
                   }
-                });
-              }else{  
-                console.log(err);
-                res500Code(res);
-              }
-            }else{
-              console.log("se guardo la informacion de trabajo");
-              professionalInformation.jobInformation = ji._id;
-              models.doctorsProfessionalInformation.create(professionalInformation, function (err, doctorPI) {
-                if (err) {
-                  if (err.code == 11000) {
-                    res.send({
-                      error: {
-                        code:200,
-                        error:"ProfessionalInformationAlreadySaved",
-                        info:"This username already has an asociated personalInformation for udate use PUT instead POST"
-                      }
-                    });
-                  }else{  
-                    console.log(err);
-                    res500Code(res);
-                  }
-                }else{
-                  doctorAI.pri = doctorPI._id;
-                  doctorAI.save();        
-                  res.send({error: null, doctorProfessionalInformation: doctorPI});
-                }
-              });
-            }
-          })          
-        }else{
-          console.log("no esta trabajando")
-          // req.body.personalInformation.jobInformation = null;
-          models.doctorsProfessionalInformation.create(professionalInformation, function (err, doctorPI) {
-            if (err) {
-              if (err.code == 11000) {
-                res.send({
-                  error: {
-                    code:200,
-                    error:"ProfessionalInformationAlreadySaved",
-                    info:"This username already has an asociated personalInformation"
+                });          
+              }else{
+                console.log("no esta trabajando")
+                // req.body.personalInformation.jobInformation = null;
+                models.doctorsProfessionalInformation.create(professionalInformation, function (err, doctorPI) {
+                  if (err) {
+                    if (err.code == 11000) {
+                      res.send({
+                        error: {
+                          code:200,
+                          error:"ProfessionalInformationAlreadySaved",
+                          info:"This username already has an asociated personalInformation"
+                        }
+                      });
+                    }else{  
+                      console.log(err);
+                      res500Code(res);
+                    }
+                  }else{
+                    res.send({error: null, doctorProfessionalInformation: doctorPI});
                   }
                 });
-              }else{  
-                console.log(err);
-                res500Code(res);
               }
-            }else{
-              res.send({error: null, doctorProfessionalInformation: doctorPI});
-            }
-          });
-        }
+            });
+          }else{
+            res.send({error:"El tipo de professional no esta habilitado e la secretaria de salud"});
+          }
+        });
+        response.on('error', function(e) {
+          console.log(e);
+          res.send(500);
+        });
       });
     }else{
       validations.resToIncorrectStructure(req,res,"professionalInformation",data);    
@@ -698,38 +827,75 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
   validations.testDoctorProfessionalInformation(professionalInformation, function(testApproved,data){
     if (testApproved) {
       console.log("se aprovo el test");
-      doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
-        professionalInformation.idDAI = doctorAI._id;
-        var tmp_path = req.files.evidence.path;//ruta del archivo
-        var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria
-        var filename = random+"."+req.files.evidence.name;//nombre del archivo mas variable aleatoria
-        var target_path=__dirname+"/../../../../public/doctors/PDFs/"+filename;// hacia donde subiremos nuestro archivo dentro de nuestro servidor
-        console.log("Se va guardar en: "+target_path);
-        
-        fs.rename(tmp_path,target_path,function (err) {//Escribimos el archivo
-          if (err) {
-            console.log("hubo algun error guardando el archivo pdf"); 
-            console.log(err);
-          }else{
-            console.log("Se guardo el archivo en: "+target_path);
-          }
-          fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
-          });
+      var http = require('http');
+      http.get("http://secretariadesalud-cordoba.herokuapp.com/tipoProfesional/", function(response){
+        var resp = "";
+        response.on('data', function (d) {
+          resp+=d;
         });
-        professionalInformation.evidence = "/doctors/PDFs/"+filename;
-
-        if(professionalInformation.isWorking == "si"){
-          console.log("Si esta trabajando");
-          models.jobInformation.create(professionalInformation.jobInformation, function(err, ji){
-            if (err) {
-              console.log("#########################");
-              console.log(err);
-              if (err.code == 11000) {
-                models.jobInformation.findOne({"clinic.nit": professionalInformation.jobInformation.clinic.nit}, function(err, ji){
-                  if(err){
-                    res500Code(res);
+        response.on('end', function() {
+          resp = JSON.parse(resp);
+          var is = false;
+          var type = {};
+          for(var i=0; i<resp.profesionales.length;i++){
+            console.log(resp.profesionales[i]._id);;
+            if(resp.profesionales[i]._id == professionalInformation.professionalType){
+              is = true;
+              type["_id"] = resp.profesionales[i]._id;
+              type["type"] = resp.profesionales[i].tipo;
+              type["decription"] = resp.profesionales[i].decripcion;
+              break;
+            }
+          }
+          if (is) {
+            doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+              professionalInformation.idDAI = doctorAI._id;
+              var tmp_path = req.files.evidence.path;//ruta del archivo
+              var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria
+              var filename = random+"."+req.files.evidence.name;//nombre del archivo mas variable aleatoria
+              var target_path=__dirname+"/../../../../public/doctors/PDFs/"+filename;// hacia donde subiremos nuestro archivo dentro de nuestro servidor
+              console.log("Se va guardar en: "+target_path);
+              
+              fs.rename(tmp_path,target_path,function (err) {//Escribimos el archivo
+                if (err) {
+                  console.log("hubo algun error guardando el archivo pdf"); 
+                  console.log(err);
+                }else{
+                  console.log("Se guardo el archivo en: "+target_path);
+                }
+                fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
+                });
+              });
+              professionalInformation.evidence = "/doctors/PDFs/"+filename;
+              models.professionalTypes.create(type);
+              if(professionalInformation.isWorking == "si"){
+                console.log("Si esta trabajando");
+                models.jobInformation.create(professionalInformation.jobInformation, function(err, ji){
+                  if (err) {
+                    console.log("#########################");
+                    console.log(err);
+                    if (err.code == 11000) {
+                      models.jobInformation.findOne({"clinic.nit": professionalInformation.jobInformation.clinic.nit}, function(err, ji){
+                        if(err){
+                          res500Code(res);
+                        }else{
+                          console.log(ji);
+                          professionalInformation.jobInformation = ji._id;
+                          models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, professionalInformation, function (err, doctorPI) {
+                            if (err) {
+                              console.log(err);
+                              res500Code(res);
+                            }else{
+                              res.send({error: null, doctorProfessionalInformation: "updated successfully" });
+                            }
+                          });
+                        }
+                      });
+                    }else{  
+                      console.log(err);
+                      res500Code(res);
+                    }
                   }else{
-                    console.log(ji);
                     professionalInformation.jobInformation = ji._id;
                     models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, professionalInformation, function (err, doctorPI) {
                       if (err) {
@@ -740,34 +906,26 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
                       }
                     });
                   }
+                })           
+              }else{
+                console.log("no esta trabajando");  
+                models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, professionalInformation, function (err, doctorPI) {
+                  if (err) {
+                    console.log(err);
+                    res500Code(res);
+                  }else{
+                    res.send({error: null, doctorProfessionalInformation: "updated successfully"});
+                  }
                 });
-              }else{  
-                console.log(err);
-                res500Code(res);
               }
-            }else{
-              professionalInformation.jobInformation = ji._id;
-              models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, professionalInformation, function (err, doctorPI) {
-                if (err) {
-                  console.log(err);
-                  res500Code(res);
-                }else{
-                  res.send({error: null, doctorProfessionalInformation: "updated successfully" });
-                }
-              });
-            }
-          })           
-        }else{
-          console.log("no esta trabajando");  
-          models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, professionalInformation, function (err, doctorPI) {
-            if (err) {
-              console.log(err);
-              res500Code(res);
-            }else{
-              res.send({error: null, doctorProfessionalInformation: "updated successfully"});
-            }
-          });
-        }
+            });
+          }else{
+            res.send({error:"El tipo de professional no esta habilitado e la secretaria de salud"});
+          }
+        });
+        response.on('error', function(e) {
+          console.log(e);
+        });
       });
     }else{
       console.log("No se aprovo el test");
