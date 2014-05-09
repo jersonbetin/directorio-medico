@@ -172,8 +172,30 @@ block js
             document.getElementById('div_municipios_clinica').innerHTML=select;
           }
         });
+    });
+    $(function tipo_profesional(){
+      console.log("Se llamo a esta vaina");
+      $.ajax({
+        method:'get',
+        dataType: 'json',
+        url:'http://secretariadesalud-cordoba.herokuapp.com/tipoProfesional',
+        success:function(data){
+          console.log(data);
+          var profesionales=data.profesionales;
+          var select = '<select class="form-control" name="professional_type_input" id="professional_type_input">';
+          for(var i=0; i<profesionales.length;i++){
+            select+='<option value="'+profesionales[i]._id+'">'+profesionales[i].tipo+'</option>';
+          }
+          select += '</select>';
+          document.getElementById('div_professional_type').innerHTML=select;
+        }
       });
+<<<<<<< HEAD
       
+=======
+    });
+    
+>>>>>>> 081b433dac26632a51dc79682403d9dc75330d77
       $("#logout_doctor").on('click', function(e){
         e.preventDefault();
         $.ajax({

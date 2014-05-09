@@ -384,6 +384,51 @@ exports.testDoctorProfessionalInformation = function(professionalInformation, ne
           "value": professionalInformation.professionalType
         }
       });
+      // var http = require('http');
+      // var options = {
+      //   host: "secretariadesalud-cordoba.herokuapp.com",
+      //   path: "/tipoProfesional/",
+      //   method: 'GET',
+      // };
+      // var resp = "";
+      // http.request(options, function (response) {
+      //   response.on('data', function (d) {
+      //      resp+=d;
+      //   });
+      //   response.on('end', function() {
+      //     resp = JSON.parse(resp);
+      //     var is = false;
+      //     for(var i=0; i<resp.profesionales.length;i++){
+      //       console.log(resp.profesionales[i]._id);;
+      //       if(resp.profesionales[i]._id == professionalInformation.professionalType){
+      //         is = true;
+      //         break;
+      //       }
+      //     }
+      //     if(is){
+      //       console.log("El tipo de professional si esta habilitado e la secretaria de salud");
+      //       data.push({
+      //         "professionalInformation.professionalType":{
+      //           "status": "ok",
+      //           "value": professionalInformation.professionalType
+      //         }
+      //       });
+      //     }else{
+      //       console.log("El tipo de professional no esta habilitado e la secretaria de salud");
+            
+      //       data.push({
+      //         "professionalInformation.professionalType":{
+      //           "status": "error",
+      //           "info": "The code of the profession is no avaolable in the secretary"
+      //         }
+      //       });
+      //       testApproved=false;
+      //     }
+      //   });
+      //   response.on('error', function(e) {
+      //     console.log(e);
+      //   });
+      // }).end();
     }else{
       data.push({
         "professionalInformation.professionalType":{
