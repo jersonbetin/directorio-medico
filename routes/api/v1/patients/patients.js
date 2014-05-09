@@ -4,7 +4,7 @@ var models = require('../../../../models/models');
 var helpers = require('../../../../helpers/helpers');
 var mails = require("../libs/mails");
 
-require("./patients_validation_information");
+var validations=require("./patients_validation_information");
 
 
 
@@ -196,9 +196,10 @@ exports.getPatientPersonalInformationById = function (req, res){
   });
 };
 
-exports.getPatientPersonalInformationByUsername = function (req, res){  
+exports.getPatientPersonalInformationByUsername = function (req, res){ 
+  debugger;
   console.log("########## exports.getPatientPersonalInformationByUsername  ##########");
-  patients.findByUsername(req.params.username, res, function(PatientPI){
+  patients.findByUsername(req.params.username, res, function(patientPI){
     console.log("datos personales:"+patientPI);
     res.send(200, {error: null, patientPersonalInformation: patientPI});
   });
@@ -206,8 +207,9 @@ exports.getPatientPersonalInformationByUsername = function (req, res){
 
 //post
 exports.savePatientPersonalInformation = function (req, res){
+  debugger;
   console.log("########## exports.savePatientPersonalInformation  ##########");
-  testPatientPersonalInformation(req.body.personalInformation, function(testApproved,data){
+  validations.testPatientPersonalInformation(req.body.personalInformation, function(testApproved,data){
     if (testApproved) {
       console.log("Test approved");
       console.log(req.params.username);
@@ -233,7 +235,7 @@ exports.savePatientPersonalInformation = function (req, res){
 //put
 exports.updatePatientPersonalInformation = function(req, res) {
   console.log("########## exports.updatePatientPersonalInformation  ##########");
-  testPatientPersonalInformation(req.body.personalInformation, function(testApproved,data){
+  validations.testPatientPersonalInformation(req.body.personalInformation, function(testApproved,data){
     if (testApproved) {
       console.log("Test approved");
       console.log(req.params.username);

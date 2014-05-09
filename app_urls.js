@@ -78,11 +78,15 @@ module.exports = function (app) {
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);
   app.delete('/login/doctors', middleware.csrfValidation, sessions.destroyDoctorSession);
   
+  //- informacion de los pacientes
   app.get('/signup/patients', renderTemplates.renderSigupPatientTemplate);
   app.post('/signup/patients', middleware.csrfValidation, api.patients.savePatientAccountInformation);
   app.get('/login/patients', renderTemplates.renderLoginPatientTemplate);
   app.post('/login/patients', middleware.csrfValidation, sessions.newPatientSession);
   app.delete('/login/patients', middleware.csrfValidation, sessions.destroyPatientSession);
+
+  app.get('/:username/patient_information', renderTemplates.renderInformationPatient);
+  //********************
 
   app.get('/:username/personal_information', renderTemplates.renderPersonalInformation)
   app.get('/:username/professional_information', renderTemplates.renderProfessionalInformation)

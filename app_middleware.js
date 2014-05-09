@@ -118,7 +118,7 @@ exports.doctorsCredentialsVerification = function (req, res, next){
 }
 
 exports.patientsCredentialsVerification = function (req, res, next){
-  console.log("#################### CREDENTIALS VERIFICATION  ####################")
+  console.log("#################### CREDENTIALS VERIFICATION PATIENTS  ####################")
   if (req.header("accessToken")) {
     models.patientsAccessTokens.findOne({accessToken:req.header("accessToken")}, function(err, patientAccessToken){
       if (err) {
