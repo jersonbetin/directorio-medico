@@ -17,10 +17,20 @@ block nav
         a(href="/") 
           i.fa.fa-home
           |  Inicio
-      li.active
-        a()
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-search
-          |  Consultar Medicos
+          | Consultar
+          b.caret
+        ul.dropdown-menu
+          li.active
+            a()
+              i.fa.fa-user-md
+              |  Medicos en el directorio
+          li
+            a(href="/search/Idoneidad")
+              i.fa.fa-ambulance
+              |  Idoneidad medica
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-pencil-square
@@ -54,16 +64,25 @@ block content
             .form-group
               label.control-label(for="name_like") Nombre: 
               input.form-control#name_like(type="text", placeholder="Nombre del doctor")
+            .form-group
+              label.control-label(for="lastname_like") Nombre: 
+              input.form-control#lastname_like(type="text", placeholder="Primer apellido del doctor")
         .board-avanced
           .form-group
-            label.control-label(for="name") Nombre: 
-            input.form-control#name(type="text", placeholder="Nombre del doctor")
+            label.control-label(for="lastnames") Apellido: 
+            input.form-control#lastnames(type="text", placeholder="Apellido del doctor")
           .form-group
-            label.control-label(for="city") Ciudad de trabajo: 
-            input.form-control#city(type="text", placeholder="Nombre del doctor")
+            label.control-label(for="identificacion") Identificacion: 
+            input.form-control#identificacion(type="text", placeholder="Identificacion del doctor")
           .form-group
-            label.control-label(for="nationality") Nacionalidad: 
-            input.form-control#nationality(type="text", placeholder="Nombre del doctor")
+            label.control-label(for="tipoProfesional") Tipo de profesional: 
+            #div_professional_type
+          .form-group
+            label.control-label(for="city_clinica") Ciudad de trabajo: 
+            #div_municipios_clinica
+          .form-group
+            label.control-label(for="clinica") Nombre de la clinica: 
+            input.form-control#clinica(type="text", placeholder="Clinica donde trabaja el doctor")
           .form-group
             button.btn.btn-info.form-control#button_search BUSQUEDA
         .board-radio
@@ -94,24 +113,114 @@ block js
             if($(this).val()=='simple'){
               $('.board-avanced').css('display', 'none');
               $('.board-single').css('display', 'block');
+              limpiar();
             }else{
               $('.board-single').css('display', 'none');
               $('.board-avanced').css('display', 'block');
+              limpiar();
             }
           });
         $('#name_like').on('keyup', function(){
             var data=$(this).val();
+            var lastnames=$('#lastname_like').val();
             $.ajax({
                 method:'get',
-                url:'/api/v1/doctors?name_like='+data,
+                url:'/api/v1/doctors?name_like='+data+'&lastname_like='+lastnames,
                 success:function(data){
                   console.log(data);
-                  if(data!=null){
-                    var table='<table>';
+                  if(data.length!=0){
+                    var table='';
                       for(var i=0; i<data.length; i++){
                           table+='<tr><td>'+data[i].identification.number+'</td><td>'+data[i].names+' '+data[i].lastnames.first+' '+data[i].lastnames.second+'</td><td>'+data[i].contactData.phone.home+'</td><td>'+data[i].contactData.phone.mobile+'</td></tr>';
                       }
-                          table+='</table>';
+                      document.getElementById('result_search').innerHTML=table;
+                  }
+                },
+                processData:function(){
+                  document.getElementById('result_search').innerHTML='esperando...';
+                }
+              });
+          });
+
+        $('#lastname_like').on('keyup', function(){
+            var data=$(this).val();
+            var name=$('#name_like').val();
+            $.ajax({
+                method:'get',
+                url:'/api/v1/doctors?name_like='+name+'&lastname_like='+data,
+                success:function(data){
+                  console.log(data);
+                  if(data.length!=0){
+                    var table='';
+                      for(var i=0; i<data.length; i++){
+                          table+='<tr><td>'+data[i].identification.number+'</td><td>'+data[i].names+' '+data[i].lastnames.first+' '+data[i].lastnames.second+'</td><td>'+data[i].contactData.phone.home+'</td><td>'+data[i].contactData.phone.mobile+'</td></tr>';
+                      }
+                      document.getElementById('result_search').innerHTML=table;
+                  }
+                },
+                processData:function(){
+                  document.getElementById('result_search').innerHTML='esperando...';
+                }
+              });
+          });
+        function limpiar(){
+          $('#lastnames').val('');
+          $('#identificacion').val('');
+          $('#professional_type_input').val('');
+          $('#city_clinica').val('');
+          $('#clinica').val('');
+        }
+
+        $.ajax({
+            method:'get',
+            dataType: 'json',
+            url:'http://secretariadesalud-cordoba.herokuapp.com/tipoProfesional',
+            success:function(data){
+              console.log(data);
+              var profesionales=data.profesionales;
+              var select = '<select class="form-control" name="professional_type_input" id="professional_type_input">';
+                    select+='<option value="">Tipo de profesion del doctor</option>';
+              for(var i=0; i<profesionales.length;i++){
+                select+='<option value="'+profesionales[i]._id+'">'+profesionales[i].tipo+'</option>';
+              }
+              select += '</select>';
+              document.getElementById('div_professional_type').innerHTML=select;
+            }
+          });
+
+        $(function municipios(){
+            $.ajax({
+              method:'get',
+              url:'/municipios',
+              success:function(data){
+                var select = '<select class="form-control" name="city_clinica" id="city_clinica">';
+                      select+='<option value="">Ciudad donde trabaja el doctor</option>';
+                for(var i=0; i<data.municipios.length;i++){
+                  select+='<option value="'+data.municipios[i]._id+'">'+data.municipios[i].name+'</option>';
+                }
+                select += '</select>';
+                document.getElementById('div_municipios_clinica').innerHTML=select;
+              }
+            });
+        });
+
+        $('#button_search').on('click', function(){
+            var lastnames=$('#lastnames').val();
+            var identification=$('#identificacion').val();
+            var tipoProfesional=$('#professional_type_input').val();
+            var city=$('#city_clinica').val();
+            var clinica=$('#clinica').val();
+            var criterio='lastname_like='+lastnames+'&identification='+identification+'&profession_code='+tipoProfesional+'&job_city='+city+'&clinic_name='+clinica;
+            $.ajax({
+                method:'get',
+                url:'/api/v1/doctors?'+criterio,
+                success:function(data){
+                  console.log(data);
+                  if(data.length!=0){
+                    var table='';
+                      for(var i=0; i<data.length; i++){
+                          table+='<tr><td>'+data[i].identification.number+'</td><td>'+data[i].names+' '+data[i].lastnames.first+' '+data[i].lastnames.second+'</td><td>'+data[i].contactData.phone.home+'</td><td>'+data[i].contactData.phone.mobile+'</td></tr>';
+                      }
                       document.getElementById('result_search').innerHTML=table;
                   }
                 },
