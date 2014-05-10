@@ -108,132 +108,148 @@ doctors.findProfessionalInformationById = function (id, res, next){
 /*Doctors Account Information*/
 //get
 var r;
-
-var professionCriteria = {};
-function process2(doc, callback){
-  models.doctorsProfessionalInformation.findOne({idDAI:doc._id})
-  .populate({
-    path: "jobInformation",
-    match: jobCriteria,
-  }).populate({
-    path: "professionalType",
-    match: professionCriteria,
-  }).exec(function(err, d){
-    if(err){
-      console.log(err);
-    }else{
-      if(d){
-        doc.pri = d;
+function process1(doc, callback){
+  if(doc.pri != null){  
+    models.doctorsProfessionalInformation.findOne({_id:doc.pri._id}).populate("jobInformation").populate("professionalType")
+    .exec(function(err, pri){
+      if(err){
+        console.log(err);
+      }else if(pri){
+        doc.pri  = pri;
+        callback(null, doc);
+      }else{
+        callback(null, doc);
       }
-      callback(null, doc);
-    }
-  });
+    });
+  }else{
+    callback(null, doc);
+  }
 }
 
 var personalCriteria = {};
-var o = {};
-function process1(doc, callback){ 
-  personalCriteria.idDAI = doc._id;
-  o=doc;
-  console.log(personalCriteria);
-  models.doctorsPersonalInformation.findOne(personalCriteria, function(err, dpi){
-    if(err){
-      console.log(err);
-    }else{
-      if(dpi){
-        console.log("todo normal");
-        // console.log(dpi);
-        // console.log(doc);
-        o.prototype.pei = "dpi";
-      }else{
-        console.log("entre aqui");
-        if(personalCriteria.names || personalCriteria.lastnames){
-          console.log("No hay coincidencias con el nombre o apellido");
-          o = null;
-        }
-      }
-      callback(null, o);
-    }
-  });
-}
-
+var professionalCriteria = {};
 function f1(err, docs){
+
+  var newDocs = [];
+  var len = docs.length;
+  // personal information filtering
+  if(personalCriteria.name_like){
+    console.log("name: "+personalCriteria.name_like);
+    for(var i=0; i<len; i++){
+      if (docs[i].pei != null && docs[i].pei.names.indexOf(personalCriteria.name_like) != -1) {
+        newDocs.push(docs[i]);
+      }
+    }
+    docs = newDocs;
+  }
+
+  if(personalCriteria.lastname_like){
+    newDocs = [];
+    len = docs.length;
+    console.log("lastname: "+personalCriteria.lastname_like);
+    for(var i=0; i<len; i++){
+      if (docs[i].pei != null && docs[i].pei.lastnames.first.indexOf(personalCriteria.lastname_like) != -1) {
+        newDocs.push(docs[i]);
+      }
+    }
+    docs = newDocs;
+  }
+
+  if(personalCriteria.identification){
+    newDocs = [];
+    len = docs.length;
+    console.log("identification: "+personalCriteria.identification);
+    for(var i=0; i<len; i++){
+      if (docs[i].pei != null && docs[i].pei.identification.number == personalCriteria.identification) {
+        newDocs.push(docs[i]);
+      }
+    }
+    docs = newDocs;
+  }
+
+  // professional information filtering
+  if(professionalCriteria.job_city){
+    newDocs = [];
+    len = docs.length;
+    console.log("city of work: "+ professionalCriteria.job_city);
+    for(var i=0; i<len; i++){
+      if (docs[i].pri != null && docs[i].pri.jobInformation.clinic.location.city == professionalCriteria.job_city) {
+        newDocs.push(docs[i]);
+      }
+    }
+    docs = newDocs;
+  }
+
+  if(professionalCriteria.clinic_name){
+    newDocs = [];
+    len = docs.length;
+    console.log("name of the clinic: "+ professionalCriteria.clinic_name);
+    for(var i=0; i<len; i++){
+      if (docs[i].pri != null && docs[i].pri.jobInformation.clinic.name.toLowerCase() == professionalCriteria.clinic_name.toLowerCase()) {
+        newDocs.push(docs[i]);
+      }
+    }
+    docs = newDocs;
+  }
+
+  if(professionalCriteria.profession_code){
+    newDocs = [];
+    len = docs.length;
+    console.log("profession code: "+ professionalCriteria.profession_code);
+    for(var i=0; i<len; i++){
+      if (docs[i].pri != null && docs[i].pri.professionalType._id == professionalCriteria.profession_code) {
+        newDocs.push(docs[i]);
+      }
+    }
+    docs = newDocs;
+  }
   personalCriteria = {};
+  professionalCriteria = {};
   r.send(docs);
-  // async.map(doctors, process2, f2);
 }
-// var jobCriteria = {};
-
-// function process2(doc, callback){ 
-//   models.doctorsPersonalInformation.findOne({idDAI:doc._id})
-//   .populate({
-//     path: "jobInformation",
-//     match: jobCriteria,
-//   }).populate({
-//     path: "professionalType",
-//     match: professionCriteria,
-//   }).exec(function(err, dpi){
-//     if(err){
-//       console.log(err);
-//     }else{
-//       if(dpi){
-//         doc.pri = dpi;
-//       }else{
-//         doc = null;
-//       }
-//       callback(null, doc);
-//     }
-//   });
-// }
-
 
 exports.getDoctorsInformation = function (req, res){
   var criteria = {};
   if (req.query.register_state) {
     criteria.registerState = req.query.register_state;
+  }else{
+    criteria.registerState = 2;
   }
+
+  personalCriteria = {};
   if(req.query.name_like){
-    personalCriteria.names = {
-      $regex: req.query.name_like
-    }
+    personalCriteria.name_like = req.query.name_like;
   }
   if(req.query.lastname_like){
-    personalCriteria["lastnames.firs"] = {
-      $regex: req.query.lastname_like
-    }
+    personalCriteria.lastname_like = req.query.lastname_like;
   }
-  // if(req.query.job_city){
-  //   jobCriteria["clinic.location.city"] = req.query.job_city; 
-  // }
-  // var professionCriteria = {};  
-  // if(req.query.profesion){
-  //   professionCriteria._id = req.query.profession; 
-  // }
+  if(req.query.identification){
+    personalCriteria.identification = req.query.identification;
+  }
+  if(req.query.job_city){
+    professionalCriteria.job_city = req.query.job_city; 
+  }
+  if(req.query.clinic_name){
+    professionalCriteria.clinic_name = req.query.clinic_name; 
+  }
+  var professionCriteria = {};  
+  if(req.query.profession_code){
+    professionalCriteria.profession_code = req.query.profession_code; 
+  }
 
   // console.log(personalCriteria);
 
   var async = require("async");
-  models.doctorsAccountInformation.find(criteria)
+  models.doctorsAccountInformation.find(criteria).populate("pei").populate("pri").populate("ti")
   .exec(function(err, doctors) {
     if (err) {
       console.log(err);
       res500Code(res);
     }else{
-      // console.log(doctors);
-      // r = res;
-      // async.map(doctors, process1, f1);
-      res.send(doctors);
+      r = res;
+      async.map(doctors, process1, f1);
     }
   });
-
-
-  // .populate({
-  //   path: "pri",
-  //   match: professionCriteria,
-  // }).populate({
-  //   path: "pei",
-  //   match: personalCriteria
-  // }).populate("ti")
 };
 
 exports.getDoctorsAccountInformation = function (req, res) {
