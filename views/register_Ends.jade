@@ -188,7 +188,14 @@ block js
           }
           if(profesional._id!=undefined){
             document.getElementById('inf_tarjeta').innerHTML +=profesional.professionalCard.number;
-            document.getElementById('inf_tipoProfesion').innerHTML +=profesional.professionalType;
+            $.ajax({
+                method:'get',
+                dataType: 'json',
+                url:'http://secretariadesalud-cordoba.herokuapp.com/tipoProfesional/'+profesional.professionalType,
+                success:function(data){
+                  document.getElementById('inf_tipoProfesion').innerHTML +=data.profesionales.tipo;
+                }
+              });
             document.getElementById('inf_trabaja').innerHTML +=profesional.isWorking;
             if(profesional.isWorking=='si'){
               var infoJob1='<tr>';

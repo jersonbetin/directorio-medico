@@ -271,7 +271,9 @@ block js
             if(data.doctorProfessionalInformation){
               console.log(data.doctorProfessionalInformation);
               $("#professional_card_number_input").val(data.doctorProfessionalInformation.professionalCard.number);
-              $("#professional_type_input").val(data.doctorProfessionalInformation.professionalType);
+              $("#professional_type_input").filter(function (){
+                  return $(this).val()==data.doctorProfessionalInformation.professionalType;
+                }).prop('selected', true);
               $("#is_working_input").val(data.doctorProfessionalInformation.isWorking);
               //$("#evidence_input").val(data.doctorProfessionalInformation.evidence);
               $("#button_save_professional_information_form").html("Actualizar");
@@ -313,23 +315,23 @@ block js
         });
       }
 
-      $('#is_working_input').on('change', function(){
-          if($(this).val()=="no"){
-            $('#nit_clinica').attr('disabled',true);
-            $('#name_clinica').attr('disabled',true);
-            $('#city_clinica').attr('disabled',true);
-            $('#address_clinica').attr('disabled',true);
-            $('#mobile_clinica').attr('disabled',true);
-            $('#landline_clinica').attr('disabled',true);
-          }else{
+    $('#is_working_input').on('change', function(){
+        if($(this).val()=="no"){
+          $('#nit_clinica').attr('disabled',true);
+          $('#name_clinica').attr('disabled',true);
+          $('#city_clinica').attr('disabled',true);
+          $('#address_clinica').attr('disabled',true);
+          $('#mobile_clinica').attr('disabled',true);
+          $('#landline_clinica').attr('disabled',true);
+        }else{
           $('#nit_clinica').attr('disabled',false);
           $('#name_clinica').attr('disabled',false);
-            $('#city_clinica').attr('disabled',false);
-            $('#address_clinica').attr('disabled',false);
-            $('#mobile_clinica').attr('disabled',false);
-            $('#landline_clinica').attr('disabled',false);
-          }
-        });
+          $('#city_clinica').attr('disabled',false);
+          $('#address_clinica').attr('disabled',false);
+          $('#mobile_clinica').attr('disabled',false);
+          $('#landline_clinica').attr('disabled',false);
+        }
+      });
 
       $("#verify_identification_button").on("click", function(e){
         e.preventDefault();
@@ -364,5 +366,76 @@ block js
         });
       });
 
-      getDoctorProfessionalInformation();
+      function tipo_profesional(next){
+          $.ajax({
+              method:'get',
+              dataType: 'json',
+              url:'http://secretariadesalud-cordoba.herokuapp.com/tipoProfesional',
+              success:function(data){
+                console.log(data);
+                var profesionales=data.profesionales;
+                var select = '<select class="form-control" name="professional_type_input" id="professional_type_input">';
+                for(var i=0; i<profesionales.length;i++){
+                  select+='<option value="'+profesionales[i]._id+'">'+profesionales[i].tipo+'</option>';
+                }
+                select += '</select>';
+                document.getElementById('div_professional_type').innerHTML=select;
+                next();
+              }
+            });
+          }
+
+
+    tipo_profesional(function(){
+        $.ajax({
+          url:"/api/v1/doctors/me/professional_information",
+          headers: {
+            "accessToken": localStorage.accessToken
+          },
+          success: function(data){
+            console.log(data);
+            if(data.doctorProfessionalInformation){
+              console.log(data.doctorProfessionalInformation);
+              $("#professional_card_number_input").val(data.doctorProfessionalInformation.professionalCard.number);
+              $("#professional_type_input").val(data.doctorProfessionalInformation.professionalType);
+              $("#is_working_input").val(data.doctorProfessionalInformation.isWorking);
+              //$("#evidence_input").val(data.doctorProfessionalInformation.evidence);
+              $("#button_save_professional_information_form").html("Actualizar");
+              if(data.doctorProfessionalInformation.isWorking=='si'){
+                $('#nit_clinica').attr('disabled',false);
+                $('#name_clinica').attr('disabled',false);
+                $('#city_clinica').attr('disabled',false);
+                $('#address_clinica').attr('disabled',false);
+                $('#mobile_clinica').attr('disabled',false);
+                $('#landline_clinica').attr('disabled',false);
+                $('#nit_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.nit);
+                $('#name_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.name);
+                $('#city_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.location.city);
+                $('#address_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.location.address);
+                $('#mobile_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.phone.mobile);
+                $('#landline_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.phone.landline);
+              }else{
+                $('#nit_clinica').attr('disabled',true);
+                $('#name_clinica').attr('disabled',true);
+                $('#city_clinica').attr('disabled',true);
+                $('#address_clinica').attr('disabled',true);
+                $('#mobile_clinica').attr('disabled',true);
+                $('#landline_clinica').attr('disabled',true);
+                $('#nit_clinica').val('');
+                $('#name_clinica').val('');
+                //$('#city_clinica').val('');
+                $('#address_clinica').val('');
+                $('#mobile_clinica').val('');
+                $('#landline_clinica').val('');
+              }
+            }else{
+              console.log("No se ha guardado aun informacion personal de este doctor");
+              $('#myModal').modal();
+            }
+            //- if (data.userdataDoctor){
+            //-   console.log(data.userdataDoctor):
+            //- }
+          }
+        });
+      });
     }); // End of document on ready event

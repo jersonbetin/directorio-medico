@@ -1,3 +1,6 @@
+var helpers = require('../../../../helpers/helpers');
+var isDefined = helpers.isDefined;
+
 var patientsPersonalInformationStructure = {
   "personalInformation" :{
     "identification": {
@@ -20,7 +23,7 @@ var patientsPersonalInformationStructure = {
   }
 };
 
-var testPatientPersonalInformation = function(personalInformation, next) {
+exports.testPatientPersonalInformation = function(personalInformation, next) {
   var data = [];
   var testApproved = true;
   // console.log(personalInformation);
@@ -239,7 +242,7 @@ var testPatientPersonalInformation = function(personalInformation, next) {
   next(testApproved, data);
 };
 
-var resToIncorrectStructure = function(req, res, structureType, data) {
+exports.resToIncorrectStructure = function(req, res, structureType, data) {
   structureType = structureType || "personalInformation"
   if (structureType=="personalInformation") {
     var structure = doctorPersonalInformationStructure;
