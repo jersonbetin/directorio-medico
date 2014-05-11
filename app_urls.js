@@ -73,6 +73,7 @@ module.exports = function (app) {
   app.post('/signup/doctors', middleware.csrfValidation, api.doctors.saveDoctorAccountInformation);
   
   app.get('/search/doctors', renderTemplates.renderSearchDoctorTemplate);
+  app.get('/search/idoneidad', renderTemplates.renderSearchIdoneidadTemplate);
 
   app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);

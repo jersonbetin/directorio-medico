@@ -267,13 +267,13 @@ block js
             "accessToken": localStorage.accessToken
           },
           success: function(data){
-            console.log(data);
+            //- console.log(data);
+            console.log('estoy aqui');
+            console.log(data.doctorProfessionalInformation.professionalType)
             if(data.doctorProfessionalInformation){
               console.log(data.doctorProfessionalInformation);
               $("#professional_card_number_input").val(data.doctorProfessionalInformation.professionalCard.number);
-              $("#professional_type_input").filter(function (){
-                  return $(this).val()==data.doctorProfessionalInformation.professionalType;
-                }).prop('selected', true);
+              $("#professional_type_input").filter(data.doctorProfessionalInformation.professionalType._id);
               $("#is_working_input").val(data.doctorProfessionalInformation.isWorking);
               //$("#evidence_input").val(data.doctorProfessionalInformation.evidence);
               $("#button_save_professional_information_form").html("Actualizar");
@@ -397,7 +397,7 @@ block js
             if(data.doctorProfessionalInformation){
               console.log(data.doctorProfessionalInformation);
               $("#professional_card_number_input").val(data.doctorProfessionalInformation.professionalCard.number);
-              $("#professional_type_input").val(data.doctorProfessionalInformation.professionalType);
+              $("#professional_type_input").val(data.doctorProfessionalInformation.professionalType._id);
               $("#is_working_input").val(data.doctorProfessionalInformation.isWorking);
               //$("#evidence_input").val(data.doctorProfessionalInformation.evidence);
               $("#button_save_professional_information_form").html("Actualizar");

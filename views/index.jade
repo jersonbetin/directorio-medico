@@ -16,10 +16,20 @@ block nav
         a() 
           i.fa.fa-home
           |  Inicio
-      li
-        a(href="/search/doctors")
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-search
-          |  Consultar Medicos
+          |   Consultar
+          b.caret
+        ul.dropdown-menu
+          li
+            a(href="/search/doctors")
+              i.fa.fa-user-md
+              |  Medicos en el directorio
+          li
+            a(href="/search/Idoneidad")
+              i.fa.fa-ambulance
+              |  Idoneidad medica
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-pencil-square

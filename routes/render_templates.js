@@ -138,6 +138,17 @@ exports.renderSearchDoctorTemplate = function (req, res){
   res.render('search_doctors', {data: data});
 };
 
+exports.renderSearchIdoneidadTemplate = function (req, res){
+  console.log("#################### renderSearchIdoneidad ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  res.render('search_idoneidad', {data: data});
+};
+
 exports.renderInformationPatient = function (req, res){
   console.log("#################### renderPersonalInformation ####################");
   console.log("Generation csrf token");
