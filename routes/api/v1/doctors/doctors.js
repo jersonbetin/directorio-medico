@@ -250,7 +250,7 @@ exports.getDoctorsInformation = function (req, res){
       async.map(doctors, process1, f1);
     }
   });
-};
+};  
 
 exports.getDoctorsAccountInformation = function (req, res) {
   console.log("########## exports.getDoctorsAccountInformation  ##########");
