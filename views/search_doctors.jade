@@ -120,18 +120,19 @@ block js
               limpiar();
             }
           });
+
         $('#name_like').on('keyup', function(){
             var data=$(this).val();
             var lastnames=$('#lastname_like').val();
             $.ajax({
                 method:'get',
-                url:'/api/v1/doctors?name_like='+data+'&lastname_like='+lastnames,
+                url:'/api/v1/doctors?register_state=0&name_like='+data+'&lastname_like='+lastnames,
                 success:function(data){
                   console.log(data);
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                          table+='<tr><td>'+data[i].identification.number+'</td><td>'+data[i].names+' '+data[i].lastnames.first+' '+data[i].lastnames.second+'</td><td>'+data[i].contactData.phone.home+'</td><td>'+data[i].contactData.phone.mobile+'</td></tr>';
+                           table+='<tr><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                   }
@@ -147,13 +148,13 @@ block js
             var name=$('#name_like').val();
             $.ajax({
                 method:'get',
-                url:'/api/v1/doctors?name_like='+name+'&lastname_like='+data,
+                url:'/api/v1/doctors?register_state=0&name_like='+name+'&lastname_like='+data,
                 success:function(data){
                   console.log(data);
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                          table+='<tr><td>'+data[i].identification.number+'</td><td>'+data[i].names+' '+data[i].lastnames.first+' '+data[i].lastnames.second+'</td><td>'+data[i].contactData.phone.home+'</td><td>'+data[i].contactData.phone.mobile+'</td></tr>';
+                          table+='<tr><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                   }
@@ -210,7 +211,7 @@ block js
             var tipoProfesional=$('#professional_type_input').val();
             var city=$('#city_clinica').val();
             var clinica=$('#clinica').val();
-            var criterio='lastname_like='+lastnames+'&identification='+identification+'&profession_code='+tipoProfesional+'&job_city='+city+'&clinic_name='+clinica;
+            var criterio='register_state=0&lastname_like='+lastnames+'&identification='+identification+'&profession_code='+tipoProfesional+'&job_city='+city+'&clinic_name='+clinica;
             $.ajax({
                 method:'get',
                 url:'/api/v1/doctors?'+criterio,
@@ -219,7 +220,7 @@ block js
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                          table+='<tr><td>'+data[i].identification.number+'</td><td>'+data[i].names+' '+data[i].lastnames.first+' '+data[i].lastnames.second+'</td><td>'+data[i].contactData.phone.home+'</td><td>'+data[i].contactData.phone.mobile+'</td></tr>';
+                          table+='<tr><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                   }

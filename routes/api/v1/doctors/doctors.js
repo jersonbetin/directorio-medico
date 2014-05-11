@@ -669,12 +669,14 @@ exports.saveDoctorProfessionalInformation = function (req, res){
     if (testApproved) {
       console.log("Test approved");
       var http = require('http');
-      http.get("secretariadesalud-cordoba.herokuapp.com/tipoProfesional/", function(response){
+      http.get("http://secretariadesalud-cordoba.herokuapp.com/tipoProfesional", function(response){
         var resp = "";
         response.on('data', function (d) {
           resp+=d;
+          console.log(resp);
         });
         response.on('end', function() {
+          console.log("Respuesta: "+resp);
           resp = JSON.parse(resp);
           var is = false;
           var type = {};
@@ -684,7 +686,7 @@ exports.saveDoctorProfessionalInformation = function (req, res){
               is = true;
               type["_id"] = resp.profesionales[i]._id;
               type["type"] = resp.profesionales[i].tipo;
-              type["decription"] = resp.profesionales[i].decripcion;
+              type["description"] = resp.profesionales[i].descripcion;
               break;
             }
           }
@@ -707,7 +709,8 @@ exports.saveDoctorProfessionalInformation = function (req, res){
             });
             professionalInformation.evidence = "/doctors/PDFs/"+filename;
             
-            models.professionalTypes.save(type);
+            console.log(type);
+            models.professionalTypes.create(type);
 
             doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
               console.log("DoctorAI: "+doctorAI);
