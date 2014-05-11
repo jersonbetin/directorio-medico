@@ -377,19 +377,42 @@ exports.saveDoctorAccountInformation = function (req, res){
 
 //put
 exports.updateDoctorRegisterStateById = function (req, res){
-  if (req.body.registerState && (req.body.registerState == 0 || req.body.registerState==1 || req.body.registerState==2 || req.body.registerState==3) && req.body.observation) {
+  if (req.body.registerState && (req.body.registerState==2 || req.body.registerState==3) && req.body.observation) {
     models.doctorsPersonalInformation.findOne({"identification.number": req.params.identification}, function(err, DPI){
       if(err){
         console.log(err);
         res500Code(res);
       }else if(DPI){
-        models.doctorsAccountInformation.update({_id:DPI.idDAI}, {$set: {registerState: req.body.registerState, observation: req.body.observation}}, function(err, est){
+        models.doctorsAccountInformation.findOne({_id:DPI.idDAI}, function(err, DAI){
           if(err){
             console.log(err);
             res500Code(res);
+          }else if(DAI){
+            DAI.registerState = req.body.registerState;
+            DAI.observation = req.body.observation;
+            DAI.save(function(err, doc){
+              var rs = "";
+              if(req.body.registerState == 2){
+                rs = "Registrado y aprovado";
+              }else{
+                rs = "Registrado pero hinabilidato";
+              }
+              // setup e-mail data with unicode symbols
+              var mailOptions = {
+                from: "<consulting.cordoba.service@gmail.com>", // sender address
+                to: doc.email, // list of receivers
+                subject: "Actualizacion del registro de estado", // Subject line
+                text: "La secretaria de salud ha actualizado tu estado de registro. Ahora tu estado de registro es: "+rs+". Por favor ingrese a la plataforma y verifique su actualizacion", // plaintext body
+                html: "<h2>La secretaria de salud ha actualizado tu estado de registro</h2>. Ahora tu estado de registro es: <strong>"+rs+"</strong>. <p>Por favor ingrese a la plataforma y verifique su actualizacion</p>"
+              }
+
+              mails.sendMail(mailOptions);
+              
+              console.log("se actualizo");
+              res.send({error:null, status:"updted successfully", dai: doc});
+            }); 
           }else{
-            console.log("se actualizo");
-            res.send({error:null, status:"updted successfully"});
+            res404Code(res);
           }
         });
       }else{
@@ -397,7 +420,7 @@ exports.updateDoctorRegisterStateById = function (req, res){
       }
     });
   }else{
-    res.send({error: "You must to send a registerState field and its value must be 0, 1, 2 or 3, and a observation field, please fix the request"});
+    res.send({error: "You must to send a registerState field and its value must be 2 or 3, and you have to send a observation field, please fix the request"});
   }
 };
 
