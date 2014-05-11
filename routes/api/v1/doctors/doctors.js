@@ -109,7 +109,7 @@ doctors.findProfessionalInformationById = function (id, res, next){
 //get
 var r;
 function process1(doc, callback){
-  if(doc.pri != null){  
+  if(doc.pri != null){    
     models.doctorsProfessionalInformation.findOne({_id:doc.pri._id}).populate("jobInformation").populate("professionalType")
     .exec(function(err, pri){
       if(err){
@@ -1167,6 +1167,7 @@ exports.uploadToSecretary = function(req, res) {
 
 
 exports.getDoctorSpacesForAppointments = function(req, res){
+  console.log("exports.getDoctorSpacesForAppointments");
   var criteria = {};
   if(req.query.year){
     criteria["date.year"] = req.query.year;
@@ -1183,6 +1184,17 @@ exports.getDoctorSpacesForAppointments = function(req, res){
   if(req.query.isAvailable){
     criteria["isAvailable"] = req.query.isAvailable; 
   }
+  if(req.query.day_start){
+    criteria.day = {
+      "$gte": req.query.day_start
+    } 
+  }
+  if(req.query.day_end){
+    criteria.day = {
+      "$lte": req.query.day_end
+    } 
+  }
+  console.log("criteria: "+criteria);
   if(req.query.username){
     doctors.findAccountInformationByUsername(req.query.username, res, function(doctorAI){
       criteria["idDAI"] = doctorAI._id; 
@@ -1206,6 +1218,8 @@ exports.getDoctorSpacesForAppointments = function(req, res){
 };
 
 exports.getDoctorSpacesForAppointmentsByUsername = function(req, res){
+  console.log("exports.getDoctorSpacesForAppointmentsByUsername");
+  console.log(req.query);
   var criteria = {};
   if(req.query.year){
     criteria["date.year"] = req.query.year;
@@ -1222,6 +1236,24 @@ exports.getDoctorSpacesForAppointmentsByUsername = function(req, res){
   if(req.query.isAvailable){
     criteria["isAvailable"] = req.query.isAvailable; 
   }
+  if(req.query.day_start){
+    criteria["date.day"] = {
+      "$gte": req.query.day_start
+    }
+  }
+  if(req.query.day_end){
+    criteria["date.day"] = {
+      "$lte": req.query.day_end
+    }
+  }
+  if(req.query.day_start && req.query.day_end){
+    criteria["date.day"] = {
+      "$gte": req.query.day_start,
+      "$lte": req.query.day_end
+    }
+  }
+
+  console.log(criteria);
 
   doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
     criteria.idDAI = doctorAI._id;
@@ -1229,6 +1261,7 @@ exports.getDoctorSpacesForAppointmentsByUsername = function(req, res){
       if (err) {
         res500Code(res);
       }else{
+        console.log(dates);
         res.send({error:null, dates: dates});
       }
     });
