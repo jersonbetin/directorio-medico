@@ -105,6 +105,7 @@ var doctorsAccountInformationSchema = new Schema({
     default: 0,
     enum:[0,1,2,3]
   },
+  observation: {type: String, default: ""},
   createdDate: {
     type: Date, 
     default: Date.now

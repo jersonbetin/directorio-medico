@@ -376,40 +376,28 @@ exports.saveDoctorAccountInformation = function (req, res){
 };
 
 //put
-exports.updateDoctorRegisterStateByUsernameFromSecretary = function (req, res){
-  if (req.body.registerState && (req.body.registerState == 0 || req.body.registerState==1 || req.body.registerState==2 || req.body.registerState==3)) {
-    doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
-      doctorAI.registerState = req.body.registerState;
-      doctorAI.save(function(err, doctorAI){
-        if(err){
-          res500Code(res);
-        }else{
-          var rs = "";
-          if(doctorAI.registerState == 0){
-            rs = "Registrado pero no en estudio";
-          }else if(doctorAI.registerState == 1){
-            rs = "Registrado y en estudio";
-          }else if(doctorAI.registerState == 2){
-            rs = "Registrado y aprovado";
+exports.updateDoctorRegisterStateById = function (req, res){
+  if (req.body.registerState && (req.body.registerState == 0 || req.body.registerState==1 || req.body.registerState==2 || req.body.registerState==3) && req.body.observation) {
+    models.doctorsPersonalInformation.findOne({"identification.number": req.params.identification}, function(err, DPI){
+      if(err){
+        console.log(err);
+        res500Code(res);
+      }else if(DPI){
+        models.doctorsAccountInformation.update({_id:DPI.idDAI}, {$set: {registerState: req.body.registerState, observation: req.body.observation}}, function(err, est){
+          if(err){
+            console.log(err);
+            res500Code(res);
           }else{
-            rs = "Registrado y no aprovado";
+            console.log("se actualizo");
+            res.send({error:null, status:"updted successfully"});
           }
-          // setup e-mail data with unicode symbols
-          var mailOptions = {
-            from: "<consulting.cordoba.service@gmail.com>", // sender address
-            to: doctorAI.email, // list of receivers
-            subject: "Actualizacion del registro de estado", // Subject line
-            text: "La secretaria de salud ha actualizado tu estado de registro. Ahora tu estado de registro es: "+rs+". Por favor ingrese a la plataforma y verifique su actualizacion", // plaintext body
-            html: "<h2>La secretaria de salud ha actualizado tu estado de registro</h2>. Ahora tu estado de registro es: <strong>"+rs+"</strong>. <p>Por favor ingrese a la plataforma y verifique su actualizacion</p>"
-          }
-
-          mails.sendMail(mailOptions);
-          res.send(200);
-        }
-      });
+        });
+      }else{
+        res404Code(res);
+      }
     });
   }else{
-    res.send({error: "You must to send a registerState field and its value must be 0, 1, 2 or 3, please fix the request"});
+    res.send({error: "You must to send a registerState field and its value must be 0, 1, 2 or 3, and a observation field, please fix the request"});
   }
 };
 

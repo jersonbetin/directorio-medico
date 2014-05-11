@@ -115,10 +115,10 @@ module.exports = function (app) {
     }  
   }
 
-  app.put('/api/v1/doctors/:username/account_information/register_state', validateSecreatryToken, api.doctors.updateDoctorRegisterStateByUsernameFromSecretary);
+  // app.put('/api/v1/doctors/:username/account_information/register_state', validateSecreatryToken, api.doctors.updateDoctorRegisterStateByUsernameFromSecretary);
 
   /* Arreglar esto para que funcione desde secretaria */
-  // app.put('/api/v1/doctors/:identification/account_information/register_state', validateSecreatryToken, api.doctors.updateDoctorRegisterStateByUsernameFromSecretary);
+  app.put('/api/v1/doctors/:identification/account_information/register_state', validateSecreatryToken, api.doctors.updateDoctorRegisterStateById);
 
   /*Calendary*/
   app.post("/api/v1/doctors/:username/spaceDateForAppointment", middleware.doctorsCredentialsVerification, api.doctors.addDoctorSpaceDateForAppointment);
