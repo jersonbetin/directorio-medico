@@ -1,7 +1,7 @@
 extends layout
 
 block css
-  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/style.css')
 
 block nav
   button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
@@ -84,7 +84,7 @@ block content
       .col-xs-12
         input#csrf_input(type="hidden", value="#{data.csrf}")
         div
-          table#my_calendar.table
+          table#my_calendar.table.table-bordered 
             caption#calendar_caption Calendario   
             thead
               tr(matriz_row=0)
@@ -167,20 +167,41 @@ block js
         //- $("#calendar-test").html(JSON.stringify(getWeeksOfAMonthOfAYear(month, year))); 
       }); 
 
-      function isAvailable(time_start, day){
-        console.log("llamo al isAvailable"); 
+      function thereIsSpaceForApointment(time_start, day, dates){
+        //- console.log(day);
+        //- console.log("llamo al isApointment"); 
         var is = false;
-        for(var i=0; i<day.length; i++){
-          //- console.log("######################");
-          //- console.log(day[i].time.start);
-          //- console.log(time_start);
-          //- console.log("######################");
-          if(day[i].time.start == time_start){
-            is = day[i].isAvailable
+        for(var i=0; i<dates.length; i++){
+          if(dates[i].date.day == day && dates[i].time.start == time_start){
+            //- console.log("######################");
+            console.log("Se encontro una fecha");
+            console.log(dates[i].date.day);
+            console.log(day);
+            console.log(dates[i].time.start);
+            console.log(time_start);
+            is = true;
+            //- console.log("Esta disonible:" + is);
             break;
           }
         }
         return is;
+      }
+
+      function therIsAnAppointment(time_start, day, dates){
+        var is = false;
+        for(var i=0; i<dates.length; i++){
+          if(dates[i].date.day == day && dates[i].time.start == time_start){
+            is = dates[i].isAvailable;
+            console.log("Se encontro una cita");
+            console.log(dates[i].date.day);
+            console.log(day);
+            console.log(dates[i].time.start);
+            console.log(time_start);
+            //- console.log("Esta disonible:" + is);
+            break;
+          }
+        }
+        return !is;
       }
 
       $("select#weeks").on("change", function(e){
@@ -273,93 +294,206 @@ block js
                 }
               }
             }
-            console.log("termine el primer for");
-            var i = 8;
+
             var cal ="";
-            for(i;i<18;i++){
-              var domingo;
+
+            for(var i = 8;i<18;i++){
+              var halfHour1 ="";
+              var halfHour2 ="";
+              var domingo = "<td></td>";
               if(days.domingo != null){
                 if(!days.domingo.isPast){
-                  domingo = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":30</button></div></td>";
-                }else{
-                  domingo = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":30</button></div></td>";
-                }
-              }else{
-                domingo = "<td>Naranjas</td>";
-              }
-              var lunes;
-              if(days.lunes != null){
-                //- console.log("paso el null");
-                if(!days.lunes.isPast){
-                  //- console.log("paso el isPast");
-                  if(!isAvailable(i,data.dates)){
-                    //- console.log("paso el isAvailable");
-                    lunes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":30</button></div></td>";
+                  if(thereIsSpaceForApointment(i, days.domingo.number, data.dates)){
+                    if(therIsAnAppointment(i, days.domingo.number, data.dates)){
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":00</p></div></div>";
+                    }else{
+                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+":00</p></div></div>";
+                    }
                   }else{
-                    lunes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour btn btn-danger' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":30</button></div></td>";
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.domingo.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":00</button></div>";
                   }
+                  if(thereIsSpaceForApointment(i+0.3,days.domingo.number, data.dates)){
+                    if(therIsAnAppointment(i+0.3, days.domingo.number, data.dates)){
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                    }else{
+                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+"30</p></div></div>";
+                    }
+                  }else{
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.domingo.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":30</button></div>";
+                  }
+                  domingo = "<td>"+halfHour1+halfHour2+"</td>";
                 }else{
-                  lunes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":30</button></div></td>";
+                  domingo = "<td><div class='half_hour_1'><div class='note'>Fecha vencida</div><button class='first_half_hour btn' disabled='disabled' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='btn second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":30</button></div></td>";
                 }
-              }else{
-                lunes = "<td>Naranjas</td>";
               }
-              var martes;
+              var lunes = "<td></td>";
+              if(days.lunes != null){
+                if(!days.lunes.isPast){
+                  if(thereIsSpaceForApointment(i, days.lunes.number, data.dates)){
+                    if(therIsAnAppointment(i,  days.lunes.number, data.dates)){
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":00</p></div></div>";
+                    }else{
+                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+":00</p></div></div>";
+                    }
+                  }else{
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.lunes.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":00</button></div>";
+                  }
+                  if(thereIsSpaceForApointment(i+0.3, days.lunes.number, data.dates)){
+                    if(therIsAnAppointment(i+0.3,  days.lunes.number, data.dates)){
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                    }else{
+                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+"30</p></div></div>";
+                    }
+                  }else{
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.lunes.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":30</button></div>";
+                  }
+                  lunes = "<td>"+halfHour1+halfHour2+"</td>";
+                }else{
+                  lunes = "<td><div class='half_hour_1'><div class='note'>Fecha vencida</div><button class='first_half_hour btn' disabled='disabled' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='btn second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":30</button></div></td>";
+                }
+              }
+
+              var martes = "<td></td>";
               if(days.martes != null){
                 if(!days.martes.isPast){
-                  martes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":30</button></div></td>";
+                  if(thereIsSpaceForApointment(i, days.martes.number, data.dates)){
+                    if(therIsAnAppointment(i,  days.martes.number, data.dates)){
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":00</p></div></div>";
+                    }else{
+                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+":00</p></div></div>";
+                    }
+                  }else{
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.martes.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":00</button></div>";
+                  }
+                  if(thereIsSpaceForApointment(i+0.3, days.martes.number, data.dates)){
+                    if(therIsAnAppointment(i+0.3,  days.martes.number, data.dates)){
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                    }else{
+                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+"30</p></div></div>";
+                    }
+                  }else{
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.martes.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":30</button></div>";
+                  }
+                  martes = "<td>"+halfHour1+halfHour2+"</td>";
                 }else{
-                  martes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":30</button></div></td>";
+                  martes = "<td><div class='half_hour_1'><div class='note'>Fecha vencida</div><button class='first_half_hour btn' disabled='disabled' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='btn second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":30</button></div></td>";
                 }
-              }else{
-                martes = "<td>Naranjas</td>";
               }
-              var miercoles;
+
+              var miercoles = "<td></td>";
               if(days.miercoles != null){
                 if(!days.miercoles.isPast){
-                  miercoles = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":30</button></div></td>";
+                  if(thereIsSpaceForApointment(i, days.miercoles.number, data.dates)){
+                    if(therIsAnAppointment(i,  days.miercoles.number, data.dates)){
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":00</p></div></div>";
+                    }else{
+                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+":00</p></div></div>";
+                    }
+                  }else{
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.miercoles.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":00</button></div>";
+                  }
+                  if(thereIsSpaceForApointment(i+0.3, days.miercoles.number, data.dates)){
+                    if(therIsAnAppointment(i+0.3,  days.miercoles.number, data.dates)){
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                    }else{
+                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+"30</p></div></div>";
+                    }
+                  }else{
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.miercoles.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":30</button></div>";
+                  }
+                  miercoles = "<td>"+halfHour1+halfHour2+"</td>";
                 }else{
-                  miercoles = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":30</button></div></td>";
+                  miercoles = "<td><div class='half_hour_1'><div class='note'>Fecha vencida</div><button class='first_half_hour btn' disabled='disabled' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='btn second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":30</button></div></td>";
                 }
-              }else{
-                miercoles = "<td>Naranjas</td>";
               }
-              var jueves;
+
+              var jueves = "<td></td>";
               if(days.jueves != null){
                 if(!days.jueves.isPast){
-                  jueves = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":30</button></div></td>";
+                  if(thereIsSpaceForApointment(i, days.jueves.number, data.dates)){
+                    if(therIsAnAppointment(i,  days.jueves.number, data.dates)){
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":00</p></div></div>";
+                    }else{
+                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+":00</p></div></div>";
+                    }
+                  }else{
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.jueves.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":00</button></div>";
+                  }
+                  if(thereIsSpaceForApointment(i+0.3, days.jueves.number, data.dates)){
+                    if(therIsAnAppointment(i+0.3,  days.jueves.number, data.dates)){
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                    }else{
+                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+"30</p></div></div>";
+                    }
+                  }else{
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.jueves.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":30</button></div>";
+                  }
+                  jueves = "<td>"+halfHour1+halfHour2+"</td>";
                 }else{
-                  jueves = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":30</button></div></td>";
+                  jueves = "<td><div class='half_hour_1'><div class='note'>Fecha vencida</div><button class='first_half_hour btn' disabled='disabled' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='btn second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":30</button></div></td>";
                 }
-              }else{
-                jueves = "<td>Naranjas</td>";
               }
-              var viernes;
+
+              var viernes = "<td></td>";
               if(days.viernes != null){
                 if(!days.viernes.isPast){
-                  viernes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":30</button></div></td>";
+                  if(thereIsSpaceForApointment(i, days.viernes.number, data.dates)){
+                    if(therIsAnAppointment(i,  days.viernes.number, data.dates)){
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":00</p></div></div>";
+                    }else{
+                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+":00</p></div></div>";
+                    }
+                  }else{
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.viernes.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":00</button></div>";
+                  }
+                  if(thereIsSpaceForApointment(i+0.3, days.viernes.number, data.dates)){
+                    if(therIsAnAppointment(i+0.3,  days.viernes.number, data.dates)){
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                    }else{
+                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+"30</p></div></div>";
+                    }
+                  }else{
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.viernes.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":30</button></div>";
+                  }
+                  viernes = "<td>"+halfHour1+halfHour2+"</td>";
                 }else{
-                  viernes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":30</button></div></td>";
+                  viernes = "<td><div class='half_hour_1'><div class='note'>Fecha vencida</div><button class='first_half_hour btn' disabled='disabled' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='btn second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":30</button></div></td>";
                 }
-              }else{
-                viernes = "<td>Naranjas</td>";
               }
-              var sabado;
+
+              var sabado = "<td></td>";
               if(days.sabado != null){
                 if(!days.sabado.isPast){
-                  sabado = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":30</button></div></td>";
+                  if(thereIsSpaceForApointment(i, days.sabado.number, data.dates)){
+                    if(therIsAnAppointment(i,  days.sabado.number, data.dates)){
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":00</p></div></div>";
+                    }else{
+                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+":00</p></div></div>";
+                    }
+                  }else{
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.sabado.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":00</button></div>";
+                  }
+                  if(thereIsSpaceForApointment(i+0.3, days.sabado.number, data.dates)){
+                    if(therIsAnAppointment(i+0.3,  days.sabado.number, data.dates)){
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                    }else{
+                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p>Hora: "+i+"30</p></div></div>";
+                    }
+                  }else{
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'>Click en el boton para agregar este espacion para una cita</div><button id='addSpaceButton' class='half_hour_button btn btn-primary' date='"+year+"/"+month+"/"+days.sabado.number+"' hour='"+i+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":30</button></div>";
+                  }
+                  sabado = "<td>"+halfHour1+halfHour2+"</td>";
                 }else{
-                  sabado = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":30</button></div></td>";
+                  sabado = "<td><div class='half_hour_1'><div class='note'>Fecha vencida</div><button class='first_half_hour btn' disabled='disabled' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='btn second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":30</button></div></td>";
                 }
-              }else{
-                sabado = "<td>Naranjas</td>";
               }
 
               var cad = "<tr>"+domingo+lunes+martes+miercoles+jueves+viernes+sabado+"</tr>";
+              //- martes+miercoles+jueves+viernes+sabado+
               //- console.log(cad);
               cal+=cad;
             }
-            console.log("termine el segundo for");
+            //- console.log("termine el segundo for");
 
             $("#calendar_caption").html("Calendario de la semana #"+$("select#week").val()+" de "+$("select#month option:selected").text()+" de "+year);
             $("#my_calendar_tbody").html(cal);
