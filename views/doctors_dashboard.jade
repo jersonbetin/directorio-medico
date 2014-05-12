@@ -44,6 +44,7 @@ block nav
           |  Cerrar session
 
 block content
+  button#socket Click
   .container.general-content
     .row
       .col-xs-12
@@ -106,8 +107,23 @@ block js_up
     //- }
 
 block js
+  script(src="/socket.io/socket.io.js")
   script.
+    //- socket.on('calendarUpdated', function (data) {
+    //-   console.log(data);
+    //- });
+
+
     $(document).on("ready", function(){
+      var socket = io.connect('http://localhost:3000');
+      socket.on('calendarUpdated', function (data) {
+        console.log(data);
+        var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
+        loadWeekCalendar($("select#year").val(), $("select#month").val(), week);
+      });
+      //- $("#socket").on("click", function(){
+      //-   socket.emit('calendarUpdated', { data: 'pedro' });
+      //-   })
       function loadWeekCalendar(year, month, week){
         //- console.log(year+"/"+month+"/Semana:"+week);
         var days = new Object(); 
@@ -599,7 +615,8 @@ block js
           success: function(data){
             console.log(data);
             var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
-            loadWeekCalendar($("select#year").val(), $("select#month").val(), week)
+            loadWeekCalendar($("select#year").val(), $("select#month").val(), week);
+            socket.emit('calendarUpdated');
           }
         });
       });

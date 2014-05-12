@@ -6,6 +6,7 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 var app = express();
+
 var allowCrossDomain = function (req, res, next) {
     res.header ('Access-Control-Allow-Origin', '*');
     res.header ('Access-Control-Allow-Methods', 'GET');
@@ -47,6 +48,30 @@ if ('development' == app.get('env')) {
 
 require("./app_urls")(app);
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app);
+var io = require('socket.io').listen(server);
+
+server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
+});
+
+// http.createServer(app);
+
+// var io = require('socket.io').listen(app);
+
+io.sockets.on('connection', function (socket) {
+  // socket.emit('news', { hello: 'world' });
+  // socket.on('event', function (data) {
+  //   console.log(data);
+  // });
+  socket.on("connect", function(data){
+    console.log("Conectado: "+data);
+  });
+
+  socket.on("calendarUpdated", function(){
+    console.log("Se ha actualizado algun calendario");
+    socket.broadcast.emit('calendarUpdated', "the caledar has changed");
+  });
+
+  socket.emit("news", {status:"You are conected :D"});
 });
