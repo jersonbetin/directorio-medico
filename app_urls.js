@@ -123,6 +123,7 @@ module.exports = function (app) {
   /*Calendary*/
   app.post("/api/v1/doctors/:username/spaceDateForAppointment", middleware.doctorsCredentialsVerification, api.doctors.addDoctorSpaceDateForAppointment);
   app.get("/api/v1/doctors/:username/spacesDateForAppointments", middleware.doctorsCredentialsVerification, api.doctors.getDoctorSpacesForAppointmentsByUsername);
+  app.get("/api/v1/doctors/:doctorId/spacesDateForAppointments2", middleware.patientsCredentialsVerification, api.doctors.getDoctorSpacesForAppointmentsById);
   app.get("/api/v1/doctors/spacesDateForAppointments", middleware.doctorsCredentialsVerification, api.doctors.getDoctorSpacesForAppointments);
 
   /*Doctors Personal Information*/
