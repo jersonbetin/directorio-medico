@@ -25,3 +25,11 @@
 .board-avanced {
   display: none;
 }
+.center {
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#button_ver {
+  display: none;
+}
