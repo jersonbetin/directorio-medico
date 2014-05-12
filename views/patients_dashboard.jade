@@ -100,8 +100,16 @@ block content
             tbody#my_calendar_tbody 
 
 block js
+  script(src="/socket.io/socket.io.js")
   script.
+    //- socket.emit('connect', { data: 'patient' });
     $(document).on('ready', function(){
+      var socket = io.connect('http://localhost:3000');
+      socket.on('calendarUpdated', function (data) {
+        console.log(data);
+        var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
+        loadDoctorsWeekCalendar($("select#year").val(), $("select#month").val(), week, $("select#doctors").val());
+      });
       $("#my_calendar").on("click", ".addAppointmentButton", function(e){
         console.log($(this).attr("year"));
         console.log($(this).attr("month"));
@@ -138,6 +146,7 @@ block js
             alert("Se aparto la cita satisfctoriamente");
             var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
             loadDoctorsWeekCalendar($("select#year").val(), $("select#month").val(), week, $("select#doctors").val());
+            socket.emit('calendarUpdated');
           }
         });
       });
