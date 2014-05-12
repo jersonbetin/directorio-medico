@@ -46,23 +46,55 @@ block nav
 block content
   .container.general-content
     .row
-      .col-lg-8
-        .page-header.title-header
-          h2#username_h2 username:
-
+      .col-xs-12
+      h2#username_h2 username:
+    .row
+      .col-xs-12
+        form.form-inline(role="form")
+          div.form-group
+            label Año: 
+            select.form-control(id="year")
+              option(value=-1) Seleccione un año
+              option(value=2010) 2010
+              option(value=2011) 2011
+              option(value=2012) 2012
+              option(value=2013) 2013
+              option(value=2014) 2014
+          div.form-group
+            label Mes:
+            select.form-control(id="month")
+              option(value=-1) Seleccione un mes
+              option(value=1) Enero
+              option(value=2) Febrero
+              option(value=3) Marzo
+              option(value=4) Abril
+              option(value=5) Mayo
+              option(value=6) Junio
+              option(value=7) Julio
+              option(value=8) Agosto
+              option(value=9) Septiembre
+              option(value=10) Octubre
+              option(value=11) Noviembre
+              option(value=12) Diciembre
+          div.form-group
+            label Semana
+            select.form-control(id="weeks")
+              option(value=-1) Seleccione una semana
+    .row
+      .col-xs-12
         input#csrf_input(type="hidden", value="#{data.csrf}")
         div
-          table#my_calendar
-            caption Calendario   
+          table#my_calendar.table
+            caption#calendar_caption Calendario   
             thead
               tr(matriz_row=0)
+                th Domingo
                 th Lunes 
                 th Martes  
                 th Miercoles 
                 th Jueves 
                 th Viernes 
                 th Sabado 
-                th Domingo
             tbody#my_calendar_tbody 
            
 
@@ -76,20 +108,267 @@ block js_up
 block js
   script.
     $(document).on("ready", function(){
-    var i = 8;
-      for(i;i<18;i++){
-        var cad = "<tr matriz_row="+i+">"+
-        "<td matriz_col=1><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
-        "<td matriz_col=2> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
-        "<td matriz_col=3> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
-        "<td matriz_col=4> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
-        "<td matriz_col=5> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
-        "<td matriz_col=6> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
-        "<td matriz_col=7> <div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour'>"+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'>"+i+":30</button></div></td>"+
-        "</tr>";
-        //- console.log(cad);
-        $("#my_calendar_tbody").append(cad);
+      function getWeeksOfAMonthOfAYear(month, year){
+        month--;
+        //- console.log("Año: "+year);
+        //- console.log("Mes: "+month);
+        nd = new Date(year, month+1, 0).getDate();
+        //- console.log(nd);
+        var weeks = [];
+        var days = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+        var nw = 1;
+        var daysOfWeek = new Array();
+        for(var i=1;i<=nd;i++){
+          var d = new Date(year, month, i);
+          //- console.log(d);
+          var day = {};
+          day.number = i;
+          day.name = days[d.getDay()];
+          //- console.log("Agregando dia: "+day.name+" "+day.number);
+          daysOfWeek.push(day);
+          if(d.getDay() == 6 || i==nd){
+            var week = {
+              number: nw,
+              days: daysOfWeek
+            };
+            //- console.log("agregado semana "+nw);
+            weeks.push(week);
+            nw++;
+            daysOfWeek = new Array();
+          }
+        }
+        return weeks; 
       }
+
+      $("select#year").on("change", function(e){
+        $("select#month").val(-1);
+        //- console.log("Se llamo aqui");
+        //- var month = $("select#month").val();
+        //- var year = $(this).val();
+        //- console.log(JSON.stringify(getWeeksOfAMonthOfAYear(month, year)));
+        //- $("#calendar-test").html(JSON.stringify(getWeeksOfAMonthOfAYear(month, year))); 
+      });
+
+      $("select#month").on("change", function(e){
+        $("select#week").val(-1);
+        
+        //- console.log("Se llamo aqui"); 
+        var year = $("select#year").val();
+        var month = $(this).val();
+        var weeks = getWeeksOfAMonthOfAYear(month, year);
+
+        console.log(weeks.length);
+        var str = "<option value='-1'>Seleccione una semana</option>";
+        for(var i=0; i<weeks.length; i++){
+          str+="<option value='"+(i+1)+"'>"+(i+1)+"</option>";
+        }
+        $("select#weeks").html(str);
+        //- console.log(JSON.stringify(getWeeksOfAMonthOfAYear(month, year)));
+        //- $("#calendar-test").html(JSON.stringify(getWeeksOfAMonthOfAYear(month, year))); 
+      }); 
+
+      function isAvailable(time_start, day){
+        console.log("llamo al isAvailable"); 
+        var is = false;
+        for(var i=0; i<day.length; i++){
+          //- console.log("######################");
+          //- console.log(day[i].time.start);
+          //- console.log(time_start);
+          //- console.log("######################");
+          if(day[i].time.start == time_start){
+            is = day[i].isAvailable
+            break;
+          }
+        }
+        return is;
+      }
+
+      $("select#weeks").on("change", function(e){
+        //- $("select#month").val(-1);
+        //- console.log("Se llamo aqui");
+        var month = $("select#month").val();  
+        var year = $("select#year").val();
+        //- console.log(JSON.stringify(getWeeksOfAMonthOfAYear(month, year)[$(this).val()-1]));
+        //- $("#calendar-test").html(JSON.stringify(getWeeksOfAMonthOfAYear(month, year)[$(this).val()-1])); 
+        var week = getWeeksOfAMonthOfAYear(month, year)[$(this).val()-1];
+        var days = new Object(); 
+        //- console.log(week.days.length-1);
+        //- console.log(week[week.days.length-1]);
+        $.ajax({
+          url: "/api/v1/doctors/me/spacesDateForAppointments?year="+year+"&month="+month+"&day_start="+week.days[0].number+"&day_end="+week.days[week.days.length-1].number,
+          type: "GET",
+          headers: {
+            "accessToken": localStorage.accessToken
+          },
+          success: function(data) {
+            console.log(data);
+              month = month-1;
+              console.log(month);
+              console.log(year);
+            for(var i=0; i<week.days.length; i++){
+              //- console.log(week.days);
+              //- alert( "Load was performed." );
+              if(week.days[i].name == "Domingo"){
+                days.domingo = week.days[i];
+                var today = new Date();
+                var date = new Date(year,month, days.domingo.number);
+                if(date < today){
+                  days.domingo.isPast = true;
+                }else{
+                  days.domingo.isPast = false; 
+                }
+              }else if(week.days[i].name == "Lunes"){
+                days.lunes = week.days[i];
+                var today = new Date();
+                var date = new Date(year,month, days.lunes.number);
+                if(date < today){
+                  days.lunes.isPast = true;
+                }else{
+                  days.lunes.isPast = false; 
+                }
+              }else if(week.days[i].name == "Martes"){
+                days.martes = week.days[i];
+                var today = new Date();
+                var date = new Date(year,month, days.martes.number);
+                if(date < today){
+                  days.martes.isPast = true;
+                }else{
+                  days.martes.isPast = false; 
+                }
+              }else if(week.days[i].name == "Miercoles"){
+                days.miercoles = week.days[i];
+                var today = new Date();
+                var date = new Date(year,month, days.miercoles.number);
+                if(date < today){
+                  days.miercoles.isPast = true;
+                }else{
+                  days.miercoles.isPast = false; 
+                }
+              }else if(week.days[i].name == "Jueves"){
+                days.jueves = week.days[i];
+                var today = new Date();
+                var date = new Date(year,month, days.jueves.number);
+                if(date < today){
+                  days.jueves.isPast = true;
+                }else{
+                  days.jueves.isPast = false; 
+                }
+              }else if(week.days[i].name == "Viernes"){
+                days.viernes = week.days[i];
+                var today = new Date();
+                var date = new Date(year,month, days.viernes.number);
+                if(date < today){
+                  days.viernes.isPast = true;
+                }else{
+                  days.viernes.isPast = false; 
+                }
+              }else if(week.days[i].name == "Sabado"){
+                days.sabado = week.days[i];
+                var today = new Date();
+                var date = new Date(year,month, days.sabado.number);
+                if(date < today){
+                  days.sabado.isPast = true;
+                }else{
+                  days.sabado.isPast = false; 
+                }
+              }
+            }
+            console.log("termine el primer for");
+            var i = 8;
+            var cal ="";
+            for(i;i<18;i++){
+              var domingo;
+              if(days.domingo != null){
+                if(!days.domingo.isPast){
+                  domingo = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":30</button></div></td>";
+                }else{
+                  domingo = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.domingo.number+"'>"+year+"/"+month+"/"+days.domingo.number+" Hora: "+i+":30</button></div></td>";
+                }
+              }else{
+                domingo = "<td>Naranjas</td>";
+              }
+              var lunes;
+              if(days.lunes != null){
+                //- console.log("paso el null");
+                if(!days.lunes.isPast){
+                  //- console.log("paso el isPast");
+                  if(!isAvailable(i,data.dates)){
+                    //- console.log("paso el isAvailable");
+                    lunes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":30</button></div></td>";
+                  }else{
+                    lunes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour btn btn-danger' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":30</button></div></td>";
+                  }
+                }else{
+                  lunes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.lunes.number+"'>"+year+"/"+month+"/"+days.lunes.number+" Hora: "+i+":30</button></div></td>";
+                }
+              }else{
+                lunes = "<td>Naranjas</td>";
+              }
+              var martes;
+              if(days.martes != null){
+                if(!days.martes.isPast){
+                  martes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":30</button></div></td>";
+                }else{
+                  martes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.martes.number+"'>"+year+"/"+month+"/"+days.martes.number+" Hora: "+i+":30</button></div></td>";
+                }
+              }else{
+                martes = "<td>Naranjas</td>";
+              }
+              var miercoles;
+              if(days.miercoles != null){
+                if(!days.miercoles.isPast){
+                  miercoles = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":30</button></div></td>";
+                }else{
+                  miercoles = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.miercoles.number+"'>"+year+"/"+month+"/"+days.miercoles.number+" Hora: "+i+":30</button></div></td>";
+                }
+              }else{
+                miercoles = "<td>Naranjas</td>";
+              }
+              var jueves;
+              if(days.jueves != null){
+                if(!days.jueves.isPast){
+                  jueves = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":30</button></div></td>";
+                }else{
+                  jueves = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.jueves.number+"'>"+year+"/"+month+"/"+days.jueves.number+" Hora: "+i+":30</button></div></td>";
+                }
+              }else{
+                jueves = "<td>Naranjas</td>";
+              }
+              var viernes;
+              if(days.viernes != null){
+                if(!days.viernes.isPast){
+                  viernes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":30</button></div></td>";
+                }else{
+                  viernes = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.viernes.number+"'>"+year+"/"+month+"/"+days.viernes.number+" Hora: "+i+":30</button></div></td>";
+                }
+              }else{
+                viernes = "<td>Naranjas</td>";
+              }
+              var sabado;
+              if(days.sabado != null){
+                if(!days.sabado.isPast){
+                  sabado = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":30</button></div></td>";
+                }else{
+                  sabado = "<td><div class='half_hour_1'><div class='note'>Aqui va la cita</div><button class='first_half_hour' disabled='disabled' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":00</button></div><div class='half_hour_2'><div class='note'>Aqui va la cita</div><button class='second_half_hour'  disabled='disabled' date='"+year+"/"+month+"/"+days.sabado.number+"'>"+year+"/"+month+"/"+days.sabado.number+" Hora: "+i+":30</button></div></td>";
+                }
+              }else{
+                sabado = "<td>Naranjas</td>";
+              }
+
+              var cad = "<tr>"+domingo+lunes+martes+miercoles+jueves+viernes+sabado+"</tr>";
+              //- console.log(cad);
+              cal+=cad;
+            }
+            console.log("termine el segundo for");
+
+            $("#calendar_caption").html("Calendario de la semana #"+$("select#week").val()+" de "+$("select#month option:selected").text()+" de "+year);
+            $("#my_calendar_tbody").html(cal);
+          }
+        });
+      });     
+      
+
+      
 
       $("#my_calendar").on("click", "td", function(e){
         //- alert("click");
