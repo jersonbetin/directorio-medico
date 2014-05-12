@@ -100,11 +100,20 @@ block content
         table.table.table-hover.table-search
           thead
             tr
+              th 
               th Identificacion
               th Nombre
               th Telefono
               th Celular
           tbody#result_search
+        table.table#button_ver
+          tr
+            td
+            td
+              input.btn.btn-info.col-lg-12#info_medico(type="button", value=" Ver medico")
+            td
+              input.btn.btn-default.col-lg-12#redirect_index(type="button", onclick="return(window.location.href='/')", value="Atras") 
+            td
 
 block js
   script.
@@ -126,16 +135,19 @@ block js
             var lastnames=$('#lastname_like').val();
             $.ajax({
                 method:'get',
-                url:'/api/v1/doctors?register_state=0&name_like='+data+'&lastname_like='+lastnames,
+                url:'/api/v1/doctors?name_like='+data+'&lastname_like='+lastnames,
                 success:function(data){
                   console.log(data);
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                           table+='<tr><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
+                      table+='<tr><td><input type="radio" val="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
-                  }
+                  }else{
+                  var content="<tr><td colspan='4'><center class='center'>No exiten registros</center></td></tr>";
+                      document.getElementById('result_search').innerHTML=content;
+                    }
                 },
                 processData:function(){
                   document.getElementById('result_search').innerHTML='esperando...';
@@ -148,15 +160,18 @@ block js
             var name=$('#name_like').val();
             $.ajax({
                 method:'get',
-                url:'/api/v1/doctors?register_state=0&name_like='+name+'&lastname_like='+data,
+                url:'/api/v1/doctors?name_like='+name+'&lastname_like='+data,
                 success:function(data){
                   console.log(data);
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                          table+='<tr><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
+                      table+='<tr><td><input type="radio" val="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
+                  }else{
+                      var content="<center>No exiten registros</center>"
+                      document.getElementById('result_search').innerHTML=content;
                   }
                 },
                 processData:function(){
@@ -211,7 +226,7 @@ block js
             var tipoProfesional=$('#professional_type_input').val();
             var city=$('#city_clinica').val();
             var clinica=$('#clinica').val();
-            var criterio='register_state=0&lastname_like='+lastnames+'&identification='+identification+'&profession_code='+tipoProfesional+'&job_city='+city+'&clinic_name='+clinica;
+            var criterio='lastname_like='+lastnames+'&identification='+identification+'&profession_code='+tipoProfesional+'&job_city='+city+'&clinic_name='+clinica;
             $.ajax({
                 method:'get',
                 url:'/api/v1/doctors?'+criterio,
@@ -220,7 +235,7 @@ block js
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                          table+='<tr><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
+                      table+='<tr><a href="#"><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></a></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                   }
