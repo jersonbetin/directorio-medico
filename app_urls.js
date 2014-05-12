@@ -18,7 +18,7 @@ module.exports = function (app) {
     debugger;
     var http = require('http');
     var options = {
-      host: "secretariadesalud-cordoba.herokuapp.com",
+      host: "http://secretariadesalud-cordoba.herokuapp.com/",
       path: "/SWMedicos/"+req.params.identification,
       method: 'GET',
     };
