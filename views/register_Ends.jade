@@ -243,11 +243,11 @@ block js
                 statusRegister=false;
                 $('#alert_registrado').css('display', 'block');
               }
+              if(statusRegister){
+                $('#button_send_secretary').css('display', 'block');
+              }
             }
           });
-          if(statusRegister){
-            $('#button_send_secretary').css('display', 'block');
-          }
         }
 
         $('#button_send_secretary').on('click', function(){
