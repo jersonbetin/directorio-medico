@@ -1268,6 +1268,57 @@ exports.getDoctorSpacesForAppointmentsByUsername = function(req, res){
   });
 };
 
+exports.getDoctorSpacesForAppointmentsById = function(req, res){
+  console.log("exports.getDoctorSpacesForAppointmentsById");
+  console.log(req.query);
+  var criteria = {};
+  if(req.query.year){
+    criteria["date.year"] = req.query.year;
+  }
+  if(req.query.month){
+    criteria["date.month"] = req.query.month; 
+  }
+  if(req.query.day){
+    criteria["date.day"] = req.query.day; 
+  }
+  if(req.query.start){
+    criteria["time.start"] = req.query.start; 
+  }
+  if(req.query.isAvailable){
+    criteria["isAvailable"] = req.query.isAvailable; 
+  }
+  if(req.query.day_start){
+    criteria["date.day"] = {
+      "$gte": req.query.day_start
+    }
+  }
+  if(req.query.day_end){
+    criteria["date.day"] = {
+      "$lte": req.query.day_end
+    }
+  }
+  if(req.query.day_start && req.query.day_end){
+    criteria["date.day"] = {
+      "$gte": req.query.day_start,
+      "$lte": req.query.day_end
+    }
+  }
+
+  console.log(criteria);
+
+  doctors.findAccountInformationById(req.params.doctorId, res, function(doctorAI){
+    criteria.idDAI = doctorAI._id;
+    models.doctorsCalendar.find(criteria, function(err, dates){
+      if (err) {
+        res500Code(res);
+      }else{
+        console.log(dates);
+        res.send({error:null, dates: dates});
+      }
+    });
+  });
+};
+
 exports.addDoctorSpaceDateForAppointment = function(req, res) {
   doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
     console.log(req.body);
@@ -1289,6 +1340,12 @@ exports.addDoctorSpaceDateForAppointment = function(req, res) {
             console.log(date);
             res.send("ya existe un espacio apartado ppor este doctor en esta fecha y a esta hora");
           }else{
+            var end;
+            if(req.body.time.start % 1 != 0 ){
+              end = req.body.time.start - (req.body.time.start%1) + 1
+            }else{
+              end = parseFloat(req.body.time.start) + 0.3;
+            }
             models.doctorsCalendar.create({
               idDAI: doctorAI._id, 
               date: {
@@ -1298,7 +1355,7 @@ exports.addDoctorSpaceDateForAppointment = function(req, res) {
               },
               time: {
                 start: req.body.time.start,
-                end: req.body.time.start+0.3
+                end: end
               } 
             }, function(err, date){
               if (err) {

@@ -260,7 +260,7 @@ exports.updatePatientPersonalInformation = function(req, res) {
 
 exports.addAppointmentToDoctorByUsername = function(req, res) {
   patients.findByUsername(req.params.username, res, function(patient){
-    if(req.body.idDoctor && req.body.date.year && req.body.date.month && req.body.date.day && req.body.time.start && req.body.time.end && req.body.appointment.description){
+    if(req.body.idDoctor && req.body.date.year && req.body.date.month && req.body.date.day && req.body.time.start && req.body.appointment.description){
       models.doctorsAccountInformation.findOne({_id:req.body.idDoctor}, function(err, doctorAI){
         if (err) {
           console.log(err);
@@ -287,7 +287,7 @@ exports.addAppointmentToDoctorByUsername = function(req, res) {
                 appointment.idPatient = patient._id;
                 appointment.description = req.body.appointment.description;
                 date.appointment = appointment;
-                date.is,Available = false;
+                date.isAvailable = false;
                 date.save(function(err, date){
                   if (err) {
                     console.log(err);
