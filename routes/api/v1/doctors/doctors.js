@@ -354,7 +354,7 @@ exports.saveDoctorAccountInformation = function (req, res){
             to: doctorAI.email, // list of receivers
             subject: "Bienvenido a Cosulting", // Subject line
             text: "Te damos la bienvenida a consulting, nuestra plataforma para que administres todo lo relacionado con consultas medicas. Hola"+doctorAI.username+". Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma consultinn.com", // plaintext body
-            html: "<h1>Te damos la bienvenida a consulting.</h1><h2>Consulting es nuestra plataforma para que administres todo lo relacionado con consultas medicas.</h2> <p>Hola <h3>"+doctorAI.username+".</h3>Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma <h3><a href='http://localhost:3000'>consulting.com</a></h3>"
+            html: "<h1>Te damos la bienvenida a consulting.</h1><h2>Consulting es nuestra plataforma para que administres todo lo relacionado con consultas medicas.</h2> <p>Hola <h3>"+doctorAI.username+".</h3>Es un placer ofrecerte nuestros servicios, esperamos que te sientas comodo. Por favor ingresa a nuestra plataforma <h3><a href='http://consulting-cordoba.herokuapp.com/'>consulting.com</a></h3>"
           }
 
         mails.sendMail(mailOptions);
@@ -613,7 +613,7 @@ exports.updateDoctorTitleInformation = function(req, res) {
                   mdStatus:{
                     code:2000,
                     info: "title data doctor successfully updated",
-                    url:"localhost:3000/api/v1/doctors/"+doctorAI.username+"/titles_data/"+req.params.title_id
+                    url:"http://consulting-cordoba.herokuapp.com/api/v1/doctors/"+doctorAI.username+"/titles_data/"+req.params.title_id
                   }
                 });
               }
@@ -1074,8 +1074,7 @@ function sendToSecretary(res) {
       });
       var options = {
         // host: 'secretariadesalud-cordoba.herokuapp.com',
-        host: 'localhost',
-        port: 4000,
+        host: 'http://secretariadesalud-cordoba.herokuapp.com/',
         path: '/doctor/directorio',
         method: 'POST',
         headers : {
