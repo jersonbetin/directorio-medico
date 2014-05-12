@@ -3,7 +3,7 @@ var helpers = require('./helpers/helpers');
 
 exports.csrfValidation = function (req, res, next){
   console.log("#################### CSRF VALIDATION  ####################")
-  if(req.header("Host") == "http://consulting-cordoba.herokuapp.com"){
+  if(req.header("Host") == "consulting-cordoba.herokuapp.com"){
     if (helpers.isDefined(req.session)) {
       console.log(req.session.csrf);
       console.log(req.header("csrfToken"));
@@ -23,7 +23,7 @@ exports.csrfValidation = function (req, res, next){
   }else if(req.header("applicationToken")){
     res.send("Se recibio el csrf token de la aplicacion");
   }else{
-    res.send("Origen no valido");
+    res.send(req.header("Host"));
   }
 }
 
