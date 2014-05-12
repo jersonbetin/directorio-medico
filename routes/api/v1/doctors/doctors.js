@@ -1074,13 +1074,11 @@ function sendToSecretary(res) {
       });
       var options = {
         // host: 'secretariadesalud-cordoba.herokuapp.com',
-        host: 'http://secretariadesalud-cordoba.herokuapp.com/',
+        host: 'secretariadesalud-cordoba.herokuapp.com',
         path: '/doctor/directorio',
         method: 'POST',
         headers : {
-          'Content-Type': 'application/json; charset=utf-8',
-          'urlToRespond': 'http://localhost:3000/api/v1/doctors/'+_ais.username+'/account_information/register_state',
-          'sentFrom': "medicalDirectory"
+          'Content-Type': 'application/json; charset=utf-8'
         }
       };
       var http = require("http");

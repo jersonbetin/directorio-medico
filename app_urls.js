@@ -18,7 +18,7 @@ module.exports = function (app) {
     debugger;
     var http = require('http');
     var options = {
-      host: "http://secretariadesalud-cordoba.herokuapp.com/",
+      host: "secretariadesalud-cordoba.herokuapp.com",
       path: "/SWMedicos/"+req.params.identification,
       method: 'GET',
     };
@@ -162,8 +162,8 @@ module.exports = function (app) {
 
   app.post("/api/v1/authentication/doctors/access-token/", middleware.csrfValidation, api.authentication.generateDoctorAccessToken);
   app.post("/api/v1/authentication/patients/access-token/", middleware.csrfValidation, api.authentication.generatePatientAccessToken);
-  app.get('/universidad', test.universidades);
-  app.get('/municipios', test.municipios);
+  // app.get('/universidad', test.universidades);
+  // app.get('/municipios', test.municipios);
   
   // agrege consultas para hacer pruebas sobre las univerdades y tipos de profesion
   app.get('/universidades', function(req,res){
