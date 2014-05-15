@@ -1,4 +1,6 @@
-.alert-info {
+.alert-info,
+.alert-success,
+.alert-danger {
   display: none;
   text-align: center;
   height: 40px;
@@ -10,6 +12,8 @@
   -moz-border-radius: 10px;
   padding-top: 5px;
 }
-.alert-info span {
+.alert-info span,
+.alert-success span,
+.alert-danger span {
   vertical-align: middle;
 }

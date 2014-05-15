@@ -122,10 +122,14 @@ block js
             if($(this).val()=='simple'){
               $('.board-avanced').css('display', 'none');
               $('.board-single').css('display', 'block');
+              document.getElementById('result_search').innerHTML='';
+              $('#button_ver').css('display', 'none');
               limpiar();
             }else{
               $('.board-single').css('display', 'none');
               $('.board-avanced').css('display', 'block');
+              document.getElementById('result_search').innerHTML='';
+              $('#button_ver').css('display', 'none');
               limpiar();
             }
           });
@@ -178,7 +182,7 @@ block js
                       document.getElementById('result_search').innerHTML=table;
                       $('#button_ver').css('display', 'inline-table');
                   }else{
-                      var content="<center>No exiten registros</center>"
+                      var content="<tr><td colspan='4'><center class='center'>No exiten registros</center></td></tr>";
                       document.getElementById('result_search').innerHTML=content;
                       $('#button_ver').css('display', 'none');
                   }
@@ -190,6 +194,8 @@ block js
           });
 
         function limpiar(){
+          $('#name_like').val('');
+          $('#lastname_like').val('');
           $('#lastnames').val('');
           $('#identificacion').val('');
           $('#professional_type_input').val('');
@@ -250,7 +256,7 @@ block js
                       document.getElementById('result_search').innerHTML=table;
                       $('#button_ver').css('display', 'inline-table');
                   }else{
-                      var content="<center>No exiten registros</center>"
+                      var content="<tr><td colspan='4'><center class='center'>No exiten registros</center></td></tr>";
                       document.getElementById('result_search').innerHTML=content;
                       $('#button_ver').css('display', 'none');
                   }
