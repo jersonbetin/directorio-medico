@@ -58,6 +58,10 @@ block content
               span Usuario registrado En secretaria de salud y se cargaron los datos personales en el formulario
             #alert_no_registrado.alert-info
               span Usuario no esta registrado tiene que guardar sus datos y enviarlos a la secretaria de salud
+            #alert_guardado.alert-success
+              span Usuario se guardo con exito
+            #alert_no_guardado.alert-danger
+              span Usuario no se guardo con exito error al enviar los datos
             .form-group
               tr
                 td
@@ -252,7 +256,14 @@ block js
             processData: false, // Don't process the files
             contentType: false, 
             success: function(data){
-              console.log(data);
+              console.log(data.error);
+              if(data.error==null){
+                $('#alert_no_guardado').css('display', 'none');
+                $('#alert_guardado').css('display', 'block');
+              }else{
+                $('#alert_guardado').css('display', 'none');
+                $('#alert_no_guardado').css('display', 'block');
+              }
             }
           });
         }else{
