@@ -705,20 +705,28 @@ exports.saveDoctorProfessionalInformation = function (req, res){
             var tmp_path = req.files.evidence.path;//ruta del archivo
             var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria
             var filename = random+"."+req.files.evidence.name;//nombre del archivo mas variable aleatoria
-            var target_path=__dirname+"/../../../../public/doctors/PDFs/"+filename;// hacia donde subiremos nuestro archivo dentro de nuestro servidor
-            console.log("Se va guardar en: "+target_path);
             
-            fs.rename(tmp_path,target_path,function (err) {//Escribimos el archivo
-              if (err) {
-                console.log("hubo algun error guardando el archivo pdf"); 
-                console.log(err);
-              }else{
-                console.log("Se guardo el archivo en: "+target_path);
-              }
-              fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
+            var mongo = require('mongodb');
+            var Grid = require('gridfs-stream');
+            var fs  = require("fs");
+
+            // create or use an existing mongodb-native db instance.
+            // for this example we'll just create one:
+            var db = new mongo.Db('consulting', new mongo.Server("mongodb://consulting:1q2w3e4r@ds049568.mongolab.com", 49568));
+
+            // make sure the db instance is open before passing into `Grid`
+            db.open(function (err) {
+              if (err) return handleError(err);
+              var gfs = Grid(db, mongo);
+              var writestream = gfs.createWriteStream({
+                filename: filename
               });
+              fs.createReadStream(tmp_path).pipe(writestream);
+              console.log("Se guardo ("+filename+")");
+              // all set!
             });
-            professionalInformation.evidence = "/doctors/PDFs/"+filename;
+
+            professionalInformation.evidence = filename;
             
             console.log(type);
             models.professionalTypes.create(type);
@@ -883,20 +891,33 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
               var tmp_path = req.files.evidence.path;//ruta del archivo
               var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria
               var filename = random+"."+req.files.evidence.name;//nombre del archivo mas variable aleatoria
-              var target_path=__dirname+"/../../../../public/doctors/PDFs/"+filename;// hacia donde subiremos nuestro archivo dentro de nuestro servidor
-              console.log("Se va guardar en: "+target_path);
               
-              fs.rename(tmp_path,target_path,function (err) {//Escribimos el archivo
-                if (err) {
-                  console.log("hubo algun error guardando el archivo pdf"); 
+              var mongo = require('mongodb');
+              var Grid = require('gridfs-stream');
+              var fs  = require("fs");
+
+              // create or use an existing mongodb-native db instance.
+              // for this example we'll just create one:
+              var MongoClient = mongo.MongoClient;
+              MongoClient.connect('mongodb://consulting:1q2w3e4r@ds049568.mongolab.com:49568/consulting', function (err, db) {
+                
+                if (err){
+                  console.log("############ err #################");
                   console.log(err);
-                }else{
-                  console.log("Se guardo el archivo en: "+target_path);
+                  console.log("############ err #################");
                 }
-                fs.unlink(tmp_path,function (err) {//borramos el archivo tmp
+
+                var gfs = Grid(db, mongo);
+                var writestream = gfs.createWriteStream({
+                  filename: filename
                 });
+                fs.createReadStream(tmp_path).pipe(writestream);
+                console.log("Se guardo ("+filename+")");
+                // all set!
               });
-              professionalInformation.evidence = "/doctors/PDFs/"+filename;
+
+              professionalInformation.evidence = filename;
+
               models.professionalTypes.create(type);
               if(professionalInformation.isWorking == "si"){
                 console.log("Si esta trabajando");
