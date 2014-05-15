@@ -712,11 +712,15 @@ exports.saveDoctorProfessionalInformation = function (req, res){
 
             // create or use an existing mongodb-native db instance.
             // for this example we'll just create one:
-            var db = new mongo.Db('consulting', new mongo.Server("mongodb://consulting:1q2w3e4r@ds049568.mongolab.com", 49568));
+            var MongoClient = mongo.MongoClient;
+            MongoClient.connect('mongodb://consulting:1q2w3e4r@ds049568.mongolab.com:49568/consulting', function (err, db) {
+              
+              if (err){
+                console.log("############ err #################");
+                console.log(err);
+                console.log("############ err #################");
+              }
 
-            // make sure the db instance is open before passing into `Grid`
-            db.open(function (err) {
-              if (err) return handleError(err);
               var gfs = Grid(db, mongo);
               var writestream = gfs.createWriteStream({
                 filename: filename
@@ -800,7 +804,7 @@ exports.saveDoctorProfessionalInformation = function (req, res){
                 });          
               }else{
                 console.log("no esta trabajando")
-                // req.body.personalInformation.jobInformation = null;
+                professionalInformation.jobInformation = null;
                 models.doctorsProfessionalInformation.create(professionalInformation, function (err, doctorPI) {
                   if (err) {
                     if (err.code == 11000) {
@@ -959,7 +963,9 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
                   }
                 })           
               }else{
-                console.log("no esta trabajando");  
+                console.log("no esta trabajando");
+                professionalInformation.jobInformation = null;
+                console.log(professionalInformation); 
                 models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, professionalInformation, function (err, doctorPI) {
                   if (err) {
                     console.log(err);

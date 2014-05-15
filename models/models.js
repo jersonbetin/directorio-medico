@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
-mongoose.connect('mongodb://localhost/medicalDirectory');
-// mongoose.connect('mongodb://consulting:1q2w3e4r@ds049568.mongolab.com:49568/consulting');
+// mongoose.connect('mongodb://localhost/medicalDirectory');
+mongoose.connect('mongodb://consulting:1q2w3e4r@ds049568.mongolab.com:49568/consulting');
 
 var db =  mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -152,6 +152,7 @@ var doctorsPersonalInformationSchema = new Schema({
     enum:['colombiano', 'extranjero', 'nacionalizado']
   }
 });
+
 
 var doctorsProfessionalInformationSchema = new Schema({
   idDAI: {type:Schema.Types.ObjectId, index:true, unique:true, required:true, ref:"doctorsAccountInformation"},
