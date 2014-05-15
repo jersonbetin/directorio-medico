@@ -153,6 +153,7 @@ var doctorsPersonalInformationSchema = new Schema({
   }
 });
 
+
 var doctorsProfessionalInformationSchema = new Schema({
   idDAI: {type:Schema.Types.ObjectId, index:true, unique:true, required:true, ref:"doctorsAccountInformation"},
   professionalCard: {

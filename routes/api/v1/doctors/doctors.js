@@ -800,7 +800,7 @@ exports.saveDoctorProfessionalInformation = function (req, res){
                 });          
               }else{
                 console.log("no esta trabajando")
-                // req.body.personalInformation.jobInformation = null;
+                professionalInformation.jobInformation = null;
                 models.doctorsProfessionalInformation.create(professionalInformation, function (err, doctorPI) {
                   if (err) {
                     if (err.code == 11000) {
@@ -959,7 +959,9 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
                   }
                 })           
               }else{
-                console.log("no esta trabajando");  
+                console.log("no esta trabajando");
+                professionalInformation.jobInformation = null;
+                console.log(professionalInformation); 
                 models.doctorsProfessionalInformation.update({idDAI:doctorAI._id}, professionalInformation, function (err, doctorPI) {
                   if (err) {
                     console.log(err);
