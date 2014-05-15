@@ -1101,7 +1101,8 @@ function sendToSecretary(res) {
       });
       var options = {
         // host: 'secretariadesalud-cordoba.herokuapp.com',
-        host: 'secretariadesalud-cordoba.herokuapp.com',
+        host:'localhost',
+        port:'4000',
         path: '/doctor/directorio',
         method: 'POST',
         headers : {
