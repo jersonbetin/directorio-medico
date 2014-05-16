@@ -253,7 +253,7 @@ module.exports = function (app) {
     });
   });
 
-  app.get("/images/:filename", function (req, res) {
+  app.get("/profile_images/:filename", function (req, res) {
     var mongo = require('mongodb');
     var Grid = require('gridfs-stream');
     var fs  = require("fs");
