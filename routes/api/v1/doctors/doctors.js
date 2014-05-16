@@ -768,7 +768,7 @@ exports.saveDoctorProfessionalInformation = function (req, res){
     if (testApproved) {
       console.log("Test approved");
       var http = require('http');
-      http.get("http://secretariadesalud-cordoba.herokuapp.com/tipoProfesional", function(response){
+      http.get("secretariadesalud-cordoba.herokuapp.com/tipoProfesional", function(response){
         var resp = "";
         response.on('data', function (d) {
           resp+=d;
