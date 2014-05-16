@@ -50,6 +50,7 @@ block content
       .col-lg-12
         .page-header.title-header
           h2#username_h2 Informacion general del doctor:
+          input#csrf_input(type="hidden", value="#{data.csrf}")
       .col-lg-12
         #alert_registrado.alert-info
            span El usuario esta registrado asi que no es necesario enviar los datos a secretaria

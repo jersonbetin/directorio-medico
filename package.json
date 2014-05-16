@@ -11,6 +11,7 @@
     "mongoose":"*",
     "nodemailer": "*",
     "async": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "gridfs-stream":"*"
   }
 }
