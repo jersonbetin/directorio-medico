@@ -3,8 +3,8 @@ var helpers = require('./helpers/helpers');
 
 exports.csrfValidation = function (req, res, next){
   console.log("#################### CSRF VALIDATION  ####################")
-  //if(req.header("Host") == "localhost:3000"){
-  if(req.header("Host") == "consulting-cordoba.herokuapp.com"){
+  if(req.header("Host") == "localhost:3000"){
+  // if(req.header("Host") == "consulting-cordoba.herokuapp.com"){
     if (helpers.isDefined(req.session)) {
       console.log(req.session.csrf);
       console.log(req.header("csrfToken"));

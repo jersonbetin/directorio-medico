@@ -455,6 +455,48 @@ exports.updateDoctorRegisterStateById = function (req, res){
   }
 };
 
+exports.saveProfileImageByUsername = function (req, res){
+  if(req.body.files.image){
+    doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){  
+      var tmp_path = req.files.image.path;//ruta del archivo
+      var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria
+      var filename = random+"."+req.files.image.name;//nombre del archivo mas variable aleatoria
+      
+      var mongo = require('mongodb');
+      var Grid = require('gridfs-stream');
+      var fs  = require("fs");
+
+      // create or use an existing mongodb-native db instance.
+      // for this example we'll just create one:
+      var MongoClient = mongo.MongoClient;
+      MongoClient.connect('mongodb://consulting:1q2w3e4r@ds049568.mongolab.com:49568/consulting', function (err, db) {
+        
+        if (err){
+          console.log("############ err #################");
+          console.log(err);
+          console.log("############ err #################");
+        }else{
+          var gfs = Grid(db, mongo);
+          var writestream = gfs.createWriteStream({
+            filename: filename
+          });
+          fs.createReadStream(tmp_path).pipe(writestream);
+          console.log("Se guardo ("+filename+")");
+          doctorAI.image = filename;
+          doctorAI.save(function (err, doctorAI) {
+            if(err){
+              console.log(err);
+              res500Code(res);
+            }else{
+              res.send({error:null, doctorAI: doctorAI, status:"AI updated successfully"});
+            }
+          });
+        }
+      });   
+    });
+  }
+};
+
 
 /*Doctors Personal Information*/
 //get
