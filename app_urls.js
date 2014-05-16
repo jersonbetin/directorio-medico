@@ -142,6 +142,7 @@ module.exports = function (app) {
   // app.get("/api/v1/doctors/:username/titles_data/:title_id", api.doctors.getTitleDataDoctorById);
   app.post("/api/v1/doctors/:username/titles_information", middleware.doctorsCredentialsVerification, api.doctors.saveDoctorTitleInformation);
   app.put("/api/v1/doctors/:username/titles_information/:title_id", middleware.doctorsCredentialsVerification, api.doctors.updateDoctorTitleInformation);
+  app.delete("/api/v1/doctors/:username/titles_information/:title_id", middleware.doctorsCredentialsVerification, api.doctors.deleteDoctorTitleInformation);
 
   /*Doctor Professional Information*/
   app.get("/api/v1/doctors/:username/professional_information", middleware.doctorsCredentialsVerification, api.doctors.getDoctorProfessionalInformationByUsername);
@@ -230,19 +231,52 @@ module.exports = function (app) {
         console.log("############ err #################");
         console.log(err);
         console.log("############ err #################");
+      }else{
+        console.log("Conectado a mongolab");
+        var gfs = Grid(db, mongo);
+        var readstream = gfs.createReadStream({
+          filename: req.params.filename
+        });
+
+        //error handling, e.g. file does not exist
+        readstream.on('error', function (err) {
+          console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+          console.log('An error occurred!', err);
+          res.send(500);
+        });
+        res.set({
+          'content-type': 'application/pdf'
+        });
+        readstream.pipe(res);
+        // gfs.createReadStream(options).pipe(res);
       }
-      var gfs = Grid(db, mongo);
-      var readstream = gfs.createReadStream({
-        filename: req.params.filename
-      });
-
-      //error handling, e.g. file does not exist
-      readstream.on('error', function (err) {
-        console.log('An error occurred!', err);
-        throw err;
-      });
-
-      readstream.pipe(res);
     });
-  })
+  });
+
+  app.get("/test2/:name", function (req, res) {
+    console.log("se llamo test");
+    var fs = require('fs');
+    var http = require('http');
+    var data = "";
+    http.get("http://localhost:3000/test2/"+req.params.name, function (response) {
+      response.setEncoding('binary');
+      response.on('data', function (d) {
+        console.log("Se recibio algo");
+        data+=d;
+      });
+      response.on('end', function() {
+        console.log("se acabo");
+        res.send(data);
+        // data = JSON.parse(data);
+        // fs.writeFile('/home/pedro/prueba.pdf', data, 'binary', function(err){
+        //   if (err) throw err
+        //   console.log('File saved.')
+        //   res.send("FIle Saved");
+        // })
+      });
+      response.on('error', function(e) {
+        res.send(e);
+      });
+    });
+  });
 };

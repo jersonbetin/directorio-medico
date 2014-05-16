@@ -26,7 +26,7 @@ function res404Code(res){
     error: {
       code:404,
       error:"ResourceNotFound",
-      info:""
+      info:"The resource you want to get is not in our database"
     }
   });
 }
@@ -166,6 +166,17 @@ function f1(err, docs){
     }
     docs = newDocs;
   }
+  if(personalCriteria.sex){
+    newDocs = [];
+    len = docs.length;
+    console.log("sexo: "+personalCriteria.sex);
+    for(var i=0; i<len; i++){
+      if (docs[i].pei != null && docs[i].pei.sex == personalCriteria.sex) {
+        newDocs.push(docs[i]);
+      }
+    }
+    docs = newDocs;
+  }
 
   // professional information filtering
   if(professionalCriteria.job_city){
@@ -203,6 +214,18 @@ function f1(err, docs){
     }
     docs = newDocs;
   }
+
+  if(professionalCriteria.professional_card){
+    newDocs = [];
+    len = docs.length;
+    console.log("profession card: "+ professionalCriteria.professional_card);
+    for(var i=0; i<len; i++){
+      if (docs[i].pri != null && docs[i].pri.professionalCard.number == professionalCriteria.professional_card) {
+        newDocs.push(docs[i]);
+      }
+    }
+    docs = newDocs;
+  }
   personalCriteria = {};
   professionalCriteria = {};
   r.send(docs);
@@ -226,15 +249,23 @@ exports.getDoctorsInformation = function (req, res){
   if(req.query.identification){
     personalCriteria.identification = req.query.identification;
   }
+  if(req.query.sex){
+    personalCriteria.sex = req.query.sex;
+  }
+
+  var professionCriteria = {};  
   if(req.query.job_city){
     professionalCriteria.job_city = req.query.job_city; 
   }
   if(req.query.clinic_name){
     professionalCriteria.clinic_name = req.query.clinic_name; 
   }
-  var professionCriteria = {};  
   if(req.query.profession_code){
     professionalCriteria.profession_code = req.query.profession_code; 
+  }
+
+  if(req.query.professional_card){
+    professionalCriteria.professional_card = req.query.professional_card; 
   }
 
   // console.log(personalCriteria);
@@ -626,6 +657,21 @@ exports.updateDoctorTitleInformation = function(req, res) {
       });
     }else{
       validations.resToIncorrectStructure(req,res,"titleInformation",data);    
+    }
+  });
+};
+
+exports.deleteDoctorTitleInformation = function(req, res) {
+  console.log("########## exports.deleteDoctorTitleInformation  ##########");
+  models.doctorsTitlesInformation.findOne({_id: req.params.title_id}, function (err, doctorTI) {
+    if (err) {
+      console.log(err);
+      res500Code(res);
+    }else if(doctorTI){
+      doctorTI.remove();
+      res.send({error:null, status:"Delete successfully"});
+    }else{
+      res404Code(res);
     }
   });
 };
