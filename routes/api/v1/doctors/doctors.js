@@ -780,7 +780,7 @@ exports.saveDoctorProfessionalInformation = function (req, res){
           var is = false;
           var type = {};
           for(var i=0; i<resp.profesionales.length;i++){
-            console.log(resp.profesionales[i]._id);;
+            console.log(resp.profesionales[i]._id);
             if(resp.profesionales[i]._id == professionalInformation.professionalType){
               is = true;
               type["_id"] = resp.profesionales[i]._id;
@@ -959,16 +959,18 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
       console.log("se aprovo el test");
       var http = require('http');
       http.get("http://secretariadesalud-cordoba.herokuapp.com//tipoProfesional", function(response){
+        console.log("aqui 1");
         var resp = "";
         response.on('data', function (d) {
           resp+=d;
         });
         response.on('end', function() {
+          console.log("end de los tipos de profesionales");
           resp = JSON.parse(resp);
           var is = false;
           var type = {};
           for(var i=0; i<resp.profesionales.length;i++){
-            console.log(resp.profesionales[i]._id);;
+            console.log(resp.profesionales[i]._id);
             if(resp.profesionales[i]._id == professionalInformation.professionalType){
               is = true;
               type["_id"] = resp.profesionales[i]._id;
@@ -978,6 +980,7 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
             }
           }
           if (is) {
+            console.log("si es un tipo admitido");
             doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
               professionalInformation.idDAI = doctorAI._id;
               var tmp_path = req.files.evidence.path;//ruta del archivo
@@ -1069,6 +1072,7 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
           }
         });
         response.on('error', function(e) {
+          console.log("###############################################################");
           console.log(e);
         });
       });
