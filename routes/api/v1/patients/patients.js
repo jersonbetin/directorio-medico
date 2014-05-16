@@ -259,13 +259,16 @@ exports.updatePatientPersonalInformation = function(req, res) {
 };
 
 exports.addAppointmentToDoctorByUsername = function(req, res) {
+  console.log("########## exports.addAppointmentToDoctorByUsername ##########");
   patients.findByUsername(req.params.username, res, function(patient){
     if(req.body.idDoctor && req.body.date.year && req.body.date.month && req.body.date.day && req.body.time.start && req.body.appointment.description){
+      console.log("Se pasaron todos los parametros");
       models.doctorsAccountInformation.findOne({_id:req.body.idDoctor}, function(err, doctorAI){
         if (err) {
           console.log(err);
           res500Code(res);
         }else if(doctorAI){
+          console.log("Se encontro el doctor");
           models.doctorsCalendar.findOne({
             idDAI: doctorAI._id, 
             "date.year" : req.body.date.year, 
@@ -279,7 +282,7 @@ exports.addAppointmentToDoctorByUsername = function(req, res) {
               res500Code(res);
             }else if (date) {
               console.log("Se encontro un lugar");
-              console.log(date);
+              // console.log(date);
               if (date.isAvailable == true) {
                 console.log("El lugar esta disponible");
                 var appointment = {};
@@ -307,6 +310,7 @@ exports.addAppointmentToDoctorByUsername = function(req, res) {
             }
           });
         }else{
+          console.log("Este idDoctor no esta asociado a ningun doctor de la base de datos");
           res.send("Este idDoctor no esta asociado a ningun doctor de la base de datos");
         }
       });

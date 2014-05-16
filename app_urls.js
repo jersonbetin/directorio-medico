@@ -253,30 +253,39 @@ module.exports = function (app) {
     });
   });
 
-  app.get("/test2/:name", function (req, res) {
-    console.log("se llamo test");
-    var fs = require('fs');
-    var http = require('http');
-    var data = "";
-    http.get("http://localhost:3000/test2/"+req.params.name, function (response) {
-      response.setEncoding('binary');
-      response.on('data', function (d) {
-        console.log("Se recibio algo");
-        data+=d;
-      });
-      response.on('end', function() {
-        console.log("se acabo");
-        res.send(data);
-        // data = JSON.parse(data);
-        // fs.writeFile('/home/pedro/prueba.pdf', data, 'binary', function(err){
-        //   if (err) throw err
-        //   console.log('File saved.')
-        //   res.send("FIle Saved");
-        // })
-      });
-      response.on('error', function(e) {
-        res.send(e);
-      });
+  app.get("/images/:filename", function (req, res) {
+    var mongo = require('mongodb');
+    var Grid = require('gridfs-stream');
+    var fs  = require("fs");
+
+    // create or use an existing mongodb-native db instance.
+    // for this example we'll just create one:
+    var MongoClient = mongo.MongoClient;
+    MongoClient.connect('mongodb://consulting:1q2w3e4r@ds049568.mongolab.com:49568/consulting', function (err, db) {
+      
+      if (err){
+        console.log("############ err #################");
+        console.log(err);
+        console.log("############ err #################");
+      }else{
+        console.log("Conectado a mongolab");
+        var gfs = Grid(db, mongo);
+        var readstream = gfs.createReadStream({
+          filename: req.params.filename
+        });
+
+        //error handling, e.g. file does not exist
+        readstream.on('error', function (err) {
+          console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+          console.log('An error occurred!', err);
+          res.send(500);
+        });
+        res.set({
+          'content-type': 'application/pdf'
+        });
+        readstream.pipe(res);
+        // gfs.createReadStream(options).pipe(res);
+      }
     });
   });
 };
