@@ -148,6 +148,7 @@ block content
 block js
   script.
     $(document).on("ready", function(){
+      console.log(localStorage);
     function logoutDoctorSuccess(data, textStatus, jqXHR){
         console.log(data);
         if(data){
@@ -245,7 +246,7 @@ block js
             data.append("mobile_clinica", mobile_clinica);
             data.append("landline_clinica", landline_clinica);
           }
-          console.log(data);
+          console.log(localStorage.accessToken);
           $.ajax({
             type: requestType,
             url:"/api/v1/doctors/me/professional_information?errors=verbose",
