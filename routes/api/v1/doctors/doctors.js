@@ -424,9 +424,9 @@ exports.updateDoctorRegisterStateById = function (req, res){
             DAI.save(function(err, doc){
               var rs = "";
               if(req.body.registerState == 2){
-                rs = "Registrado y aprobado"; // ojo orografia
+                rs = "Registrado y aprobado"; // ojo ortografia
               }else{
-                rs = "Registrado pero inhabilidato"; // ojo orografia
+                rs = "Registrado y noaprobado"; // ojo ortografia
               }
               // setup e-mail data with unicode symbols
               var mailOptions = {
