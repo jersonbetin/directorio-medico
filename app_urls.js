@@ -38,35 +38,6 @@ module.exports = function (app) {
     }).end();
   });
 
-  app.get("/pdf", function(req, res){
-    var fs = require('fs');
-    var http = require('http');
-    var data = "";
-    http.get("http://localhost:3000/doctors/PDFs/7847.registro extendido.pdf", function (response) {
-      console.log("dentro de get");
-      response.setEncoding('binary')
-      response.on('data', function (d) {
-        data+=d;
-      });
-      response.on('end', function() {
-        // data = JSON.parse(data);
-        fs.writeFile("prueba.pdf", data, 'binary', function(err){
-          if (err){
-            throw err;
-            console.log(err);
-          } else{
-            console.log('File saved.')
-            res.send("FIle Saved");
-          }
-        })
-      });
-      response.on('error', function(e) {
-        res.send(e);
-      });
-    });
-  });
-
-
   // Render Templates
   app.get('/', routes.index);
   app.get('/signup/doctors', renderTemplates.renderSigupDoctorTemplate);
@@ -74,6 +45,7 @@ module.exports = function (app) {
   
   app.get('/search/doctors', renderTemplates.renderSearchDoctorTemplate);
   app.get('/search/idoneidad', renderTemplates.renderSearchIdoneidadTemplate);
+  app.get('/profile/doctors', renderTemplates.renderProfileDoctorTemplate);
 
   app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);
@@ -178,8 +150,30 @@ module.exports = function (app) {
     });
   });
 
+  app.get('/universidades/:id', function(req,res){
+    models.universities.findOne({_id:req.params.id} ,function(err, universidades){
+      if (err) {
+        console.log(err);
+        res.send({err:500});
+      }else{
+        res.send({err:null, universidades:universidades});
+      }
+    });
+  });
+
   app.get('/municipios', function(req,res){
     models.cities.find(function(err, municipios){
+      if (err) {
+        console.log(err);
+        res.send({err:500});
+      }else{
+        res.send({err:null, municipios:municipios});
+      }
+    });
+  });
+
+   app.get('/municipios/:id', function(req,res){
+    models.cities.findOne({_id:req.params.id} ,function(err, municipios){
       if (err) {
         console.log(err);
         res.send({err:500});

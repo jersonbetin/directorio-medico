@@ -167,3 +167,14 @@ exports.renderInformationPatient = function (req, res){
     res.redirect('/');
   } 
 }
+
+exports.renderProfileDoctorTemplate = function(req, res){
+  console.log("#################### renderProfileDoctor ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  res.render('perfilMedico', {data: data});
+}

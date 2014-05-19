@@ -148,8 +148,8 @@ var doctorsPersonalInformationSchema = new Schema({
     }
   },
   nationality: {
-    type:String, 
-    required:true, 
+    type:String,
+    required:true,
     enum:['colombiano', 'extranjero', 'nacionalizado']
   }
 });

@@ -1,0 +1,41 @@
+.info-principal {
+  box-shadow: 2px 2px 3px #d3d3d3, -2px -2px 3px #d3d3d3;
+}
+.img-profile {
+  width: 100%;
+}
+.img-profile img {
+  width: 70%;
+  margin-left: 15%;
+}
+.nombe-legend {
+  padding: 2%;
+}
+#info-nombre {
+  font-size: 22px;
+  color: #2FA4E7;
+  text-transform: capitalize;
+}
+#otra-info {
+  font-size: 16px;
+  color: #808080;
+}
+.sub-title {
+  font-size: 14px;
+}
+.tables-info {
+  width: 100%;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+.tables-info tr {
+  width: 100%;
+}
+.tables-info tr td {
+  width: 25%;
+  padding: 1%;
+}
+.tables-info .title-info {
+  color: #a0a0a0;
+  text-align: right;
+}

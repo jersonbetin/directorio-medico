@@ -56,6 +56,7 @@ block content
       .col-lg-12
         .page-header.title-header
           h1 Busqueda de medicos en Cordoba
+          input#csrf_input(type="hidden", value="#{data.csrf}")
       .col-lg-4.board-search
         h4
           center Datos del medico
@@ -134,9 +135,10 @@ block js
             }
           });
 
-        $('input[name=radio_cedula]').on('click', function(){
-            var cedula=$(this);
-            alert(cedula);
+        $('#info_medico').on('click', function(){
+            var cedula=$("input[name=radio_cedula]").val();
+            localStorage.cedula=cedula;
+            window.location.replace('/profile/doctors');
           });
 
         $('#name_like').on('keyup', function(){
@@ -150,7 +152,7 @@ block js
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                      table+='<tr><td><input type="radio" name="radio_cedula" onclick="return(alert(hola))" val="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
+                      table+='<tr><td><input type="radio" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                       $('#button_ver').css('display', 'inline-table');
@@ -177,7 +179,7 @@ block js
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                      table+='<tr><td><input type="radio" name="radio_cedula" val="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
+                      table+='<tr><td><input type="radio" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                       $('#button_ver').css('display', 'inline-table');
@@ -194,13 +196,13 @@ block js
           });
 
         function limpiar(){
-          $('#name_like').val('');
-          $('#lastname_like').val('');
-          $('#lastnames').val('');
-          $('#identificacion').val('');
-          $('#professional_type_input').val('');
-          $('#city_clinica').val('');
-          $('#clinica').val('');
+           $('#name_like').val('');
+           $('#lastname_like').val('');
+           $('#lastnames').val('');
+           $('#identificacion').val('');
+           $('#professional_type_input').val('');
+           $('#city_clinica').val('');
+           $('#clinica').val('');
         }
 
         $.ajax({
