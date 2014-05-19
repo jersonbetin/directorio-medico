@@ -12,6 +12,7 @@
     "nodemailer": "*",
     "async": "*",
     "socket.io": "*",
-    "gridfs-stream":"*"
+    "gridfs-stream":"*",
+    "mongodb":"*"
   }
 }
