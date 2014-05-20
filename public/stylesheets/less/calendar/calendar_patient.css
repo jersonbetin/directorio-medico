@@ -1,0 +1,112 @@
+#content-table {
+  height: 300px;
+  overflow: auto;
+}
+#my_calendar {
+  width: 100%;
+  margin-top: 20px;
+}
+#my_calendar tr {
+  border: 1px solid lightgray;
+  width: 100%;
+}
+#my_calendar tr td,
+th {
+  border: 1px solid lightgray;
+  width: 14.285714285714285714285714285714%;
+}
+#my_calendar thead th {
+  text-align: center;
+  font-size: 16px;
+  color: #2FA4E7;
+}
+#my_calendar tbody td {
+  padding: 0px;
+  text-align: center;
+  height: 190px;
+}
+#my_calendar tbody td > div {
+  height: 95px;
+  border-bottom: 1px solid lightgray;
+  font-size: 12px;
+}
+#calendar_caption {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 3px;
+}
+.addSpaceForAppointmentButton {
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  color: #ffffff;
+  background-color: #2fa4e7;
+  border-color: #2fa4e7;
+}
+.addSpaceForAppointmentButton:focus {
+  outline: thin dotted #333;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+  color: #ffffff;
+  background-color: #1990d5;
+  border-color: #1684c2;
+}
+.addSpaceForAppointmentButton:hover,
+.addSpaceForAppointmentButton:focus {
+  color: #555555;
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #1990d5;
+  border-color: #1684c2;
+}
+.addSpaceForAppointmentButton:active,
+.addSpaceForAppointmentButton.active {
+  outline: 0;
+  color: #ffffff;
+  background-color: #1990d5;
+  border-color: #1684c2;
+  background-image: none;
+  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+.half_hour_not_aparted {
+  background: #F1F1F1;
+  border: 1px solid #aaa;
+  box-shadow: 0px 0p 5px #aaa;
+}
+.half_hour_aparted {
+  background: #80B743;
+  border: #80B743;
+  box-shadow: 0px 0px 5px #80B743;
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 0px 0px 1px white;
+}
+.half_hour_appointment {
+  background: #D4242A;
+  border: #D4242A;
+  box-shadow: 0px 0px 5px #D4242A;
+  color: #fff;
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  text-shadow: 0px 0px 1px white;
+}

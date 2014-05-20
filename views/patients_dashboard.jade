@@ -1,7 +1,7 @@
 extends layout
 
 block css
-  link(rel="stylesheet", href='/stylesheets/style.css')
+  link(rel="stylesheet", href='/stylesheets/less/calendar/calendar_patient.css')
 
 
 block nav
@@ -85,8 +85,8 @@ block content
     .row
       .col-xs-12
         input#csrf_input(type="hidden", value="#{data.csrf}")
-        div
-          table#my_calendar.table.table-bordered 
+        div#content-table
+          table#my_calendar.table
             caption#calendar_caption Calendario   
             thead
               tr(matriz_row=0)

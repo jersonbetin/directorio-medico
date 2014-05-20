@@ -1,7 +1,7 @@
 extends layout
 
 block css
-  link(rel="stylesheet", href='/stylesheets/style.css')
+  link(rel="stylesheet", href='/stylesheets/less/calendar/calendar.css')
 
 block nav
   button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
@@ -44,13 +44,12 @@ block nav
           |  Cerrar session
 
 block content
-  button#socket Click
   .container.general-content
     .row
-      .col-xs-12
-      h2#username_h2 username:
+      .col-lg-12
+      h2#username_h2 Doctor:
     .row
-      .col-xs-12
+      .col-lg-12
         form.form-inline(role="form")
           div.form-group
             label Año: 
@@ -82,10 +81,10 @@ block content
             select.form-control(id="weeks")
               option(value=-1) Seleccione una semana
     .row
-      .col-xs-12
+      .col-lg-12
         input#csrf_input(type="hidden", value="#{data.csrf}")
-        div
-          table#my_calendar.table.table-bordered 
+        div#content-table
+          table#my_calendar.table
             caption#calendar_caption Calendario   
             thead
               tr(matriz_row=0)
@@ -624,7 +623,7 @@ block js
       function getDoctorAccountInformationSuccess(data){
         var doctorAI = {};
         doctorAI = data.doctorAccountInformation;
-        $("#username_h2").html("Username: "+doctorAI.username);
+        $("#username_h2").html("Doctor: "+doctorAI.username);
       }
 
       function getDoctorAccountInformation (){
