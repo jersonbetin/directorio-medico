@@ -178,6 +178,28 @@ block js
           }
         });
     });
+
+    $('#nit_clinica').blur(function(){
+      $.ajax({
+          method:'get',
+          url:'/jobInformation/'+$(this).val(),
+          success:function(data){
+            if(data.err==null){
+              $('#name_clinica').val(data.jobinfo.clinic.name);
+              $('#city_clinica').val(data.jobinfo.clinic.location.city);
+              $('#address_clinica').val(data.jobinfo.clinic.location.address);
+              $('#mobile_clinica').val(data.jobinfo.clinic.phone.mobile);
+              $('#landline_clinica').val(data.jobinfo.clinic.phone.mobile);
+            }else{
+              $('#name_clinica').val('');
+              $('#address_clinica').val('');
+              $('#mobile_clinica').val('');
+              $('#landline_clinica').val('');
+            }
+          }
+        });
+      });
+
     $(function tipo_profesional(){
       console.log("Se llamo a esta vaina");
       $.ajax({
@@ -272,61 +294,6 @@ block js
         }
       });
 
-      function getDoctorProfessionalInformation(){
-        $.ajax({
-          url:"/api/v1/doctors/me/professional_information",
-          headers: {
-            "accessToken": localStorage.accessToken
-          },
-          success: function(data){
-            //- console.log(data);
-            console.log('estoy aqui');
-            console.log(data.doctorProfessionalInformation.professionalType)
-            if(data.doctorProfessionalInformation){
-              console.log(data.doctorProfessionalInformation);
-              $("#professional_card_number_input").val(data.doctorProfessionalInformation.professionalCard.number);
-              $("#professional_type_input").filter(data.doctorProfessionalInformation.professionalType._id);
-              $("#is_working_input").val(data.doctorProfessionalInformation.isWorking);
-              //$("#evidence_input").val(data.doctorProfessionalInformation.evidence);
-              $("#button_save_professional_information_form").html("Actualizar");
-              if(data.doctorProfessionalInformation.isWorking=='si'){
-                $('#nit_clinica').attr('disabled',false);
-                $('#name_clinica').attr('disabled',false);
-                $('#city_clinica').attr('disabled',false);
-                $('#address_clinica').attr('disabled',false);
-                $('#mobile_clinica').attr('disabled',false);
-                $('#landline_clinica').attr('disabled',false);
-                $('#nit_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.nit);
-                $('#name_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.name);
-                $('#city_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.location.city);
-                $('#address_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.location.address);
-                $('#mobile_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.phone.mobile);
-                $('#landline_clinica').val(data.doctorProfessionalInformation.jobInformation.clinic.phone.landline);
-              }else{
-                $('#nit_clinica').attr('disabled',true);
-                $('#name_clinica').attr('disabled',true);
-                $('#city_clinica').attr('disabled',true);
-                $('#address_clinica').attr('disabled',true);
-                $('#mobile_clinica').attr('disabled',true);
-                $('#landline_clinica').attr('disabled',true);
-                $('#nit_clinica').val('');
-                $('#name_clinica').val('');
-                //$('#city_clinica').val('');
-                $('#address_clinica').val('');
-                $('#mobile_clinica').val('');
-                $('#landline_clinica').val('');
-              }
-            }else{
-              console.log("No se ha guardado aun informacion personal de este doctor");
-              $('#myModal').modal();
-            }
-            //- if (data.userdataDoctor){
-            //-   console.log(data.userdataDoctor):
-            //- }
-          }
-        });
-      }
-
     $('#is_working_input').on('change', function(){
         if($(this).val()=="no"){
           $('#nit_clinica').attr('disabled',true);
@@ -411,7 +378,7 @@ block js
               $("#professional_card_number_input").val(data.doctorProfessionalInformation.professionalCard.number);
               $("#professional_type_input").val(data.doctorProfessionalInformation.professionalType._id);
               $("#is_working_input").val(data.doctorProfessionalInformation.isWorking);
-              //$("#evidence_input").val(data.doctorProfessionalInformation.evidence);
+              $("#evidence_input").html(data.doctorProfessionalInformation.evidence);
               $("#button_save_professional_information_form").html("Actualizar");
               if(data.doctorProfessionalInformation.isWorking=='si'){
                 $('#nit_clinica').attr('disabled',false);

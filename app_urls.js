@@ -183,6 +183,22 @@ module.exports = function (app) {
     });
   });
 
+   app.get('/jobInformation/:id', function(req,res){
+    models.jobInformation.findOne({'clinic.nit':req.params.id} ,function(err, job){
+      if (err) {
+        console.log(err);
+        res.send({err:500});
+      }else{
+        console.log(job);
+        if(!job){
+          res.send({err:400});
+        }else{
+              res.send({err:null, jobinfo:job});
+        }
+      }
+    });
+  });
+
   // app.get("/pdf", function(req, res){
   //   var fs = require('fs');
   //   var http = require('http');

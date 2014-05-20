@@ -105,6 +105,7 @@ block content
                 th Universidad
                 th Ciudad
                 th Departamento
+                th Eliminar
             tbody#table_titles_body
        #myModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myLargeModalLabel", aria-hidden="true")
             .modal-dialog.modal-lg( style="width: 60%;")
@@ -197,7 +198,7 @@ block js
                 },
                 success:function(data){
                   console.log(data);
-                  window.location.replace('/me/titles_information');
+                  getDoctorTitlesInformation();
                 }
               });
           }else{
@@ -215,25 +216,30 @@ block js
             console.log(data);
             if(data.doctorTitlesInformation.length){
               //- console.log(data.doctorPersonalInformation);
+              var cadena='';
               for(var i=0; i<data.doctorTitlesInformation.length; i++){
                 var fecha=new Date(data.doctorTitlesInformation[i].graduationDate);
                 var day = ("0" + fecha.getDate()).slice(-2);
                 var month = ("0" + (fecha.getMonth() + 1)).slice(-2);
                 var graduationDate = (day)+"-"+(month)+"-"+fecha.getFullYear();
-                var cadena = "<tr><td>"+data.doctorTitlesInformation[i].title+"</td><td>"+data.doctorTitlesInformation[i].description+"</td><td>"+graduationDate+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.name+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.city+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.department+"</td></tr>"
-                $("#table_titles_body").append(cadena);
+                cadena += "<tr><td>"+data.doctorTitlesInformation[i].title+"</td><td>"+data.doctorTitlesInformation[i].description+"</td><td>"+graduationDate+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.name+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.city+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.department+"</td><td><button class='btn btn-info' id='delete-title'  data-infoTitle='"+data.doctorTitlesInformation[i]._id+"'>X</button></td></tr>"
                 //- console.log(data.doctorTitlesInformation[i]);
               }
+                document.getElementById("table_titles_body").innerHTML=cadena;
             }else{
               console.log("No se ha guardado aun informacion personal de este doctor");
               $('#myModal').modal();
             }
-            //- if (data.userdataDoctor){
-            //-   console.log(data.userdataDoctor):
-            //- }
           }
         });
       }
+
+      getDoctorTitlesInformation();
+
+      $("#delete-title").click(function(e){
+          e.preventDefault();
+          alert('hola');
+        });
 
       $("#verify_identification_button").on("click", function(e){
         e.preventDefault();
@@ -289,6 +295,4 @@ block js
           }
         });
       });
-
-      getDoctorTitlesInformation();
     }); // End of document on ready event

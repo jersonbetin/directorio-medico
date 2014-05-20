@@ -6,7 +6,9 @@
 .title-header {
   text-align: center;
   padding: 1%;
+  text-transform: uppercase;
 }
 .form-externos {
   padding-top: 0px;
+  box-shadow: 2px 3px 5px #d3d3d3, -2px -3px 5px #d3d3d3;
 }
