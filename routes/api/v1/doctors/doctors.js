@@ -466,6 +466,7 @@ exports.updateDoctorRegisterStateById = function (req, res){
   }
 };
 
+/*Esta guarda la imagen del doctor*/
 exports.saveProfileImageByUsername = function (req, res){
   if(req.body.files.image){
     doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){  
@@ -1295,6 +1296,9 @@ exports.uploadToSecretary = function(req, res) {
 exports.getDoctorsSpacesForAppointments = function(req, res){
   console.log("######### exports.getDoctorSpacesForAppointments ###########");
   var criteria = {};
+  if(req.query.doctor_id){
+    criteria["_id"] = req.query.doctor_id;
+  }
   if(req.query.year){
     criteria["date.year"] = req.query.year;
   }
