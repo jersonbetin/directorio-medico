@@ -235,3 +235,22 @@ exports.renderProfileDoctorCitasTemplate = function (req, res){
     res.redirect('/');
   } 
 }
+
+exports.renderPatientCalendarTemplate = function (req, res){
+  console.log("#################### renderPatientCalendarTemplate ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render Patient Calendar Templatee from cookie");
+    res.render('patientCalendar', {data: data});
+  }else if(req.session && req.session.isLogged == true || req.session.isLogged == 'true'){
+    console.log("render Patient Calendar Template from session");
+    res.render('patientCalendar', {data: data});
+  }else{
+    res.redirect('/');
+  } 
+}
