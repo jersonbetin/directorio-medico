@@ -96,7 +96,7 @@ module.exports = function (app) {
   app.post("/api/v1/doctors/:username/spaceDateForAppointment", middleware.doctorsCredentialsVerification, api.doctors.addDoctorSpaceDateForAppointment);
   app.get("/api/v1/doctors/:username/spacesDateForAppointments", middleware.doctorsCredentialsVerification, api.doctors.getDoctorSpacesForAppointmentsByUsername);
   app.get("/api/v1/doctors/:doctorId/spacesDateForAppointments2", middleware.patientsCredentialsVerification, api.doctors.getDoctorSpacesForAppointmentsById);
-  app.get("/api/v1/doctors/spacesDateForAppointments", middleware.doctorsCredentialsVerification, api.doctors.getDoctorSpacesForAppointments);
+  app.get("/api/v1/doctors/spacesDateForAppointments", api.doctors.getDoctorsSpacesForAppointments);
 
   /*Doctors Personal Information*/
 
@@ -172,7 +172,7 @@ module.exports = function (app) {
     });
   });
 
-   app.get('/municipios/:id', function(req,res){
+  app.get('/municipios/:id', function(req,res){
     models.cities.findOne({_id:req.params.id} ,function(err, municipios){
       if (err) {
         console.log(err);
@@ -183,7 +183,7 @@ module.exports = function (app) {
     });
   });
 
-   app.get('/jobInformation/:id', function(req,res){
+  app.get('/jobInformation/:id', function(req,res){
     models.jobInformation.findOne({'clinic.nit':req.params.id} ,function(err, job){
       if (err) {
         console.log(err);

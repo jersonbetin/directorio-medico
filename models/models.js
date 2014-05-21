@@ -54,7 +54,7 @@ var doctorsCalendarSchema = new Schema({
   },
   isAvailable: {type: Boolean, default:true},
   appointment: {
-    idPatient: {type:Schema.Types.ObjectId, ref: 'patient'},
+    idPatient: {type:Schema.Types.ObjectId, ref: 'patients'},
     description: String
   }
 });

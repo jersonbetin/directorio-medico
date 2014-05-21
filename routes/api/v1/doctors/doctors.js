@@ -116,7 +116,16 @@ function process1(doc, callback){
         console.log(err);
       }else if(pri){
         doc.pri  = pri;
-        callback(null, doc);
+      }
+      if(doc.ti != null){
+        models.doctorsTitlesInformation.find({idDAI: doc._id}).populate("idUniversity").exec(function(err, ti){
+          if (err) {
+            console.log(err);
+          }else{
+            doc.ti = ti;
+            callback(null, doc);
+          }
+        });
       }else{
         callback(null, doc);
       }
@@ -136,7 +145,7 @@ function f1(err, docs){
   if(personalCriteria.name_like){
     console.log("name: "+personalCriteria.name_like);
     for(var i=0; i<len; i++){
-      if (docs[i].pei != null && docs[i].pei.names.indexOf(personalCriteria.name_like) != -1) {
+      if (docs[i].pei != null && docs[i].pei.names.toLowerCase().indexOf(personalCriteria.name_like.toLowerCase()) != -1) {
         newDocs.push(docs[i]);
       }
     }
@@ -148,7 +157,7 @@ function f1(err, docs){
     len = docs.length;
     console.log("lastname: "+personalCriteria.lastname_like);
     for(var i=0; i<len; i++){
-      if (docs[i].pei != null && docs[i].pei.lastnames.first.indexOf(personalCriteria.lastname_like) != -1) {
+      if (docs[i].pei != null && docs[i].pei.lastnames.first.toLowerCase().indexOf(personalCriteria.lastname_like.toLowerCase()) != -1) {
         newDocs.push(docs[i]);
       }
     }
@@ -166,6 +175,7 @@ function f1(err, docs){
     }
     docs = newDocs;
   }
+
   if(personalCriteria.sex){
     newDocs = [];
     len = docs.length;
@@ -226,6 +236,7 @@ function f1(err, docs){
     }
     docs = newDocs;
   }
+  
   personalCriteria = {};
   professionalCriteria = {};
   r.send(docs);
@@ -1281,8 +1292,8 @@ exports.uploadToSecretary = function(req, res) {
 /* Doctor Calendar*/
 
 
-exports.getDoctorSpacesForAppointments = function(req, res){
-  console.log("exports.getDoctorSpacesForAppointments");
+exports.getDoctorsSpacesForAppointments = function(req, res){
+  console.log("######### exports.getDoctorSpacesForAppointments ###########");
   var criteria = {};
   if(req.query.year){
     criteria["date.year"] = req.query.year;
@@ -1309,27 +1320,16 @@ exports.getDoctorSpacesForAppointments = function(req, res){
       "$lte": req.query.day_end
     } 
   }
-  console.log("criteria: "+criteria);
-  if(req.query.username){
-    doctors.findAccountInformationByUsername(req.query.username, res, function(doctorAI){
-      criteria["idDAI"] = doctorAI._id; 
-      models.doctorsCalendar.find(criteria, function(err, dates){
-        if (err) {
-          res500Code(res);
-        }else{
-          res.send({error:null, dates: dates});
-        }
-      });
-    });
-  }else{
-    models.doctorsCalendar.find(criteria, function(err, dates){
-      if (err) {
-        res500Code(res);
-      }else{
-        res.send({error:null, dates: dates});
-      }
-    });
-  }
+  console.log(criteria);
+  
+  console.log("POr aqui");
+  models.doctorsCalendar.find(criteria).populate("appointment.idPatient").exec(function(err, dates){
+    if (err) {
+      res500Code(res);
+    }else{
+      res.send({error:null, dates: dates});
+    }
+  });
 };
 
 exports.getDoctorSpacesForAppointmentsByUsername = function(req, res){
@@ -1372,7 +1372,7 @@ exports.getDoctorSpacesForAppointmentsByUsername = function(req, res){
 
   doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
     criteria.idDAI = doctorAI._id;
-    models.doctorsCalendar.find(criteria, function(err, dates){
+    models.doctorsCalendar.find(criteria).populate("appointment.idPatient").exec(function(err, dates){
       if (err) {
         res500Code(res);
       }else{
@@ -1423,7 +1423,7 @@ exports.getDoctorSpacesForAppointmentsById = function(req, res){
 
   doctors.findAccountInformationById(req.params.doctorId, res, function(doctorAI){
     criteria.idDAI = doctorAI._id;
-    models.doctorsCalendar.find(criteria, function(err, dates){
+    models.doctorsCalendar.find(criteria).populate("appointment.idPatient").exec(function(err, dates){
       if (err) {
         res500Code(res);
       }else{
