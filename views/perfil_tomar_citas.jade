@@ -61,7 +61,7 @@ block content
                 .panel-heading Titulos obtenidos
                   br
                 .panel-body
-                  table.tables-info
+                  table.tables-info1
                     tbody#info-titulos
               .panel.panel-primary
                 .panel-heading Contacto
@@ -92,8 +92,9 @@ block content
                         i(class="fa fa-certificate")
                         |   Ciudad:
                       td#info-ciudad 
-
-            .col-lg-5.table-inf
+      .row
+        .col-lg-12
+            input#button_show_calendar.btn.btn-primary.col-lg-offset-3.col-lg-6(type="button"  value="Tomar cita con este doctor" style="margin-top: 2px;")
 
 block js
   script.
@@ -114,7 +115,7 @@ block js
                 document.getElementById('info-sexo').innerHTML+=personal.sex;
                 var tableTitulos='';
                 for(var i=0; i<titulos.length; i++){
-                  tableTitulos+='<tr><td>'+titulos[i].title+'</td><td>'+titulos[i].idUniversity.name+'</td><td></td></tr>';
+                  tableTitulos+='<tr><td style="witdh:50%">'+titulos[i].title+'</td><td style="witdh:50%">'+titulos[i].idUniversity.name+'</td></tr>';
                 }
                 document.getElementById('info-titulos').innerHTML+=tableTitulos;
                 if(laboral.isWorking=='si'){
