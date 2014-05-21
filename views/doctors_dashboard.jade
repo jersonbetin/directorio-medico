@@ -445,7 +445,7 @@ block js
             }
             //- console.log("termine el segundo for");
 
-            $("#calendar_caption").html("Calendario de la semana #"+$("select#week").val()+" de "+$("select#month option:selected").text()+" de "+year);
+            $("#calendar_caption").html("Calendario de la semana número "+$("select#weeks").val()+" de "+$("select#month option:selected").text()+" de "+year);
             $("#my_calendar_tbody").html(cal);
           }
         });
