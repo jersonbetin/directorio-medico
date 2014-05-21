@@ -1,0 +1,143 @@
+extends layout
+
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/less/profile/profile.css')
+
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li
+        a(href="/")
+          i.fa.fa-bars
+          |  Dashboard
+      li
+        a(href="/me/patient_information")
+          i.fa.fa-info-circle
+          |  Mi informacion
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown")
+          i.fa.fa-code-fork
+          |   Operaciones
+          b.caret
+        ul.dropdown-menu
+          li
+            a(href="/search/doctors/patients")
+              i.fa.fa-star
+              |   Tomar citas medicas
+          li
+            a(href="/search/doctors/idoneidad")
+              i.fa.fa-star
+              |  Consulta de idoneidad medica
+      li
+        a#logout_patient(href="#")
+          i.fa.fa-sign-out
+          |  Cerrar session
+
+block content
+  .container.general-content
+    .info-principal
+      .row
+        .col-lg-6
+          .img-profile
+            img(src="/images/sin-img.png", alt="")
+        .col-lg-6
+          fieldset
+            legend.nombe-legend
+              span#info-nombre 
+              br
+              .sub-title
+                span#info-mas  
+                span &nbsp;|&nbsp;
+                span#info-sexo  
+          .info-profile
+              .panel.panel-primary
+                .panel-heading Titulos obtenidos
+                  br
+                .panel-body
+                  table.tables-info
+                    tbody#info-titulos
+              .panel.panel-primary
+                .panel-heading Contacto
+                  br
+                .panel-body
+                  table.tables-info
+                    tr
+                      td.title-info 
+                        i(class="fa fa-hospital-o")
+                        |  Clinica:
+                      td#info-clinica 
+                    tr
+                      td.title-info
+                        i(class="fa fa-mobile")
+                        |   Celular:
+                      td#info-celular 
+                      td.title-info
+                        i(class="fa fa-phone")
+                        |   Telefono:
+                      td#info-fijo 
+                    tr
+                    tr
+                      td.title-info
+                        i(class="fa fa-arrow-circle-right")
+                        |   Direccion:
+                      td#info-direccion 
+                      td.title-info 
+                        i(class="fa fa-certificate")
+                        |   Ciudad:
+                      td#info-ciudad 
+
+            .col-lg-5.table-inf
+
+block js
+  script.
+    $(document).ready(function(){
+        //alert(localStorage.cedula);
+        function cargarDatos(){
+          var criterio='identification='+localStorage.cedula;
+          $.ajax({
+              method:'get',
+              url:'/api/v1/doctors?'+criterio,
+              success:function(data){
+                console.log(data);
+                var personal=data[0].pei;
+                var titulos=data[0].ti;
+                var laboral=data[0].pri;
+                document.getElementById('info-nombre').innerHTML+=personal.names+' '+personal.lastnames.first+' '+personal.lastnames.second;
+                document.getElementById('info-mas').innerHTML+=laboral.professionalType.type;
+                document.getElementById('info-sexo').innerHTML+=personal.sex;
+                var tableTitulos='';
+                for(var i=0; i<titulos.length; i++){
+                  tableTitulos+='<tr><td>'+titulos[i].title+'</td><td>'+titulos[i].idUniversity.name+'</td><td></td></tr>';
+                }
+                document.getElementById('info-titulos').innerHTML+=tableTitulos;
+                if(laboral.isWorking=='si'){
+                  document.getElementById('info-clinica').innerHTML+=laboral.jobInformation.clinic.name;
+                  document.getElementById('info-celular').innerHTML+=laboral.jobInformation.clinic.phone.mobile;
+                  document.getElementById('info-fijo').innerHTML+=laboral.jobInformation.clinic.phone.landline;
+                  document.getElementById('info-direccion').innerHTML+=laboral.jobInformation.clinic.location.address;
+                  $.ajax({
+                    type:'get',
+                    url:'/municipios/'+laboral.jobInformation.clinic.location.city,
+                    success:function(datos){
+                      document.getElementById('info-ciudad').innerHTML+=datos.municipios.name;
+                    }
+                  });
+                }else{
+                  document.getElementById('info-clinica').innerHTML+='';
+                  document.getElementById('info-celular').innerHTML+=personal.contactData.phone.mobile;
+                  document.getElementById('info-fijo').innerHTML+='';
+                  document.getElementById('info-direccion').innerHTML+='';
+                  document.getElementById('info-ciudad').innerHTML+='';
+                }
+            }
+          });
+        }
+        cargarDatos();
+      });

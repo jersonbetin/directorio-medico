@@ -216,3 +216,22 @@ exports.renderSearchIdoneidaddoctorsTemplate = function (req, res){
     res.redirect('/');
   } 
 }
+
+exports.renderProfileDoctorCitasTemplate = function (req, res){
+  console.log("#################### renderProfileDoctorCitasTemplate ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render Profile Doctor Citas Template from cookie");
+    res.render('perfil_tomar_citas', {data: data});
+  }else if(req.session && req.session.isLogged == true || req.session.isLogged == 'true'){
+    console.log("render Profile Doctor Citas Template Templatefrom session");
+    res.render('perfil_tomar_citas', {data: data});
+  }else{
+    res.redirect('/');
+  } 
+}
