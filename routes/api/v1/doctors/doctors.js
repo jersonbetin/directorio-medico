@@ -110,7 +110,7 @@ doctors.findProfessionalInformationById = function (id, res, next){
 var r;
 function process1(doc, callback){
   if(doc.pri != null){    
-    models.doctorsProfessionalInformation.findOne({_id:doc.pri._id}).populate("jobInformation").populate("professionalType")
+    models.doctorsProfessionalInformation.findOne({_id:doc.pri._id}).populate("professionalType").populate("jobInformation")
     .exec(function(err, pri){
       if(err){
         console.log(err);

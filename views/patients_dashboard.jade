@@ -81,7 +81,9 @@ block content
             label Doctors
             select.form-control(id="doctors")
               option(value=-1) Seleccione un doctor
-          
+          div.form-group
+            label Descripcion
+            textarea.form-control(id="description" type="text")
     .row
       .col-xs-12
         input#csrf_input(type="hidden", value="#{data.csrf}")
@@ -104,6 +106,7 @@ block js
   script.
     //- socket.emit('connect', { data: 'patient' });
     $(document).on('ready', function(){
+
       var socket = io.connect('http://localhost:3000');
       socket.on('calendarUpdated', function (data) {
         console.log(data);
@@ -111,6 +114,7 @@ block js
         loadDoctorsWeekCalendar($("select#year").val(), $("select#month").val(), week, $("select#doctors").val());
       });
       $("#my_calendar").on("click", ".addAppointmentButton", function(e){
+
         console.log($(this).attr("year"));
         console.log($(this).attr("month"));
         console.log($(this).attr("day"));
@@ -121,34 +125,43 @@ block js
         var day = parseInt($(this).attr("day"));
         var hour = parseFloat($(this).attr("hour"));
         var minutes = parseFloat($(this).attr("minutes"));
-        $.ajax({
-          url: "/api/v1/patients/me/addAppointmentToDoctor",
-          type: "POST",
-          headers: {
-            "accessToken": localStorage.accessToken
-          },
-          data:{
-            "idDoctor": $("#doctors").val(),
-            "date":{
-              "year": year,
-              "month": month,
-              "day": day
-            },
-            "time":{
-              "start": (hour+ (minutes/100))  
-            },
-            "appointment": {
-              "description": "Una cita apartada por un paciente"
-            }
-          },
-          success: function(data){
-            console.log(data);
-            alert("Se aparto la cita satisfctoriamente");
-            var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
-            loadDoctorsWeekCalendar($("select#year").val(), $("select#month").val(), week, $("select#doctors").val());
-            socket.emit('calendarUpdated');
+        var description = $("#description").val();
+        if(description != ""){
+          if(confirm("Esta seguro que quiere apartar esta cita?")){
+            $.ajax({
+              url: "/api/v1/patients/me/addAppointmentToDoctor",
+              type: "POST",
+              headers: {
+                "accessToken": localStorage.accessToken
+              },
+              data:{
+                "idDoctor": $("#doctors").val(),
+                "date":{
+                  "year": year,
+                  "month": month,
+                  "day": day
+                },
+                "time":{
+                  "start": (hour+ (minutes/100))  
+                },
+                "appointment": {
+                  "description": description
+                }
+              },
+              success: function(data){
+                console.log(data);
+                alert("Se aparto la cita satisfctoriamente");
+                var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
+                loadDoctorsWeekCalendar($("select#year").val(), $("select#month").val(), week, $("select#doctors").val());
+                socket.emit('calendarUpdated');
+              }
+            });
+          }else{
+            alert("No se aparto la cita");
           }
-        });
+        }else{
+          alert("debe escribir una descripcion de la cita");
+        }
       });
 
       function loadDoctorsSelect(){
@@ -636,11 +649,10 @@ block js
       }
 
 
-      $("#my_calendar").on("click", "td", function(e){
-        //- alert("click");
-      });
+      
 
       $("#my_calendar").on("click", ".addSpaceForAppointmentButton", function(e){
+        $('#myModal').modal();
         console.log($(this).attr("year"));
         console.log($(this).attr("month"));
         console.log($(this).attr("day"));
