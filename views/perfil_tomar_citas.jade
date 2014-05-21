@@ -157,11 +157,11 @@ block js
         }
       }
       
-      $("#logout_doctor").on('click', function(e){
+      $("#logout_patient").on('click', function(e){
         e.preventDefault();
         $.ajax({
           type: "DELETE",
-          url:"/login/doctors",
+          url:"/login/patients",
           headers: {
             "csrfToken": $("#csrf_input").val()
           },

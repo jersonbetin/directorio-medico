@@ -127,8 +127,10 @@ block js
         $('#info_medico').on('click', function(){
             var cedula=$(' .cedula_input:checked').val();
             var id=$(' .cedula_input:checked').attr('data-id');
+            var nombre=$('#DoctorNombre').text();
             localStorage.cedula=cedula;
             localStorage.doctorID=id;
+            localStorage.doctorNombre=nombre;
             window.location.replace('/profile/doctorsCitas');
           });
 
@@ -143,7 +145,7 @@ block js
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                      table+='<tr><td><input type="radio" class="cedula_input" data-id="'+data[i]._id+'" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pri.professionalType.type+'</td><td>'+data[i].pri.jobInformation.clinic.location.city+'</td><td>'+data[i].pri.jobInformation.clinic.phone.landline+'</td></tr>';
+                      table+='<tr><td><input type="radio" class="cedula_input" data-id="'+data[i]._id+'" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td id="DoctorNombre">'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pri.professionalType.type+'</td><td>'+data[i].pri.jobInformation.clinic.location.city+'</td><td>'+data[i].pri.jobInformation.clinic.phone.landline+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                       $('#button_ver').css('display', 'inline-table');
