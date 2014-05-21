@@ -236,12 +236,12 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i, days.domingo.number, data.dates)){
                     if(therIsAnAppointment(i,  days.domingo.number, data.dates)){
-                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p><button class='getAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=0>Ver cita</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=0> Apartar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -250,15 +250,15 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i+0.3, days.domingo.number, data.dates)){
                     if(therIsAnAppointment(i+0.3,  days.domingo.number, data.dates)){
-                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
+                      halfHour2 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=30> Apartar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 =  "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>"; 
                   }
                 }else{
-                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
+                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
                 }
                 domingo = "<td>"+halfHour1+halfHour2+"</td>";
               }
@@ -271,12 +271,12 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i, days.lunes.number, data.dates)){
                     if(therIsAnAppointment(i,  days.lunes.number, data.dates)){
-                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p><button class='getAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=0>Ver cita</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=0> Apartar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -285,15 +285,15 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i+0.3, days.lunes.number, data.dates)){
                     if(therIsAnAppointment(i+0.3,  days.lunes.number, data.dates)){
-                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
+                      halfHour2 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=30> Apartar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 =  "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>"; 
                   }
                 }else{
-                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
+                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
                 }
                 lunes = "<td>"+halfHour1+halfHour2+"</td>";
               }
@@ -306,12 +306,12 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i, days.martes.number, data.dates)){
                     if(therIsAnAppointment(i,  days.martes.number, data.dates)){
-                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p><button class='getAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=0>Ver cita</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=0> Apartar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -320,15 +320,15 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i+0.3, days.martes.number, data.dates)){
                     if(therIsAnAppointment(i+0.3,  days.martes.number, data.dates)){
-                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
+                      halfHour2 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=30> Apartar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 =  "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>"; 
                   }
                 }else{
-                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
+                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
                 }
                 martes = "<td>"+halfHour1+halfHour2+"</td>";
               }
@@ -341,12 +341,12 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i, days.miercoles.number, data.dates)){
                     if(therIsAnAppointment(i,  days.miercoles.number, data.dates)){
-                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p><button class='getAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=0>Ver cita</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=0> Apartar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -355,15 +355,15 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i+0.3, days.miercoles.number, data.dates)){
                     if(therIsAnAppointment(i+0.3,  days.miercoles.number, data.dates)){
-                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
+                      halfHour2 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=30> Apartar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 =  "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>"; 
                   }
                 }else{
-                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
+                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
                 }
                 miercoles = "<td>"+halfHour1+halfHour2+"</td>";
               }
@@ -376,12 +376,12 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i, days.jueves.number, data.dates)){
                     if(therIsAnAppointment(i,  days.jueves.number, data.dates)){
-                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p><button class='getAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=0>Ver cita</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=0> Apartar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -390,15 +390,15 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i+0.3, days.jueves.number, data.dates)){
                     if(therIsAnAppointment(i+0.3,  days.jueves.number, data.dates)){
-                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
+                      halfHour2 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=30> Apartar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 =  "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>"; 
                   }
                 }else{
-                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
+                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
                 }
                 jueves = "<td>"+halfHour1+halfHour2+"</td>";
               }
@@ -411,12 +411,12 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i, days.viernes.number, data.dates)){
                     if(therIsAnAppointment(i,  days.viernes.number, data.dates)){
-                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p><button class='getAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=0>Ver cita</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=0> Apartar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -425,15 +425,15 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i+0.3, days.viernes.number, data.dates)){
                     if(therIsAnAppointment(i+0.3,  days.viernes.number, data.dates)){
-                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
+                      halfHour2 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=30> Apartar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 =  "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>"; 
                   }
                 }else{
-                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
+                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
                 }
                 viernes = "<td>"+halfHour1+halfHour2+"</td>";
               }
@@ -446,12 +446,12 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i, days.sabado.number, data.dates)){
                     if(therIsAnAppointment(i,  days.sabado.number, data.dates)){
-                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p><button class='getAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=0>Ver cita</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
+                      halfHour1 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=0> Apartar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -460,15 +460,15 @@ block js
                 if(thisDate > now){
                   if(thereIsSpaceForApointment(i+0.3, days.sabado.number, data.dates)){
                     if(therIsAnAppointment(i+0.3,  days.sabado.number, data.dates)){
-                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p><p>Hora: "+i+":30</p></div></div>";
+                      halfHour2 = "<div class='half_hour_appointment'><div class='note bg-info'><p>Ya alguien aparto una cita a esta hora.</p></div></div>";
                     }else{
-                      halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
+                      halfHour2 = "<div class='half_hour_available'><div class='note bg-info'><p>El doctor tiene disponible esta hora para una cita</p><p><button class='addAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=30> Apartar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 =  "<div class='half_hour_not_available'><div class='note bg-info'>El doctor no tiene esta hora</div></div>"; 
                   }
                 }else{
-                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
+                  halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
                 }
                 sabado = "<td>"+halfHour1+halfHour2+"</td>";
               }
