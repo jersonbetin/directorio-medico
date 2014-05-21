@@ -178,3 +178,41 @@ exports.renderProfileDoctorTemplate = function(req, res){
   console.log(data);
   res.render('perfilMedico', {data: data});
 }
+
+exports.renderSearchDoctorByPatient = function (req, res){
+  console.log("#################### renderSearchDoctorByPatient ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render Search Doctor By Patient from cookie");
+    res.render('search_by_paciente', {data: data});
+  }else if(req.session && req.session.isLogged == true || req.session.isLogged == 'true'){
+    console.log("render Search Doctor By Patient from session");
+    res.render('search_by_paciente', {data: data});
+  }else{
+    res.redirect('/');
+  } 
+}
+
+exports.renderSearchIdoneidaddoctorsTemplate = function (req, res){
+  console.log("#################### renderSearchIdoneidaddoctorsTemplate ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render Search Idoneidad doctors Template from cookie");
+    res.render('search_idoneidad_patient', {data: data});
+  }else if(req.session && req.session.isLogged == true || req.session.isLogged == 'true'){
+    console.log("render Search Idoneidad doctors Templatefrom session");
+    res.render('search_idoneidad_patient', {data: data});
+  }else{
+    res.redirect('/');
+  } 
+}

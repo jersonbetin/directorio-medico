@@ -14,41 +14,31 @@ block nav
   #bs-example-navbar-collapse-1.navbar-collapse.collapse
     ul.nav.navbar-nav
       li
-        a(href="/") 
-          i.fa.fa-home
-          |  Inicio
+        a(href="/")
+          i.fa.fa-bars
+          |  Dashboard
+      li
+        a(href="/me/patient_information")
+          i.fa.fa-info-circle
+          |  Mi informacion
       li.dropdown
-        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
-          i.fa.fa-search
-          |   Consultar
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown")
+          i.fa.fa-code-fork
+          |   Operaciones
           b.caret
         ul.dropdown-menu
           li
-            a(href="/search/doctors")
-              i.fa.fa-user-md
-              |  Medicos en el directorio
+            a(href="/search/doctors/patients")
+              i.fa.fa-star
+              |   Tomar citas medicas
           li.active
             a()
-              i.fa.fa-ambulance
-              |  Idoneidad medica
-      li.dropdown
-        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
-          i.fa.fa-pencil-square
-          |   Registrarse
-          b.caret
-        ul.dropdown-menu
-          li
-            a(href="/signup/doctors")
-              i.fa.fa-user-md
-              |   Medico
-          li
-            a(href="/signup/patients") 
-              i.fa.fa-user
-              |  Paciente
+              i.fa.fa-star
+              |  Consulta de idoneidad medica
       li
-        a(href="/login/doctors")
-          i.fa.fa-sign-in
-          |  Iniciar Session
+        a#logout_patient(href="#")
+          i.fa.fa-sign-out
+          |  Cerrar session
 
 block content
   .container.general-content
@@ -56,6 +46,7 @@ block content
       .col-lg-12
         .page-header.title-header
           h1 Busqueda de idoneidad de medicos en Cordoba
+          input#csrf_input(type="hidden", value="#{data.csrf}")
       .col-lg-4.board-search
         h4
           center Datos del medico
@@ -86,7 +77,6 @@ block js
             var lastnames=$('#lastnames').val();
             var identification=$('#identificacion').val();
             var criterio='apellido='+lastnames+'&identificacion='+identification;
-            alert(criterio);
             $.ajax({
                 method:'get',
                 dataType: 'json',
@@ -110,4 +100,31 @@ block js
                 }
               });
           });
+
+          function logoutDoctorSuccess(data, textStatus, jqXHR){
+              console.log(data);
+              if(data){
+                if(data.error){
+                  console.log(error);
+                }else{
+                  localStorage.removeItem("accessToken");
+                  localStorage.removeItem("refreshToken");
+                  localStorage.removeItem("tokenType");
+                  localStorage.removeItem("expirationDate");
+                  window.location.replace("/");
+                }
+              }
+            }
+
+          $("#logout_patient").on('click', function(e){
+              e.preventDefault();
+              $.ajax({
+                type: "DELETE",
+                url:"/login/patients",
+                headers: {
+                  "csrfToken": $("#csrf_input").val()
+                },
+                success: logoutDoctorSuccess
+              });
+            }); // End of logout doctor on click event
       });

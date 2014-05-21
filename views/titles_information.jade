@@ -222,7 +222,7 @@ block js
                 var day = ("0" + fecha.getDate()).slice(-2);
                 var month = ("0" + (fecha.getMonth() + 1)).slice(-2);
                 var graduationDate = (day)+"-"+(month)+"-"+fecha.getFullYear();
-                cadena += "<tr><td>"+data.doctorTitlesInformation[i].title+"</td><td>"+data.doctorTitlesInformation[i].description+"</td><td>"+graduationDate+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.name+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.city+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.department+"</td><td><button class='btn btn-info' id='delete-title'  data-infoTitle='"+data.doctorTitlesInformation[i]._id+"'>X</button></td></tr>"
+                cadena += "<tr><td>"+data.doctorTitlesInformation[i].title+"</td><td>"+data.doctorTitlesInformation[i].description+"</td><td>"+graduationDate+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.name+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.city+"</td><td>"+data.doctorTitlesInformation[i].idUniversity.department+"</td><td><button class='btn btn-info delete-title'  data-infoTitle='"+data.doctorTitlesInformation[i]._id+"'>X</button></td></tr>"
                 //- console.log(data.doctorTitlesInformation[i]);
               }
                 document.getElementById("table_titles_body").innerHTML=cadena;
@@ -236,9 +236,26 @@ block js
 
       getDoctorTitlesInformation();
 
-      $("#delete-title").click(function(e){
+      $("#table_titles_body").on('click', '.delete-title',function(e){
           e.preventDefault();
-          alert('hola');
+          if(confirm('Seguro quiere elimimar el titulo')){
+            var idTitulo=$(this).attr('data-infoTitle');
+            $.ajax({
+                type:'delete',
+                url:'/api/v1/doctors/me/titles_information/'+idTitulo,
+                headers: {
+                  "accessToken": localStorage.accessToken
+                },
+                success:function(data){
+                  if(data.error==null){
+                    alert('el tituto se elimino con exito');
+                    getDoctorTitlesInformation();
+                  }else{
+                    alert('Error al borrar el titulo');
+                  }
+                }
+              });
+          }
         });
 
       $("#verify_identification_button").on("click", function(e){
