@@ -66,7 +66,7 @@ block content
               label.control-label(for="name_like") Nombre: 
               input.form-control#name_like(type="text", placeholder="Nombre del doctor")
             .form-group
-              label.control-label(for="lastname_like") Nombre: 
+              label.control-label(for="lastname_like") Apellido: 
               input.form-control#lastname_like(type="text", placeholder="Primer apellido del doctor")
         .board-avanced
           .form-group
@@ -102,10 +102,10 @@ block content
           thead
             tr
               th 
-              th Identificacion
               th Nombre
+              th Profesion
+              th Cuidad
               th Telefono
-              th Celular
           tbody#result_search
         table.table#button_ver
           tr
@@ -152,7 +152,7 @@ block js
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                      table+='<tr><td><input type="radio" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.identification.number+'</td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
+                      table+='<tr><td><input type="radio" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pri.professionalType.type+'</td><td>'+data[i].pei.contactData.phone.home+'</td><td>'+data[i].pei.contactData.phone.mobile+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                       $('#button_ver').css('display', 'inline-table');
