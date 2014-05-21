@@ -78,6 +78,46 @@ module.exports = function (app) {
   app.get("/api/v1/doctors", api.doctors.getDoctorsInformation);
   app.get("/api/v1/doctors/:username/account_information", middleware.doctorsCredentialsVerification, api.doctors.getDoctorAccountInformationByUsername);
 
+
+
+  /*Esta url permite guardar la imagen del doctor*/
+  app.post("/api/v1/doctors/:username/account_information/profile_img", middleware.doctorsCredentialsVerification, api.doctors.saveProfileImageByUsername);
+ /*Por esta url se obtiene la imagen*/
+  app.get("/profile_images/:filename", function (req, res) {
+    var mongo = require('mongodb');
+    var Grid = require('gridfs-stream');
+    var fs  = require("fs");
+
+    // create or use an existing mongodb-native db instance.
+    // for this example we'll just create one:
+    var MongoClient = mongo.MongoClient;
+    MongoClient.connect('mongodb://consulting:1q2w3e4r@ds049568.mongolab.com:49568/consulting', function (err, db) {
+      
+      if (err){
+        console.log("############ err #################");
+        console.log(err);
+        console.log("############ err #################");
+      }else{
+        console.log("Conectado a mongolab");
+        var gfs = Grid(db, mongo);
+        var readstream = gfs.createReadStream({
+          filename: req.params.filename
+        });
+
+        //error handling, e.g. file does not exist
+        readstream.on('error', function (err) {
+          console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+          console.log('An error occurred!', err);
+          res.send(500);
+        });
+        res.set({
+          'content-type': 'application/pdf'
+        });
+        readstream.pipe(res);
+        // gfs.createReadStream(options).pipe(res);
+      }
+    });
+  });
   // url qu permite que la secretaria cambie el estado de registro de un doctor
   function validateSecreatryToken (req, res, next){
     if(req.header("secretaryToken")){
@@ -98,6 +138,7 @@ module.exports = function (app) {
 
   /*Calendary*/
   app.post("/api/v1/doctors/:username/spaceDateForAppointment", middleware.doctorsCredentialsVerification, api.doctors.addDoctorSpaceDateForAppointment);
+  app.delete("/api/v1/doctors/:username/spaceDateForAppointment", middleware.doctorsCredentialsVerification, api.doctors.deleteDoctorSpaceDateForAppointment);
   app.get("/api/v1/doctors/:username/spacesDateForAppointments", middleware.doctorsCredentialsVerification, api.doctors.getDoctorSpacesForAppointmentsByUsername);
   app.get("/api/v1/doctors/:doctorId/spacesDateForAppointments2", middleware.patientsCredentialsVerification, api.doctors.getDoctorSpacesForAppointmentsById);
   app.get("/api/v1/doctors/spacesDateForAppointments", api.doctors.getDoctorsSpacesForAppointments);
@@ -267,39 +308,5 @@ module.exports = function (app) {
     });
   });
 
-  app.get("/profile_images/:filename", function (req, res) {
-    var mongo = require('mongodb');
-    var Grid = require('gridfs-stream');
-    var fs  = require("fs");
-
-    // create or use an existing mongodb-native db instance.
-    // for this example we'll just create one:
-    var MongoClient = mongo.MongoClient;
-    MongoClient.connect('mongodb://consulting:1q2w3e4r@ds049568.mongolab.com:49568/consulting', function (err, db) {
-      
-      if (err){
-        console.log("############ err #################");
-        console.log(err);
-        console.log("############ err #################");
-      }else{
-        console.log("Conectado a mongolab");
-        var gfs = Grid(db, mongo);
-        var readstream = gfs.createReadStream({
-          filename: req.params.filename
-        });
-
-        //error handling, e.g. file does not exist
-        readstream.on('error', function (err) {
-          console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-          console.log('An error occurred!', err);
-          res.send(500);
-        });
-        res.set({
-          'content-type': 'application/pdf'
-        });
-        readstream.pipe(res);
-        // gfs.createReadStream(options).pipe(res);
-      }
-    });
-  });
+ 
 };

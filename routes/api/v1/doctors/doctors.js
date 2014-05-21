@@ -1494,3 +1494,34 @@ exports.addDoctorSpaceDateForAppointment = function(req, res) {
   });
 };
 
+
+exports.deleteDoctorSpaceDateForAppointment = function(req, res) {
+  doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){
+    console.log(req.body);
+    if(req.body.date && req.body.time){
+      var d = new Date(req.body.date);
+      models.doctorsCalendar.findOne({
+        idDAI: doctorAI._id, 
+        "date.year" : req.body.date.year, 
+        "date.month" : req.body.date.month, 
+        "date.day" : req.body.date.day, 
+        "time.start": req.body.time.start,
+      }, function(err, date){
+        if (err) {
+          console.log(err);
+          res500Code(res);
+        }else{
+          if (date) {
+            date.remove();
+            console.log(date);
+            res.send({error:null, des: "Dat deleted successfully"});
+          }else{
+            res.send({error: "dateNotFound", des: "ya existe un espacio apartado ppor este doctor en esta fecha y a esta hora"});
+          }
+        }
+      });
+    }else{
+      res.send("you have to send a date, time");
+    }
+  });
+};

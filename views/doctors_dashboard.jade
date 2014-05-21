@@ -613,6 +613,41 @@ block js
         });
       });
 
+       $("#my_calendar").on("click", ".delSpaceForAppointmentButton", function(e){
+        console.log($(this).attr("year"));
+        console.log($(this).attr("month"));
+        console.log($(this).attr("day"));
+        console.log($(this).attr("hour"));
+        console.log($(this).attr("minutes"));
+        var year = parseInt($(this).attr("year"));
+        var month = parseInt($(this).attr("month"));
+        var day = parseInt($(this).attr("day"));
+        var hour = parseFloat($(this).attr("hour"));
+        var minutes = parseFloat($(this).attr("minutes"));
+        $.ajax({
+          url: "/api/v1/doctors/me/spaceDateForAppointment",
+          type: "DELETE",
+          headers: {
+            "accessToken": localStorage.accessToken
+          },
+          data:{
+            "date":{
+              "year": year,
+              "month": month,
+              "day": day
+            },
+            "time":{
+            "start": (hour + (minutes/100))  }
+          },
+          success: function(data){
+            console.log(data);
+            var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
+            loadWeekCalendar($("select#year").val(), $("select#month").val(), week);
+            socket.emit('calendarUpdated');
+          }
+        });
+      });
+
       $("#my_calendar").on("click", ".getAppointmentButton", function(e){
         //- alert("click");
         console.log($(this).attr("year"));
