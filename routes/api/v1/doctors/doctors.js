@@ -145,7 +145,7 @@ function f1(err, docs){
   if(personalCriteria.name_like){
     console.log("name: "+personalCriteria.name_like);
     for(var i=0; i<len; i++){
-      if (docs[i].pei != null && docs[i].pei.names.indexOf(personalCriteria.name_like) != -1) {
+      if (docs[i].pei != null && docs[i].pei.names.toLowerCase().indexOf(personalCriteria.name_like.toLowerCase()) != -1) {
         newDocs.push(docs[i]);
       }
     }
@@ -157,7 +157,7 @@ function f1(err, docs){
     len = docs.length;
     console.log("lastname: "+personalCriteria.lastname_like);
     for(var i=0; i<len; i++){
-      if (docs[i].pei != null && docs[i].pei.lastnames.first.indexOf(personalCriteria.lastname_like) != -1) {
+      if (docs[i].pei != null && docs[i].pei.lastnames.first.toLowerCase().indexOf(personalCriteria.lastname_like.toLowerCase()) != -1) {
         newDocs.push(docs[i]);
       }
     }
