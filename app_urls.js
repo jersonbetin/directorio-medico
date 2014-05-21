@@ -48,6 +48,7 @@ module.exports = function (app) {
   app.get('/search/idoneidad', renderTemplates.renderSearchIdoneidadTemplate);//busqueda sin logearse 
   app.get('/search/doctors/idoneidad', renderTemplates.renderSearchIdoneidaddoctorsTemplate);// busqueda logeado desde un paciente
   app.get('/profile/doctors', renderTemplates.renderProfileDoctorTemplate);
+  app.get('/profile/doctorsCitas', renderTemplates.renderProfileDoctorCitasTemplate);
 
   app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);
