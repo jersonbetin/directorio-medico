@@ -49,13 +49,14 @@ block content
             img(src="/images/sin-img.png", alt="")
         .col-lg-6
           fieldset
+            input#csrf_input(type="hidden", value="#{data.csrf}")
             legend.nombe-legend
               span#info-nombre 
               br
               .sub-title
                 span#info-mas  
                 span &nbsp;|&nbsp;
-                span#info-sexo  
+                span#info-sexo
           .info-profile
               .panel.panel-primary
                 .panel-heading Titulos obtenidos
@@ -94,7 +95,7 @@ block content
                       td#info-ciudad 
       .row
         .col-lg-12
-            input#button_show_calendar.btn.btn-primary.col-lg-offset-3.col-lg-6(type="button"  value="Tomar cita con este doctor" style="margin-top: 2px;")
+            a#button_show_calendar.btn.btn-danger.col-lg-offset-3.col-lg-6(href="/patients/calendar" style="margin-top: 2px;") Tomar cita con este doctor
 
 block js
   script.
@@ -140,5 +141,33 @@ block js
             }
           });
         }
+
+        function logoutDoctorSuccess(data, textStatus, jqXHR){
+        console.log(data);
+        if(data){
+          if(data.error){
+            console.log(error);
+          }else{
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("tokenType");
+            localStorage.removeItem("expirationDate");
+            window.location.replace("/");
+          }
+        }
+      }
+      
+      $("#logout_doctor").on('click', function(e){
+        e.preventDefault();
+        $.ajax({
+          type: "DELETE",
+          url:"/login/doctors",
+          headers: {
+            "csrfToken": $("#csrf_input").val()
+          },
+          success: logoutDoctorSuccess
+        });
+      }); // End of logout doctor on click event
+
         cargarDatos();
       });
