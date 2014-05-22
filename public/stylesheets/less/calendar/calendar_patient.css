@@ -1,5 +1,5 @@
 #content-table {
-  height: 300px;
+  height: 600px;
   overflow: auto;
 }
 #my_calendar {
@@ -90,12 +90,12 @@ th {
 }
 
 
-.half_hour_not_aparted{
+.half_hour_not_available{
   display: inline-block;
   text-align: center;
   width: 100%;
 }
-.half_hour_aparted {
+.half_hour_available {
   background: #80B743;
   border: 1px solid #eee;
   /*box-shadow: 0px 0px 5px #80B743;*/
