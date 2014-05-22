@@ -55,8 +55,7 @@ block content
     .info-principal
       .row
         .col-lg-6
-          .img-profile
-            img(src="/images/sin-img.png", alt="")
+          .img-profile#image-upload
         .col-lg-6
           fieldset
             legend.nombe-legend
@@ -119,6 +118,14 @@ block js
                 var personal=data[0].pei;
                 var titulos=data[0].ti;
                 var laboral=data[0].pri;
+                var imagen=data[0].image;
+                if(imagen != undefined || imagen != null){
+                  var imagen='<img src="/profile_images/'+imagen+'">';
+                  $('#image-upload').append(imagen);
+                }else{
+                  var imagen='<img src="/images/sin-img.png">';
+                  $('#image-upload').append(imagen);
+                }
                 document.getElementById('info-nombre').innerHTML+=personal.names+' '+personal.lastnames.first+' '+personal.lastnames.second;
                 document.getElementById('info-mas').innerHTML+=laboral.professionalType.type;
                 document.getElementById('info-sexo').innerHTML+=personal.sex;

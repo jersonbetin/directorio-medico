@@ -1,0 +1,148 @@
+extends layout
+
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/less/information/information.css')
+
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li
+        a(href="/") 
+          i.fa.fa-bars
+          |  Dashboard
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
+          i.fa.fa-info-circle
+          |   Mi informacion
+          b.caret
+        ul.dropdown-menu
+          li
+            a(href="/me/personal_information")
+              i.fa.fa-star
+              |   Personal
+          li
+            a(href="/me/professional_information")
+              i.fa.fa-star
+              |  Profesional
+          li
+            a(href="/me/titles_information")
+              i.fa.fa-star
+              |  Titulos
+          li
+            a(href="/me/register_end")
+              i.fa.fa-star
+              |  finalizar registro
+      li.active
+        a()
+          i.fa.fa-picture-o
+          |  Imagen de perfil
+      li
+        a#logout_doctor(href="#")
+          i.fa.fa-sign-out
+          |  Cerrar session
+
+
+block content
+  .container.general-content
+    .row
+      .col-lg-12
+        .page-header.title-header
+          h1 Cargar imagen a mostrar en su perfil
+    .row
+      .col-lg-12
+        input#csrf_input(type="hidden", value="#{data.csrf}")
+        fielset.col-lg-6.col-lg-offset-3
+          form#form_save_image.form-inline(enctype="multipart/form-data")
+            .form-group
+              input.form-control#image(type="file", accept="image/*", required)
+            .form-group
+              input.btn.btn-primary#save_image(type="submit" value="Guardar")
+    .row
+      .col-lg-12
+        #image-upload
+
+block js
+  script.
+    $(document).ready(function(){
+        function cargarImagen(){
+          $.ajax({
+              type:'get',
+              url:'/api/v1/doctors/me/all_information',
+              headers: {
+                "accessToken": localStorage.accessToken
+              },
+              success:function(data){
+                console.log(data);
+                var imagen=data.information[1].doctorAccountInformation.image;
+                if(imagen != undefined || imagen != null){
+                  var imagen='<img src="/profile_images/'+imagen+'">';
+                  $('#image-upload').append(imagen);
+                }else{
+                  var imagen='<img src="/images/sin-img.png">';
+                  $('#image-upload').append(imagen);
+                }
+              }
+          });
+        }
+
+        $('#save_image').on('click', function(e){
+          var divImg=document.getElementById('image');
+          var images=divImg.files[0];
+
+          if(images!=undefined){
+            e.preventDefault();
+            var datos = new FormData();
+            datos.append("info", 'prueba');
+            datos.append("image", images);
+            $.ajax({
+                type:'post',
+                url:'/api/v1/doctors/me/account_information/profile_img',
+                data:datos, //Le pasamos el objeto que creamos con los archivos
+                processData:false, //Debe estar en false para que JQuery no procese los datos a enviar
+                contentType:false, //Debe estar en false para que pase el objeto sin procesar
+                headers: {
+                  "accessToken": localStorage.accessToken
+                },
+                success:function(data){
+                  console.log(data);
+                }
+              });
+          }
+        });
+
+        function logoutDoctorSuccess(data, textStatus, jqXHR){
+          console.log(data);
+          if(data){
+            if(data.error){
+              console.log(error);
+            }else{
+              localStorage.removeItem("accessToken");
+              localStorage.removeItem("refreshToken");
+              localStorage.removeItem("tokenType");
+              localStorage.removeItem("expirationDate");
+              window.location.replace("/");
+            }
+          }
+        }
+
+      $("#logout_doctor").on('click', function(e){
+          e.preventDefault();
+          $.ajax({
+            type: "DELETE",
+            url:"/login/doctors",
+            headers: {
+              "csrfToken": $("#csrf_input").val()
+            },
+            success: logoutDoctorSuccess
+          });
+        }); // End of logout doctor on click event
+      cargarImagen();
+      });
+

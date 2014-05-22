@@ -2,6 +2,8 @@
   box-shadow: 2px 2px 3px #d3d3d3, -2px -2px 3px #d3d3d3;
 }
 .img-profile {
+  margin-top: 10px;
+  margin-bottom: 30px;
   width: 100%;
 }
 .img-profile img {
@@ -23,19 +25,26 @@
 .sub-title {
   font-size: 14px;
 }
-.tables-info {
+.tables-info,
+.tables-info1 {
   width: 100%;
   font-size: 14px;
   text-transform: uppercase;
 }
-.tables-info tr {
+.tables-info tr,
+.tables-info1 tr {
   width: 100%;
 }
-.tables-info tr td {
-  width: 25%;
+.tables-info tr td,
+.tables-info1 tr td {
   padding: 1%;
 }
-.tables-info .title-info {
+.tables-info .tables-info tr td,
+.tables-info1 .tables-info tr td {
+  width: 25%;
+}
+.tables-info .title-info,
+.tables-info1 .title-info {
   color: #a0a0a0;
   text-align: right;
 }
