@@ -120,11 +120,11 @@ block js
                 var laboral=data[0].pri;
                 var imagen=data[0].image;
                 if(imagen != undefined || imagen != null){
-                  var imagen='<img src="/profile_images/'+imagen+'">';
-                  $('#image-upload').append(imagen);
+                  var divImagen='<img src="/profile_images/'+imagen+'">';
+                  $('#image-upload').append(divImagen);
                 }else{
-                  var imagen='<img src="/images/sin-img.png">';
-                  $('#image-upload').append(imagen);
+                  var divImagen='<img src="/images/sin-img.png">';
+                  $('#image-upload').append(divImagen);
                 }
                 document.getElementById('info-nombre').innerHTML+=personal.names+' '+personal.lastnames.first+' '+personal.lastnames.second;
                 document.getElementById('info-mas').innerHTML+=laboral.professionalType.type;

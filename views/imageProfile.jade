@@ -82,11 +82,11 @@ block js
                 console.log(data);
                 var imagen=data.information[1].doctorAccountInformation.image;
                 if(imagen != undefined || imagen != null){
-                  var imagen='<img src="/profile_images/'+imagen+'">';
-                  $('#image-upload').append(imagen);
+                  var divImagen='<img src="/profile_images/'+imagen+'">';
+                  $('#image-upload').append(divImagen);
                 }else{
-                  var imagen='<img src="/images/sin-img.png">';
-                  $('#image-upload').append(imagen);
+                  var divImagen='<img src="/images/sin-img.png">';
+                  $('#image-upload').append(divImagen);
                 }
               }
           });
@@ -112,6 +112,13 @@ block js
                 },
                 success:function(data){
                   console.log(data);
+                  if(data.error==null){
+                    var imagen= data.doctorAI.image;
+                    var imagen='<img src="/profile_images/'+imagen+'">';
+                    document.getElementById('image-upload').innerHTML=imagen;
+                  }else{
+                    alert('error al guardar imagen');
+                  }
                 }
               });
           }
