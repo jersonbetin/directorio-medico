@@ -1,5 +1,5 @@
 #content-table {
-  height: 600px;
+  height: 300px;
   overflow: auto;
 }
 #my_calendar {
@@ -35,14 +35,14 @@ th {
 }
 .addSpaceForAppointmentButton {
   width: 100%;
-  height: 100%;
-  border: 1px solid #3333;
-  margin: auto;
   display: inline-block;
-  margin: auto;
+  margin-bottom: 0;
   font-weight: normal;
   text-align: center;
+  vertical-align: middle;
   cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
   white-space: nowrap;
   padding: 8px 12px;
   font-size: 14px;
@@ -54,6 +54,7 @@ th {
   user-select: none;
   color: #ffffff;
   background-color: #2fa4e7;
+  border-color: #2fa4e7;
 }
 .addSpaceForAppointmentButton:focus {
   outline: thin dotted #333;
@@ -81,38 +82,63 @@ th {
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
-
-.half-hour{
-  background: #FaFaFa;
+.half_hour_not_aparted {
+  background: #F1F1F1;
   border: 1px solid #aaa;
-  text-align: center;
-  /*box-shadow: 0px 0p 5px #aaa;*/
-}
-
-
-.half_hour_not_aparted{
-  display: inline-block;
-  text-align: center;
-  width: 100%;
+  box-shadow: 0px 0p 5px #aaa;
 }
 .half_hour_aparted {
   background: #80B743;
-  border: 1px solid #eee;
-  /*box-shadow: 0px 0px 5px #80B743;*/
+  border: #80B743;
+  box-shadow: 0px 0px 5px #80B743;
   color: white;
   text-align: center;
   font-size: 16px;
   font-weight: bold;
-  /*text-shadow: 0px 0px 1px white;*/
+  text-shadow: 0px 0px 1px white;
 }
 .half_hour_appointment {
   background: #D4242A;
-  border: 1px solid #eee;
-  /*box-shadow: 0px 0px 5px #D4242A;*/
+  border: #D4242A;
+  box-shadow: 0px 0px 5px #D4242A;
   color: #fff;
   color: white;
   text-align: center;
   font-size: 16px;
   font-weight: bold;
-  /*text-shadow: 0px 0px 1px white;*/
+  text-shadow: 0px 0px 1px white;
+}
+.panel-citas label {
+  text-transform: uppercase;
+  color: #2FA4E7 ;
+  font-size: 16px;
+  font-weight: bolder;
+}
+.panel-general {
+  width: 100%;
+  display: inline-block;
+  height: auto;
+}
+.panel-general p {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.panel-general .panel1 {
+  float: left;
+  width: 26px;
+  height: 26px;
+  background: #2fa4e7;
+}
+.panel-general .panel2 {
+  float: left;
+  width: 26px;
+  height: 26px;
+  background: #80b743;
+}
+.panel-general .panel3 {
+  float: left;
+  width: 26px;
+  height: 26px;
+  background: #d4242a;
 }

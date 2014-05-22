@@ -95,7 +95,7 @@ block content
               th 
               th Nombre
               th Profesion
-              th Cuidad
+              th Clinica
               th Telefono
           tbody#result_search
         table.table#button_ver
@@ -148,7 +148,7 @@ block js
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                      table+='<tr><td><input type="radio" class="cedula_input" data-name="'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'"  data-id="'+data[i]._id+'" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pri.professionalType.type+'</td><td>'+data[i].pri.jobInformation.clinic.location.city+'</td><td>'+data[i].pri.jobInformation.clinic.phone.landline+'</td></tr>';
+                      table+='<tr><td><input type="radio" class="cedula_input" data-name="'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'"  data-id="'+data[i]._id+'" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pri.professionalType.type+'</td><td>'+data[i].pri.jobInformation.clinic.name+'</td><td>'+data[i].pri.jobInformation.clinic.phone.landline+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                       $('#button_ver').css('display', 'inline-table');
@@ -164,33 +164,7 @@ block js
               });
           });
 
-        //- $('#lastname_like').on('keyup', function(){
-        //-     var datas=$(this).val();
-        //-     var name=$('#name_like').val();
-        //-     $.ajax({
-        //-         method:'get',
-        //-         url:'/api/v1/doctors?name_like='+name+'&lastname_like='+data,
-        //-         success:function(data){
-        //-           console.log(data);
-        //-           if(data.length!=0){
-        //-             var table='';
-        //-               for(var i=0; i<data.length; i++){
-        //-                table+='<tr><td><input type="radio" class="cedula_input" data-name="'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'"  data-id="'+data[i]._id+'" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pri.professionalType.type+'</td><td>'+data[i].pri.jobInformation.clinic.location.city+'</td><td>'+data[i].pri.jobInformation.clinic.phone.landline+'</td></tr>';
-        //-               }
-        //-               document.getElementById('result_search').innerHTML=table;
-        //-               $('#button_ver').css('display', 'inline-table');
-        //-           }else{
-        //-               var content="<tr><td colspan='4'><center class='center'>No exiten registros</center></td></tr>";
-        //-               document.getElementById('result_search').innerHTML=content;
-        //-               $('#button_ver').css('display', 'none');
-        //-           }
-        //-         },
-        //-         processData:function(){
-        //-           document.getElementById('result_search').innerHTML='esperando...';
-        //-         }
-        //-       });
-        //-   });
-
+        
         function limpiar(){
            $('#name_like').val('');
            $('#lastname_like').val('');
@@ -249,7 +223,7 @@ block js
                   if(data.length!=0){
                     var table='';
                       for(var i=0; i<data.length; i++){
-                       table+='<tr><td><input type="radio" class="cedula_input" data-name="'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'"  data-id="'+data[i]._id+'" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pri.professionalType.type+'</td><td>'+data[i].pri.jobInformation.clinic.location.city+'</td><td>'+data[i].pri.jobInformation.clinic.phone.landline+'</td></tr>';
+                       table+='<tr><td><input type="radio" class="cedula_input" data-name="'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'"  data-id="'+data[i]._id+'" name="radio_cedula" value="'+data[i].pei.identification.number+'"></td><td>'+data[i].pei.names+' '+data[i].pei.lastnames.first+' '+data[i].pei.lastnames.second+'</td><td>'+data[i].pri.professionalType.type+'</td><td>'+data[i].pri.jobInformation.clinic.name+'</td><td>'+data[i].pri.jobInformation.clinic.phone.landline+'</td></tr>';
                       }
                       document.getElementById('result_search').innerHTML=table;
                       $('#button_ver').css('display', 'inline-table');

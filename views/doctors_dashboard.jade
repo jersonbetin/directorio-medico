@@ -51,9 +51,9 @@ block content
   .container.general-content
     .row
       .col-lg-12
-      h2#username_h2 Doctor:
+        h2#username_h2 Doctor:
     .row
-      .col-lg-12
+      .col-lg-8
         form.form-inline(role="form")
           div.form-group
             label Año: 
@@ -84,6 +84,17 @@ block content
             label Semana
             select.form-control(id="weeks")
               option(value=-1) Seleccione una semana
+      .col-lg-4
+        div.form-group.panel-citas
+          label Panel de informacion
+          .panel-general
+            .panel1
+            p &nbsp;Espacio sin apartar
+            .panel2
+            p &nbsp;Cita disponible
+            .panel3
+            p &nbsp;Cita tomada
+
     .row
       .col-lg-12
         input#csrf_input(type="hidden", value="#{data.csrf}")
