@@ -254,3 +254,22 @@ exports.renderPatientCalendarTemplate = function (req, res){
     res.redirect('/');
   } 
 }
+
+exports.renderImagenPerfilDoctorTemplate = function (req, res){
+  console.log("#################### renderImagenPerfilDoctorTemplate ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render Imagen Perfil Doctor Template from cookie");
+    res.render('imageProfile', {data: data});
+  }else if(req.session && req.session.isLogged == true || req.session.isLogged == 'true'){
+    console.log("render Imagen Perfil Doctor Template from session");
+    res.render('imageProfile', {data: data});
+  }else{
+    res.redirect('/');
+  } 
+}

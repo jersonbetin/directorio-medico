@@ -468,7 +468,7 @@ exports.updateDoctorRegisterStateById = function (req, res){
 
 /*Esta guarda la imagen del doctor*/
 exports.saveProfileImageByUsername = function (req, res){
-  if(req.body.files.image){
+  if(req.files.image){
     doctors.findAccountInformationByUsername(req.params.username, res, function(doctorAI){  
       var tmp_path = req.files.image.path;//ruta del archivo
       var random = Math.floor((Math.random()*9999)+1);//Variable aleatoria

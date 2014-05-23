@@ -50,6 +50,7 @@ module.exports = function (app) {
   app.get('/profile/doctors', renderTemplates.renderProfileDoctorTemplate);
   app.get('/profile/doctorsCitas', renderTemplates.renderProfileDoctorCitasTemplate);
   app.get('/patients/calendar', renderTemplates.renderPatientCalendarTemplate);
+  app.get('/doctors/imagen/perfil', renderTemplates.renderImagenPerfilDoctorTemplate);
 
   app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);

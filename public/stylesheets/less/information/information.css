@@ -17,3 +17,12 @@
 .alert-danger span {
   vertical-align: middle;
 }
+#image-upload {
+  margin-top: 20px;
+  margin-left: 30%;
+  width: 30%;
+}
+#image-upload img {
+  width: 100%;
+  height: auto;
+}
