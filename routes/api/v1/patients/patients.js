@@ -47,6 +47,7 @@ patients.findById = function (id, res, next){
 
 patients.findByUsername = function (username, res, next){
   console.log("########## patients.findByUsername  ##########");
+  console.log("Username: "+ username)
   models.patients.findOne({"accountInformation.username":username}, function (err, patient) {
     if (err) {
       console.log(err);
@@ -54,6 +55,7 @@ patients.findByUsername = function (username, res, next){
     }else if(patient){
       next(patient);
     }else{
+      console.log(patient);
       res404Code(res);
     }
   });
@@ -317,6 +319,74 @@ exports.addAppointmentToDoctorByUsername = function(req, res) {
     }else{
       res.send("you have to send a date, time and appointment object");
     }
+  });
+};
+
+
+var r;
+function process1(date, callback){
+  // console.log(date);
+  var appointment = {};
+  appointment.date = date.date;
+  appointment.time = date.time;
+  appointment.description = date.appointment.description;
+  appointment.doctor = {};
+  if(date.idDAI.pri != null){    
+    models.doctorsProfessionalInformation.findOne({_id:date.idDAI.pri}).populate("professionalType").populate("jobInformation").exec(function(err, pri){
+      if(err){
+        console.log(err);
+      }else if(pri){
+        // console.log("##########################");
+        // console.log(pri);
+        // date.idDAI.pri  = pri;
+        appointment.doctor.pri = pri;
+      }
+      if(date.idDAI.ti != null){
+        models.doctorsPersonalInformation.findOne({_id: date.idDAI.pei}).exec(function(err, pei){
+          if (err) {
+            console.log(err);
+          }else{
+
+            // console.log("##########################");
+            // console.log(ti);
+            appointment.doctor.pei = pei;
+            callback(null, appointment);
+          }
+        });
+      }else{
+        callback(null, appointment);
+      }
+    });
+  }else{
+    callback(null, appointment);
+  }
+}
+
+function f1(err, docs){
+  if(err){
+    console.log(err);
+    res500Code(r);
+  }else{
+    r.send(docs);
+  }
+}
+var async = require("async");
+exports.getAppointmentByUsername = function(req, res) {
+  console.log("########## exports.getAppointmentByUsername ##########");
+  // console.log(req.params);
+  patients.findByUsername(req.params.username, res, function(patient){
+    // console.log(patient);
+    models.doctorsCalendar.find({"appointment.idPatient":patient._id}).populate("idDAI").exec(function(err, dates){
+      if(err){
+        console.log(err);
+        res500Code(res);
+      }else if(dates){
+        r = res;
+        async.map(dates, process1, f1);
+      }else{
+        res404Code(res);
+      }
+    })
   });
 };
 
