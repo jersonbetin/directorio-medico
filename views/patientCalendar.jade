@@ -42,7 +42,10 @@ block nav
 
 block content
   .container.general-content
-    .row
+    .row#messagge-row(style="display: none")
+      .col-xs-12.alert.alert-info
+        p Usted no ha ingresado sus datos personales, por lo tanto no puede hacer uso del calendario. Para hacer uso del calendario debe completar todos sus datos e inmediatamente el calendario se le habilitara
+    .row#selects-row(style="display: none")
       .col-xs-12
         form.form-inline(role="form")
           div.form-group
@@ -77,7 +80,7 @@ block content
           div.form-group
             label Descripcion
             textarea.form-control(id="description" type="text")
-    .row
+    .row#calendar-row(style="display: none")
       .col-xs-12
         input#csrf_input(type="hidden", value="#{data.csrf}")
         div#content-table
@@ -98,6 +101,29 @@ block js
         var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
         loadDoctorWeekCalendar($("select#year").val(), $("select#month").val(), week, localStorage.doctorID);
       });
+      $.ajax({
+        url: "/api/v1/patients/me/personal_information",
+        type: "GET",
+        headers: {
+          "accessToken": localStorage.accessToken
+        },
+        success: function(data) {
+          console.log(data.patientPersonalInformation.personalInformation);
+          if(data.patientPersonalInformation.personalInformation != null){
+            $("#selects-row").css("display","block");
+            $("#calendar-row").css("display","block");
+            $("#messagge-row").css("display","none");
+            loadWeekOfToday();
+          }else{
+            //- console.log(data);
+            $("#selects-row").css("display","none");
+            $("#calendar-row").css("display","none");
+            $("#messagge-row").css("display","inline-block");
+            //- console.log("USted no es un doctor avalado por secretaria, por lo tanto no puede hacer uso del calendario");
+          }
+        }
+      });
+
       $("#my_calendar").on("click", ".addAppointmentButton", function(e){
 
         console.log($(this).attr("year"));

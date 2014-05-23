@@ -56,7 +56,9 @@ block content
           span Hemos encontrado sus datos en secretaria de salud,estos se cargaran de forma temporal.
         #alert_no_registrado.alert-info
           span Doctor no esta registrado tiene que guardar sus datos y enviarlos a la secretaria de salud para brindarle nuestros servicios.
-    .row
+    .row#messagge-row(style="display: none")
+      p.alert.alert-info Usted no es un doctor avalado por secretaria, por lo tanto no puede hacer uso del calendario. Para hacer uso del calendario debe completar todos sus datos y enviarlos a secretaria para su verificacion, cuando secretaria verifique y de el aval, el calendario estara disponible.
+    .row#selects-row(style="display: none")
       .col-lg-8
         form.form-inline(role="form")
           div.form-group
@@ -99,7 +101,7 @@ block content
             .panel3
             p &nbsp;Cita tomada
 
-    .row
+    .row#calendar-row(style="display: none")
       .col-lg-12
         input#csrf_input(type="hidden", value="#{data.csrf}")
         div#content-table
@@ -143,21 +145,9 @@ block content
             button(type="button", class="btn btn-default", data-dismiss="modal") Salir
 
           
-
-block js_up
-  script.
-    //- console.log(localStorage)
-    //- if(localStorage.remember_me){
-      
-    //- }
-
 block js
   script(src="/socket.io/socket.io.js")
   script.
-    //- socket.on('calendarUpdated', function (data) {
-    //-   console.log(data);
-    //- });
-
 
     $(document).on("ready", function(){
       var socket = io.connect('http://localhost:3000');
@@ -200,6 +190,27 @@ block js
           });
         });
 
+      $.ajax({
+        url: "/api/v1/doctors/me/account_information",
+        type: "GET",
+        headers: {
+          "accessToken": localStorage.accessToken
+        },
+        success: function(data) {
+          if(data.doctorAccountInformation.registerState == 2){
+            $("#selects-row").css("display","block");
+            $("#calendar-row").css("display","block");
+            $("#messagge-row").css("display","none");
+            loadWeekOfToday();
+          }else{
+            //- console.log(data);
+            $("#selects-row").css("display","none");
+            $("#calendar-row").css("display","none");
+            $("#messagge-row").css("display","block");
+            console.log("USted no es un doctor avalado por secretaria, por lo tanto no puede hacer uso del calendario");
+          }
+        }
+      });
       //- $("#socket").on("click", function(){
       //-   socket.emit('calendarUpdated', { data: 'pedro' });
       //-   })
@@ -540,7 +551,7 @@ block js
         loadWeekCalendar(year, month, week);
       }
 
-      loadWeekOfToday();
+      //- loadWeekOfToday();
 
       function getWeeksOfAMonthOfAYear(month, year){
         month--;
@@ -800,6 +811,4 @@ block js
       //- });
 
       getDoctorAccountInformation();
-
-
-    }); // End of document on ready event
+    });

@@ -52,14 +52,14 @@ module.exports = function (app) {
   app.get('/patients/calendar', renderTemplates.renderPatientCalendarTemplate);
   app.get('/doctors/imagen/perfil', renderTemplates.renderImagenPerfilDoctorTemplate);
 
-  app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
+  app.get('/login', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);
   app.delete('/login/doctors', middleware.csrfValidation, sessions.destroyDoctorSession);
   
   //- informacion de los pacientes
   app.get('/signup/patients', renderTemplates.renderSigupPatientTemplate);
   app.post('/signup/patients', middleware.csrfValidation, api.patients.savePatientAccountInformation);
-  app.get('/login/patients', renderTemplates.renderLoginPatientTemplate);
+  // app.get('/login/patients', renderTemplates.renderLoginPatientTemplate);
   app.post('/login/patients', middleware.csrfValidation, sessions.newPatientSession);
   app.delete('/login/patients', middleware.csrfValidation, sessions.destroyPatientSession);
 
@@ -136,6 +136,9 @@ module.exports = function (app) {
 
   /* Arreglar esto para que funcione desde secretaria */
   app.put('/api/v1/doctors/:identification/account_information/register_state', validateSecreatryToken, api.doctors.updateDoctorRegisterStateById);
+  
+  // Esta url es para cambiar el estado desde consulting
+  app.put('/api/v1/doctors/:username/account_information/register_state', middleware.doctorsCredentialsVerification, api.doctors.updateDoctorRegisterStateById);
 
   /*Calendary*/
   app.post("/api/v1/doctors/:username/spaceDateForAppointment", middleware.doctorsCredentialsVerification, api.doctors.addDoctorSpaceDateForAppointment);
