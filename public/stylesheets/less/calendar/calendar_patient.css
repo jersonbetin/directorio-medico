@@ -22,10 +22,12 @@ th {
 }
 #my_calendar tbody td {
   padding: 0px;
-  height: 150px;
+  text-align: center;
+  height: 190px;
 }
 #my_calendar tbody td > div {
-  height: 75px;
+  height: 95px;
+  border-bottom: 1px solid lightgray;
   font-size: 12px;
 }
 #calendar_caption {
@@ -35,14 +37,14 @@ th {
 }
 .addSpaceForAppointmentButton {
   width: 100%;
-  height: 100%;
-  border: 1px solid #3333;
-  margin: auto;
   display: inline-block;
-  margin: auto;
+  margin-bottom: 0;
   font-weight: normal;
   text-align: center;
+  vertical-align: middle;
   cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
   white-space: nowrap;
   padding: 8px 12px;
   font-size: 14px;
@@ -54,6 +56,7 @@ th {
   user-select: none;
   color: #ffffff;
   background-color: #2fa4e7;
+  border-color: #2fa4e7;
 }
 .addSpaceForAppointmentButton:focus {
   outline: thin dotted #333;
@@ -81,38 +84,29 @@ th {
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
-
-.half-hour{
-  background: #FaFaFa;
-  border: 1px solid #aaa;
-  text-align: center;
-  /*box-shadow: 0px 0p 5px #aaa;*/
+.half_hour_not_aparted {
+  background: #F1F1F1;
+  border: 1px solid #333;
+  box-shadow: 0px 0p 5px #aaa;
 }
-
-
-.half_hour_not_available{
-  display: inline-block;
-  text-align: center;
-  width: 100%;
-}
-.half_hour_available {
+.half_hour_aparted {
   background: #80B743;
-  border: 1px solid #eee;
-  /*box-shadow: 0px 0px 5px #80B743;*/
+  border: 1px solid #333;
+  box-shadow: 0px 0px 5px #80B743;
   color: white;
   text-align: center;
   font-size: 16px;
   font-weight: bold;
-  /*text-shadow: 0px 0px 1px white;*/
+  text-shadow: 0px 0px 1px white;
 }
 .half_hour_appointment {
   background: #D4242A;
-  border: 1px solid #eee;
-  /*box-shadow: 0px 0px 5px #D4242A;*/
+  border: 1px solid #333;
+  box-shadow: 0px 0px 5px #D4242A;
   color: #fff;
   color: white;
   text-align: center;
   font-size: 16px;
   font-weight: bold;
-  /*text-shadow: 0px 0px 1px white;*/
+  text-shadow: 0px 0px 1px white;
 }
