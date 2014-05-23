@@ -185,26 +185,30 @@ block js
           var descripcion_title = $('#descripcion').val();
           if(nombre_titulo!="" && fecha_title!="" && universidad_title!=""){
             console.log("se pasaron todos los datos");
-            var titleInformation={
-                "title" : nombre_titulo,
-                "description" :descripcion_title ,
-                "university" : universidad_title,
-                "graduationDate" : fecha_title
-            }
-            $.ajax({
-                method:'Post',
-                url:"/api/v1/doctors/me/titles_information?errors=verbose",
-                headers: {
-                  "accessToken": localStorage.accessToken
-                },
-                data:{
-                  titleInformation:titleInformation
-                },
-                success:function(data){
-                  console.log(data);
-                  getDoctorTitlesInformation();
-                }
+            if(confirm("Al actualizar sus datos profesionales, el estado volvera a ser inhabilitado hasta que secretraria verifique sus nuevos datos, para eso, despues de actualizar estos datos debe ir a finalizar registro y dar click e el boton finalizar registro")){
+              var titleInformation={
+                  "title" : nombre_titulo,
+                  "description" :descripcion_title ,
+                  "university" : universidad_title,
+                  "graduationDate" : fecha_title
+              }
+              $.ajax({
+                  method:'Post',
+                  url:"/api/v1/doctors/me/titles_information?errors=verbose",
+                  headers: {
+                    "accessToken": localStorage.accessToken
+                  },
+                  data:{
+                    titleInformation:titleInformation
+                  },
+                  success:function(data){
+                    console.log(data);
+                    getDoctorTitlesInformation();
+                  }
               });
+            }else{
+              alert("Actualizacion cancelada");
+            }
           }else{
             console.log("No se pasaron todos los datos")
           }

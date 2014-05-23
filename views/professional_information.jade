@@ -273,26 +273,30 @@ block js
             data.append("landline_clinica", landline_clinica);
           }
           console.log(localStorage.accessToken);
-          $.ajax({
-            type: requestType,
-            url:"/api/v1/doctors/me/professional_information?errors=verbose",
-            headers: {
-              "accessToken": localStorage.accessToken
-            },
-            data: data, 
-            processData: false, // Don't process the files
-            contentType: false, 
-            success: function(data){
-              console.log(data.error);
-              if(data.error==null){
-                $('#alert_no_guardado').css('display', 'none');
-                $('#alert_guardado').css('display', 'block');
-              }else{
-                $('#alert_guardado').css('display', 'none');
-                $('#alert_no_guardado').css('display', 'block');
+          if(confirm("Al actualizar sus datos profesionales, el estado volvera a ser inhabilitado hasta que secretraria verifique sus nuevos datos, para eso, despues de actualizar estos datos debe ir a finalizar registro y dar click e el boton finalizar registro")){
+            $.ajax({
+              type: requestType,
+              url:"/api/v1/doctors/me/professional_information?errors=verbose",
+              headers: {
+                "accessToken": localStorage.accessToken
+              },
+              data: data, 
+              processData: false, // Don't process the files
+              contentType: false, 
+              success: function(data){
+                console.log(data.error);
+                if(data.error==null){
+                  $('#alert_no_guardado').css('display', 'none');
+                  $('#alert_guardado').css('display', 'block');
+                }else{
+                  $('#alert_guardado').css('display', 'none');
+                  $('#alert_no_guardado').css('display', 'block');
+                }
               }
-            }
-          });
+            });
+          }else{
+            alert("Actualizacion cancelada");
+          }
         }else{
           console.log("No se pasaron todos los datos")
         }
