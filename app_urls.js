@@ -52,14 +52,14 @@ module.exports = function (app) {
   app.get('/patients/calendar', renderTemplates.renderPatientCalendarTemplate);
   app.get('/doctors/imagen/perfil', renderTemplates.renderImagenPerfilDoctorTemplate);
 
-  app.get('/login/doctors', renderTemplates.renderLoginDoctorTemplate);
+  app.get('/login', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);
   app.delete('/login/doctors', middleware.csrfValidation, sessions.destroyDoctorSession);
   
   //- informacion de los pacientes
   app.get('/signup/patients', renderTemplates.renderSigupPatientTemplate);
   app.post('/signup/patients', middleware.csrfValidation, api.patients.savePatientAccountInformation);
-  app.get('/login/patients', renderTemplates.renderLoginPatientTemplate);
+  // app.get('/login/patients', renderTemplates.renderLoginPatientTemplate);
   app.post('/login/patients', middleware.csrfValidation, sessions.newPatientSession);
   app.delete('/login/patients', middleware.csrfValidation, sessions.destroyPatientSession);
 
