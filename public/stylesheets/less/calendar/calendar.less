@@ -43,14 +43,16 @@
 
 .addSpaceForAppointmentButton {
   width: 100%;
+  height: 100%;
   display: inline-block;
   margin-bottom: 0;
+  border: 1px solid #333;
   font-weight: normal;
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
   background-image: none;
-  border: 1px solid transparent;
+  // border: 1px solid transparent;
   white-space: nowrap;
   padding: 8px 12px;
   font-size: 14px;
@@ -91,10 +93,17 @@
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 
+.half-hour{
+  background: #FaFaFa;
+  border: 1px solid #aaa;
+  text-align: center;
+  /*box-shadow: 0px 0p 5px #aaa;*/
+ }
+
 .half_hour_not_aparted{
     background: #F1F1F1;
     border: 1px solid #aaa;
-    box-shadow:  0px 0p 5px #aaa;
+    box-shadow:  0px 0px 5px #aaa;
 }
 
 .half_hour_aparted{
@@ -156,5 +165,21 @@
     width:26px;
      height:26px;
       background:#D4242A
+  }
+}
+
+#alert_registrado, #alert_no_registrado{
+  display: none;
+  text-align: center;
+  height: 40px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -o-border-radius: 10px;
+  -moz-border-radius: 10px;
+  padding-top: 5px;
+  span{
+    vertical-align: middle;
   }
 }

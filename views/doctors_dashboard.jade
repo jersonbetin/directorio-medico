@@ -52,11 +52,15 @@ block content
     .row
       .col-lg-12
         h2#username_h2 Doctor:
+        #alert_registrado.alert-info
+          span Hemos encontrado sus datos en secretaria de salud,estos se cargaran de forma temporal.
+        #alert_no_registrado.alert-info
+          span Doctor no esta registrado tiene que guardar sus datos y enviarlos a la secretaria de salud para brindarle nuestros servicios.
     .row
       .col-lg-8
         form.form-inline(role="form")
           div.form-group
-            label Año: 
+            label Año:
             select.form-control(id="year")
               option(value=-1) Seleccione un año
               option(value=2010) 2010
@@ -103,6 +107,26 @@ block content
             caption#calendar_caption Calendario   
             thead#my_calendar_thead
             tbody#my_calendar_tbody 
+    #myModalVerificar.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myLargeModalLabel", aria-hidden="true")
+            .modal-dialog.modal-lg( style="width: 60%;")
+              .modal-content
+                .modal-header
+                  button(type="button", class="close", data-dismiss="modal", aria-hidden="true")&times;
+                  h4(class="modal-title", id="myModalLabel") Verificar en secretaria de salud
+                .modal-body
+                  form(name="inf-otros", id="inf-otros", method="post", action="/medicos/inf-otros")
+                    table.table
+                      .form-group
+                        tr
+                          td
+                          td
+                            label.control-label.col-sm-12(for="identification") Cedula:
+                          td
+                            input.form-control#identification(type="text", placeholder="cedula", required)
+                          td
+                    .modal-footer
+                        button(type="button", class="btn btn-default", data-dismiss="modal") Cancelar
+                        button(type="submit", id="verify_identification_button", class="btn btn-primary") Consultar
     #myModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myLargeModalLabel", aria-hidden="true")
       .modal-dialog.modal-lg( style="width: 60%;")
         .modal-content
@@ -142,6 +166,40 @@ block js
         var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
         loadWeekCalendar($("select#year").val(), $("select#month").val(), week);
       });
+
+      $('#myModalVerificar').modal();
+
+      $("#verify_identification_button").on("click", function(e){
+          e.preventDefault();
+          var cedula=$('#identification').val();
+          $.ajax({
+            type: "GET",
+            url:"/secretary/verify/"+$("#identification").val(),
+            headers: {
+              "csrfToken": $("#csrf_input").val()
+            },
+            success: function(data){
+                console.log(data);
+                var medico=data.data;
+                console.log(medico.registrado);
+                if(medico.registrado=="no"){
+                  $('.close').trigger('click');
+                  $('#alert_no_registrado').css('display', 'block');
+                }else if(medico.registrado == "si"){
+                  $('.close').trigger('click');
+                  $('#alert_registrado').css('display', 'block');
+                  medico.infoPersonal.cedula=$("#identification").val();
+                  var infoMedico=medico;
+                  var dato = JSON.stringify(infoMedico);
+                  localStorage.setItem('medico',dato);
+                  console.log(localStorage.medico);
+                  var obj = JSON.parse(localStorage.medico);
+                  console.log(obj);
+                }
+              }
+          });
+        });
+
       //- $("#socket").on("click", function(){
       //-   socket.emit('calendarUpdated', { data: 'pedro' });
       //-   })
@@ -718,6 +776,7 @@ block js
             localStorage.removeItem("refreshToken");
             localStorage.removeItem("tokenType");
             localStorage.removeItem("expirationDate");
+            localStorage.removeItem("medico");
             window.location.replace("/");
           }
         }
@@ -740,33 +799,6 @@ block js
       //-   window.location.replace("/"+doctorAI.username+"/personal_information");
       //- });
 
-      $("#verify_identification_button").on("click", function(e){
-        e.preventDefault();
-        console.log("click click click");
-        console.log($("#identification").val());
-        e.preventDefault();
-        $.ajax({
-          type: "GET",
-          url:"/secretary/verify/"+$("#identification").val(),
-          headers: {
-            "csrfToken": $("#csrf_input").val()
-          },
-          success: function(data){
-            console.log(data);
-            console.log(data.registrado);
-            if(data.registrado == "no"){
-              alert("Usuario no registrado en la secretaria");
-              $("#datos_de_secretaria").html("<h3>Datos obtenido de la secretaria</h3>"+JSON.stringify(data));
-            }else if(data.registrado == "si"){
-              $("#datos_de_secretaria").html("<h3>Datos obtenido de la secretaria</h3>"+JSON.stringify(data));
-              alert("El usuario esta registrado, se procedera a guardar los datos provenietes de la secretaria de salud");
-            }else{
-              alert("hubo un error xp");
-            }
-          }
-        });
-      });
-      console.log(localStorage)
       getDoctorAccountInformation();
 
 

@@ -128,27 +128,6 @@ block content
       .col-lg-3
         img(src="/images/profesion.png", alt="", style="width:100%;")
 
-       #myModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myLargeModalLabel", aria-hidden="true")
-            .modal-dialog.modal-lg( style="width: 60%;")
-              .modal-content
-                .modal-header
-                  button(type="button", class="close", data-dismiss="modal", aria-hidden="true")&times;
-                  h4(class="modal-title", id="myModalLabel") Verificar en secretaria de salud
-                .modal-body
-                  form(name="inf-otros", id="inf-otros", method="post", action="/medicos/inf-otros")
-                    table.table
-                      .form-group
-                        tr
-                          td
-                          td
-                            label.control-label.col-sm-12(for="identification") Cedula:
-                          td
-                            input.form-control#identification(type="text", placeholder="cedula", required)
-                          td
-                    .modal-footer
-                        button(type="button", class="btn btn-default", data-dismiss="modal") Cancelar
-                        button(type="submit", id="verify_identification_button", class="btn btn-primary") Consultar
-
 block js
   script.
     $(document).on("ready", function(){
@@ -316,38 +295,6 @@ block js
         }
       });
 
-      $("#verify_identification_button").on("click", function(e){
-        e.preventDefault();
-        console.log("click click click");
-        console.log($("#identification").val());
-        e.preventDefault();
-        $.ajax({
-          type: "GET",
-          url:"/secretary/verify/"+$("#identification").val(),
-          headers: {
-            "csrfToken": $("#csrf_input").val()
-          },
-          success: function(data){
-              console.log(data);
-              var medico=data.data;
-              console.log(medico.registrado);
-              if(medico.estado=="no registrado"){
-                $('.close').trigger('click');
-                $('#alert_no_registrado').css('display', 'block');
-              }else if(medico.registrado == "si"){
-                $('.close').trigger('click');
-                $('#alert_registrado').css('display', 'block');
-                var profesional=medico.infoPersonal;
-                $("#professional_card_number_input").val(profesional.tarjetaPofesional);
-                $("#professional_card_number_input").attr('readonly', true);
-                $("#professional_type_input").val(profesional.tipoProfesional);
-                $('#evidence_input').attr('disabled',true);
-            }else{
-              alert("hubo un error xp");
-            }
-          }
-        });
-      });
 
       function tipo_profesional(next){
           $.ajax({
@@ -413,7 +360,6 @@ block js
               }
             }else{
               console.log("No se ha guardado aun informacion personal de este doctor");
-              $('#myModal').modal();
             }
             //- if (data.userdataDoctor){
             //-   console.log(data.userdataDoctor):

@@ -59,10 +59,6 @@ block content
         form#perosnal_information_form
           input#csrf_input(type="hidden", value="#{data.csrf}")
           table.table
-            #alert_registrado.alert-info
-              span Usuario registrado En secretaria de salud y se cargaron los datos personales en el formulario
-            #alert_no_registrado.alert-info
-              span Usuario no esta registrado tiene que guardar sus datos y enviarlos a la secretaria de salud
             #alert_guardado.alert-success
               span Usuario se guardo con exito
             #alert_no_guardado.alert-danger
@@ -146,26 +142,6 @@ block content
       .col-lg-3
         img(src="/images/personal.png", alt="", style="width:100%;")
 
-      #myModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="myLargeModalLabel", aria-hidden="true")
-            .modal-dialog.modal-lg( style="width: 60%;")
-              .modal-content
-                .modal-header
-                  button(type="button", class="close", data-dismiss="modal", aria-hidden="true")&times;
-                  h4(class="modal-title", id="myModalLabel") Verificar en secretaria de salud
-                .modal-body
-                  form(name="inf-otros", id="inf-otros", method="post", action="/medicos/inf-otros")
-                    table.table
-                      .form-group
-                        tr
-                          td
-                          td
-                            label.control-label.col-sm-12(for="identification") Cedula:
-                          td
-                            input.form-control#identification(type="text", placeholder="cedula", required)
-                          td
-                    .modal-footer
-                        button(type="button", class="btn btn-default", data-dismiss="modal") Cancelar
-                        button(type="submit", id="verify_identification_button", class="btn btn-primary") Consultar
 
 
 block js
@@ -301,39 +277,9 @@ block js
               $("#mobile_input").val(data.doctorPersonalInformation.contactData.phone.mobile);
               $("#landline_input").val(data.doctorPersonalInformation.contactData.phone.home);
               $("#button_save_personal_information_form").html("Actualizar");
-            }else{
-              console.log("No se ha guardado aun informacion personal de este doctor");
-              $('#myModal').modal();
-            }
-            //- if (data.userdataDoctor){
-            //-   console.log(data.userdataDoctor):
-            //- }
-          }
-        });
-      }
-
-      $("#verify_identification_button").on("click", function(e){
-        e.preventDefault();
-        var cedula=$('#identification').val();
-        //- console.log("click click click");
-        //- console.log($("#identification").val());
-        $.ajax({
-          type: "GET",
-          url:"/secretary/verify/"+$("#identification").val(),
-          headers: {
-            "csrfToken": $("#csrf_input").val()
-          },
-          success: function(data){
-              console.log(data);
-              var medico=data.data;
-              console.log(medico.registrado);
-              if(medico.estado=="no registrado"){
-                $('.close').trigger('click');
-                $('#alert_no_registrado').css('display', 'block');
-              }else if(medico.registrado == "si"){
-                $('.close').trigger('click');
-                $('#alert_registrado').css('display', 'block');
-                var personal=medico.infoPersonal;
+            }else if(localStorage.medico!=undefined){
+                var obj = JSON.parse(localStorage.medico);
+                var personal=obj.infoPersonal;
                 var cumple = new Date(personal.fechaNac);
                 var day = ("0" + (cumple.getDate()+1)).slice(-2);
                 var month = ("0" + (cumple.getMonth() + 1)).slice(-2);
@@ -344,7 +290,7 @@ block js
                 $("#identification_type_select option").filter(function (){
                     return $(this).val()=='cc';
                   }).prop('selected', true);
-                if(personal.sexo=='M'){
+                if(personal.sexo=='m'){
                   $("#sex_select option").filter(function (){
                       return $(this).val()=='masculino';
                     }).prop('selected', true);
@@ -355,12 +301,16 @@ block js
                 }
                 $("#identification_number_input").val(cedula);
                 $("#birthdate_input").val(fechaCumple);
-              }else{
-                alert("hubo un error xp");
-              }
+            }else{
+              console.log("No se ha guardado aun informacion personal de este doctor");
             }
+            //- if (data.userdataDoctor){
+            //-   console.log(data.userdataDoctor):
+            //- }
+          }
         });
-      });
+      }
 
+      
       getDoctorPersonalInformation();
     }); // End of document on ready event
