@@ -135,6 +135,9 @@ module.exports = function (app) {
 
   /* Arreglar esto para que funcione desde secretaria */
   app.put('/api/v1/doctors/:identification/account_information/register_state', validateSecreatryToken, api.doctors.updateDoctorRegisterStateById);
+  
+  // Esta url es para cambiar el estado desde consulting
+  app.put('/api/v1/doctors/:username/account_information/register_state', middleware.doctorsCredentialsVerification, api.doctors.updateDoctorRegisterStateById);
 
   /*Calendary*/
   app.post("/api/v1/doctors/:username/spaceDateForAppointment", middleware.doctorsCredentialsVerification, api.doctors.addDoctorSpaceDateForAppointment);

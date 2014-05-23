@@ -587,6 +587,7 @@ exports.updateDoctorPersonalInformation = function(req, res) {
               console.log(err);
               res500Code(res);
             }else{
+              doctorAI.save();
               res.send({
                 error: null,
                 doctorPersonalInformation: doctorPI
@@ -656,6 +657,7 @@ exports.saveDoctorTitleInformation = function (req, res){
                 }
               }else{
                 doctorAI.ti.push(doctorTI._id);
+                doctorAI.registerState = 0;
                 doctorAI.save();
                 res.send({
                   error: null,
@@ -867,6 +869,7 @@ exports.saveDoctorProfessionalInformation = function (req, res){
                               }
                             }else{
                               doctorAI.pri = doctorPI._id;
+                              doctorAI.registerState = 0;
                               doctorAI.save();
                               res.send({error: null, doctorProfessionalInformation: doctorPI});
                             }
@@ -1044,6 +1047,8 @@ exports.updateDoctorProfessionalInformation = function(req, res) {
                               console.log(err);
                               res500Code(res);
                             }else{
+                              doctorAI.registerState = 0;
+                              doctorAI.save();
                               res.send({error: null, doctorProfessionalInformation: "updated successfully" });
                             }
                           });
