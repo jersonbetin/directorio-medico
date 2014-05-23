@@ -279,28 +279,30 @@ block js
               $("#button_save_personal_information_form").html("Actualizar");
             }else if(localStorage.medico!=undefined){
                 var obj = JSON.parse(localStorage.medico);
-                var personal=obj.infoPersonal;
-                var cumple = new Date(personal.fechaNac);
-                var day = ("0" + (cumple.getDate()+1)).slice(-2);
-                var month = ("0" + (cumple.getMonth() + 1)).slice(-2);
-                var fechaCumple = cumple.getFullYear()+"-"+(month)+"-"+(day) ;
-                $("#first_name_input").val(personal.nombre);
-                $("#first_lastname_input").val(personal.apellido.primero);
-                $("#second_lastname_input").val(personal.apellido.segundo);
-                $("#identification_type_select option").filter(function (){
-                    return $(this).val()=='cc';
-                  }).prop('selected', true);
-                if(personal.sexo=='m'){
-                  $("#sex_select option").filter(function (){
-                      return $(this).val()=='masculino';
+                if(obj.registrado=='si'){
+                  var personal=obj.infoPersonal;
+                  var cumple = new Date(personal.fechaNac);
+                  var day = ("0" + (cumple.getDate()+1)).slice(-2);
+                  var month = ("0" + (cumple.getMonth() + 1)).slice(-2);
+                  var fechaCumple = cumple.getFullYear()+"-"+(month)+"-"+(day) ;
+                  $("#first_name_input").val(personal.nombre);
+                  $("#first_lastname_input").val(personal.apellido.primero);
+                  $("#second_lastname_input").val(personal.apellido.segundo);
+                  $("#identification_type_select option").filter(function (){
+                      return $(this).val()=='cc';
                     }).prop('selected', true);
-                }else{
-                  $("#sex_select option").filter(function (){
-                      return $(this).val()=='femenino';
-                    }).prop('selected', true);
+                  if(personal.sexo=='m'){
+                    $("#sex_select option").filter(function (){
+                        return $(this).val()=='masculino';
+                      }).prop('selected', true);
+                  }else{
+                    $("#sex_select option").filter(function (){
+                        return $(this).val()=='femenino';
+                      }).prop('selected', true);
+                  }
+                  $("#identification_number_input").val(personal.cedula);
+                  $("#birthdate_input").val(fechaCumple);
                 }
-                $("#identification_number_input").val(cedula);
-                $("#birthdate_input").val(fechaCumple);
             }else{
               console.log("No se ha guardado aun informacion personal de este doctor");
             }

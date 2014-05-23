@@ -157,7 +157,30 @@ block js
         loadWeekCalendar($("select#year").val(), $("select#month").val(), week);
       });
 
-      $('#myModalVerificar').modal();
+      $(function(){
+        $.ajax({
+            url: "/api/v1/doctors/me/all_information",
+            type: "GET",
+            headers: {
+              "accessToken": localStorage.accessToken
+            },
+            success: function(data) {
+              console.log(data);
+              var bandera=true;
+              if(data.information[0].doctorProfessionalInformation._id){
+                bandera=false;
+              }else if(data.information[2].doctorPersonalInformation._id){
+                bandera=false;
+              }else if(data.information[3].doctorTitlesInformation._id){
+                bandera=false;
+              }
+              if(bandera){
+               $('#myModalVerificar').modal();
+              }
+            }
+          });
+        });
+
 
       $("#verify_identification_button").on("click", function(e){
           e.preventDefault();

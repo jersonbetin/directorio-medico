@@ -362,6 +362,14 @@ block js
                 $('#mobile_clinica').val('');
                 $('#landline_clinica').val('');
               }
+          }else if(localStorage.medico!=undefined){
+                var obj = JSON.parse(localStorage.medico);
+                if(obj.registrado=='si'){
+                  var profesional=obj.infoPersonal;
+                  $("#professional_card_number_input").val(profesional.tarjetaPofesional);
+                  $("#professional_card_number_input").attr('readonly', true);
+                  $("#professional_type_input").val(profesional.tipoProfesional);
+                }
             }else{
               console.log("No se ha guardado aun informacion personal de este doctor");
             }
