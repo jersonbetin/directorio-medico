@@ -41,6 +41,7 @@ block nav
           |  Cerrar session
 block content
   .container
+    input#csrf_input(type="hidden", value="#{data.csrf}")
     .row
       .col-xs-12
         table#appointments.table
