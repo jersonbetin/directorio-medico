@@ -58,9 +58,7 @@ block content
       .col-lg-9
         table.table
             #alert_registrado.alert-info
-              span Usuario registrado En secretaria de salud y se cargaron los datos personales en el formulario
-            #alert_no_registrado.alert-info
-                span Usuario no esta registrado tiene que guardar sus datos y enviarlos a la secretaria de salud
+              span Usted debe cargar la informacion de sus titulos
             form#save_title_information
                   .form-group
                     tr
@@ -214,6 +212,13 @@ block js
                 //- console.log(data.doctorTitlesInformation[i]);
               }
                 document.getElementById("table_titles_body").innerHTML=cadena;
+           }else if(localStorage.medico!=undefined){
+                var obj = JSON.parse(localStorage.medico);
+                if(obj.registrado=='si'){
+                  $('#alert_registrado').css('display', 'block');
+                }else{
+                  $('#alert_registrado').css('display', 'none');
+                }
             }else{
               console.log("No se ha guardado aun informacion personal de este doctor");
             }
