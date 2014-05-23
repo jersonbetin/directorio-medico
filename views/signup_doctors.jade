@@ -88,7 +88,7 @@ block content
                 input(type="password", class="form-control", id="doctor_password", placeholder="Ingrese su contraseña", required)
             .form-group
               .col-lg-10.col-lg-offset-2
-                button#signup_doctor_form_button(type="sumbit", class="btn btn-primary col-lg-5") Registrar
+                button#signup_doctor_form_button(type="submit", class="btn btn-primary col-lg-5") Registrar
                 button(type="reset", class="btn btn-default col-lg-5") Borrar
 
 block js
@@ -109,19 +109,18 @@ block js
                 $('#user-registrado').css('display', 'block');
               }
             }else if(data.doctorAccountInformation){
-              alert("Usuario registrado");
+              alert("Doctor registrado");
               window.location.replace("/");
             }
           }
         };
 
-        $("#signup_doctors_form").on('sumbit', function(e){
-          //- alert("se activo");
+        $("#signup_doctor_form_button").on('click', function(e){
           var email = $("#doctor_email").val();
           var username = $("#doctor_username").val();
           var password = $("#doctor_password").val();
           if(email != "" && username != "" && password != ""){
-            e.prevenDefault();
+            e.preventDefault();
             //- alert(email+" "+username+" "+password+" ");
             $.ajax({
               type: "POST",
