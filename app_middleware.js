@@ -1,4 +1,4 @@
-var models = require('./models/models');
+  var models = require('./models/models');
 var helpers = require('./helpers/helpers');
 
 exports.csrfValidation = function (req, res, next){
@@ -134,7 +134,7 @@ exports.patientsCredentialsVerification = function (req, res, next){
                 console.log("err");
                 res.send(500);
               }else if(patient){
-                console.log(patient.accountInformation.username);
+                // console.log(patient.accountInformation);
                 req.params.username = patient.accountInformation.username;
                 next();
               }else{
