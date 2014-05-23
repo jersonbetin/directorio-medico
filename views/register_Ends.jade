@@ -234,22 +234,17 @@ block js
           }else{
             statusRegister=false;
           }
-          var cedula = (personal.identification.number!=null) ? personal.identification.number : '';
           $.ajax({
+            url: "/api/v1/doctors/me/all_information",
             type: "GET",
-            url:"/secretary/verify/"+cedula,
             headers: {
-              "csrfToken": $("#csrf_input").val()
+              "accessToken": localStorage.accessToken
             },
-            success:function(data){
-              var medico=data.data;
-              console.log(medico.registrado);
-              if(medico.registrado == "si"){
-                statusRegister=false;
-                $('#alert_registrado').css('display', 'block');
-              }
-              if(statusRegister){
+            success: function(data) {
+              if(data.information[1].doctorAccountInformation.registerState!=2 && statusRegister==true){
                 $('#button_send_secretary').css('display', 'block');
+              }else{
+                $('#button_send_secretary').css('display', 'none');
               }
             }
           });
