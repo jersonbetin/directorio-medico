@@ -1209,6 +1209,8 @@ function sendToSecretary(res) {
         "telTrab": _pi2s.jobInformation.clinic.phone.landline
       });
       var options = {
+        // host: 'localhost',
+        // port:'4000',
         host: 'secretariadesalud-cordoba.herokuapp.com',
         path: '/doctor/directorio',
         method: 'POST',
@@ -1218,25 +1220,18 @@ function sendToSecretary(res) {
       };
       var http = require("http");
       var httpreq = http.request(options, function (response) {
+        console.log(' se paso');
         response.on('data', function (chunk) {
           console.log("body: " + chunk);
         });
         response.on('end', function(e) {
           console.log(e);
           res.send({error:null, status:"ok", info: "Data sent to secretary successfully"});
-          // _ais = null;
-          // _pis = null;
-          // _pi2s = null;
-          // _tis = null;
         });
         response.on('error', function(e) {
           console.log("Ha ocurrido un error");
           console.log(e);
           res.send({error:e});
-          // _ais = null;
-          // _pis = null;
-          // _pi2s = null;
-          // _tis = null;
         });
       });
       httpreq.write(data);
