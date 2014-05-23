@@ -40,11 +40,68 @@ block nav
           i.fa.fa-sign-out
           |  Cerrar session
 block content
+  .container
+    .row
+      .col-xs-12
+        table#appointments.table
+          caption#appointments_caption Mis citas   
+          thead#appointments_thead
+            tr
+              th Clinica
+              th Direccion
+              th Doctor
+              th Profesion
+              th Fecha
+              th Hora
+              th Descripcion
+          tbody#appointments_tbody
 
 block js
   script.
     //- socket.emit('connect', { data: 'patient' });
     $(document).on('ready', function(){
+      $.ajax({
+        url:"/api/v1/patients/me/appointments",
+        headers: {
+          "accessToken": localStorage.accessToken
+        },
+        success: function(data){
+          console.log(data);
+          if(data != null){
+            var str = "";
+            var clinic;
+            var address;
+            var doctor;
+            var profession;
+            var date;
+            var hour;
+            var description;
+            for(var i=0; i < data.length; i++){
+              //- str += data[i];
+              clinic = data[i].doctor.pri.jobInformation.clinic.name;
+              address = data[i].doctor.pri.jobInformation.clinic.location.address;
+              doctor = data[i].doctor.pei.names + " " + data[i].doctor.pei.lastnames.first + " " + data[i].doctor.pei.lastnames.second;
+              profession = data[i].doctor.pri.professionalType.type
+              date = data[i].date.day+"/"+data[i].date.month+"/"+data[i].date.year;
+              hour = data[i].time.start;
+              description = data[i].description;
+              str += "<tr>";
+              str += "<td>"+clinic+"</td>";
+              str += "<td>"+address+"</td>";
+              str += "<td>"+doctor+"</td>";
+              str += "<td>"+profession+"</td>";
+              str += "<td>"+date+"</td>";
+              str += "<td>"+hour+"</td>";
+              str += "<td>"+description+"</td>";
+              str += "</tr>";
+
+              console.log(clinic+"<--->"+doctor+"<--->"+date+"<--->"+hour+"<--->"+description);
+            }
+            $("#appointments_tbody").html(str);
+          }
+        }
+      });
+
       function logoutDoctorSuccess(data, textStatus, jqXHR){
           console.log(data);
           if(data){

@@ -49,6 +49,7 @@ block nav
           |  Cerrar session
 
 block content
+  
   .container.general-content
     .row
       .col-lg-12
@@ -215,7 +216,6 @@ block js
       }); // End of logout doctor on click event
 
       $("#button_save_professional_information_form").on("click", function(e) {
-        e.preventDefault();
         var requestType = "POST";
         if($(this).html() == "Actualizar"){
           console.log("Si es Actualizar");
