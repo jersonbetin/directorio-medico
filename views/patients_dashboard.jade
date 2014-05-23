@@ -85,6 +85,11 @@ block js
               profession = data[i].doctor.pri.professionalType.type
               date = data[i].date.day+"/"+data[i].date.month+"/"+data[i].date.year;
               hour = data[i].time.start;
+              if(hour%1 != 0){
+                hour = hour - 0.3 + ":30"; 
+              }else{
+                  hour = hour + ":00"; 
+              }
               description = data[i].description;
               str += "<tr>";
               str += "<td>"+clinic+"</td>";
