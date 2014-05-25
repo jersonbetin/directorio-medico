@@ -65,11 +65,10 @@ block content
             label Año:
             select.form-control(id="year")
               option(value=-1) Seleccione un año
-              option(value=2010) 2010
-              option(value=2011) 2011
-              option(value=2012) 2012
-              option(value=2013) 2013
               option(value=2014) 2014
+              option(value=2015) 2015
+              option(value=2016) 2016
+              
           div.form-group
             label Mes:
             select.form-control(id="month")
@@ -95,7 +94,7 @@ block content
           label Panel de informacion
           .panel-general
             .panel1
-            p &nbsp;Espacio sin apartar
+            p &nbsp;Cita No Habilitada
             .panel2
             p &nbsp;Cita disponible
             .panel3
@@ -276,15 +275,15 @@ block js
             }
 
             var cal ="";
-
+            monthlabel =month+1;
             var thead = "";
-            thead += "<th>Domingo "+ year+"/"+month+"/"+days.domingo.number+"</th>";
-            thead += "<th>Lunes "+ year+"/"+month+"/"+days.lunes.number+"</th>";
-            thead += "<th>Martes "+ year+"/"+month+"/"+days.martes.number+"</th>";
-            thead += "<th>Miercoles "+ year+"/"+month+"/"+days.miercoles.number+"</th>";
-            thead += "<th>Jueves "+ year+"/"+month+"/"+days.jueves.number+"</th>";
-            thead += "<th>Viernes "+ year+"/"+month+"/"+days.viernes.number+"</th>";
-            thead += "<th>Sabado "+ year+"/"+month+"/"+days.sabado.number+"</th>";
+            thead += "<th>Domingo "+ year+"/"+monthlabel+"/"+days.domingo.number+"</th>";
+            thead += "<th>Lunes "+ year+"/"+monthlabel+"/"+days.lunes.number+"</th>";
+            thead += "<th>Martes "+ year+"/"+monthlabel+"/"+days.martes.number+"</th>";
+            thead += "<th>Miercoles "+ year+"/"+monthlabel+"/"+days.miercoles.number+"</th>";
+            thead += "<th>Jueves "+ year+"/"+monthlabel+"/"+days.jueves.number+"</th>";
+            thead += "<th>Viernes "+ year+"/"+monthlabel+"/"+days.viernes.number+"</th>";
+            thead += "<th>Sabado "+ year+"/"+monthlabel+"/"+days.sabado.number+"</th>";
             $("#my_calendar_thead").html(thead);
 
             for(var i = 8;i<18;i++){
@@ -303,7 +302,7 @@ block js
                       halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=0>Habilitar "+i+":00</button></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -317,7 +316,7 @@ block js
                       halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.domingo.number+" hour="+i+" minutes=30>Habilitar "+i+":30</button></div>"; 
                   }
                 }else{
                   halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
@@ -338,7 +337,7 @@ block js
                       halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=0>Habilitar "+i+":00</button></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -352,7 +351,7 @@ block js
                       halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.lunes.number+" hour="+i+" minutes=30>Habilitar "+i+":30</button></div>"; 
                   }
                 }else{
                   halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
@@ -373,7 +372,7 @@ block js
                       halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=0>Habilitar "+i+":00</button></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -387,7 +386,7 @@ block js
                       halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.martes.number+" hour="+i+" minutes=30>Habilitar "+i+":30</button></div>"; 
                   }
                 }else{
                   halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
@@ -408,7 +407,7 @@ block js
                       halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=0>Habilitar "+i+":00</button></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -422,7 +421,7 @@ block js
                       halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.miercoles.number+" hour="+i+" minutes=30>Habilitar "+i+":30</button></div>"; 
                   }
                 }else{
                   halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
@@ -443,7 +442,7 @@ block js
                       halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=0>Habilitar "+i+":00</button></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -457,7 +456,7 @@ block js
                       halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.jueves.number+" hour="+i+" minutes=30>Habilitar "+i+":30</button></div>"; 
                   }
                 }else{
                   halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
@@ -478,7 +477,7 @@ block js
                       halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=0>Habilitar "+i+":00</button></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -492,7 +491,7 @@ block js
                       halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.viernes.number+" hour="+i+" minutes=30>Habilitar "+i+":30</button></div>"; 
                   }
                 }else{
                   halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";
@@ -513,7 +512,7 @@ block js
                       halfHour1 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=0> Cancelar "+i+":00</button></p></div></div>";
                     }
                   }else{
-                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=0>Apartar "+i+":00</button></div>";
+                    halfHour1 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=0>Habilitar "+i+":00</button></div>";
                   }
                 }else{
                   halfHour1 = "<div class='half-hour'><div class='note'><p>"+i+":00</p><p>(Hora vencida)</p> </div></div>";
@@ -527,7 +526,7 @@ block js
                       halfHour2 = "<div class='half_hour_aparted'><div class='note bg-info'><p>Usted ha asignado este espacio para una cita.</p><p><button class='delSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=30> Cancelar "+i+":30</button></p></div></div>";
                     }
                   }else{
-                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=30>Apartar "+i+":30</button></div>"; 
+                    halfHour2 = "<div class='half_hour_not_aparted'><div class='note'></div><button class='addSpaceForAppointmentButton' class='half_hour_button btn btn-primary' year="+year+" month="+(month+1)+" day="+days.sabado.number+" hour="+i+" minutes=30>Habilitar "+i+":30</button></div>"; 
                   }
                 }else{
                   halfHour2 = "<div class='half-hour'><div class='note'><p>"+i+":30</p><p>(Hora vencida)</p> </div></div>";

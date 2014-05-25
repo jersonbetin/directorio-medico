@@ -16,7 +16,7 @@ block nav
       li
         a(href="/") 
           i.fa.fa-bars
-          |  Dashboard
+          |  Inicio
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-info-circle
@@ -54,8 +54,7 @@ block content
     .row
       .col-lg-12
         .page-header.title-header
-          h1 Cargar imagen a mostrar en su perfil
-    .row
+          h1#username_h1
       .col-lg-12
         input#csrf_input(type="hidden", value="#{data.csrf}")
         fielset.col-lg-6.col-lg-offset-3
@@ -150,6 +149,24 @@ block js
             success: logoutDoctorSuccess
           });
         }); // End of logout doctor on click event
+     function getDoctorAccountInformationSuccess(data){
+        var doctorAI = {};
+        doctorAI = data.doctorAccountInformation;
+        $("#username_h1").html(" Imagen de Perfil, Doctor: "+doctorAI.username);
+      }
+
+      function getDoctorAccountInformation (){
+        $.ajax({
+          url:"/api/v1/doctors/me/account_information",
+          headers: {
+            "accessToken": localStorage.accessToken
+          },
+          success: getDoctorAccountInformationSuccess
+        });
+      }
+      
+      getDoctorAccountInformation();
       cargarImagen();
+
       });
 
