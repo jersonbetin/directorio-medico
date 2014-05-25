@@ -44,7 +44,8 @@ block content
     .row
       .col-lg-8
         .page-header.title-header
-          h1 Informacion personal
+          h1#username_h1
+          h1#username1_h1
       .col-lg-9
         form#perosnal_information_form
           input#csrf_input(type="hidden", value="#{data.csrf}")
@@ -242,5 +243,23 @@ block js
             success: logoutDoctorSuccess
           });
         }); // End of logout doctor on click event
+         function getPatientAccountInformationSuccess(data){
+          var patientAI = {};
+          patientAI = data.patientAccountInformation;
+           $("#username1_h1").html("Información Personal");
+          $("#username_h1").html("Paciente: "+patientAI.username);
+           
+        }
+
+        function getPatientAccountInformation (){
+          $.ajax({
+            url:"/api/v1/patients/me/account_information",
+            headers: {
+              "accessToken": localStorage.accessToken
+            },
+            success: getPatientAccountInformationSuccess
+          });
+        }
+        getPatientAccountInformation ();
         getDoctorPersonalInformation();
       });

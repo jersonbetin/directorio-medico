@@ -45,7 +45,8 @@ block content
     .row
       .col-lg-12
         .page-header.title-header
-          h1 Busqueda de idoneidad de medicos en Cordoba
+          h1#username_h1
+          h1#username1_h1
           input#csrf_input(type="hidden", value="#{data.csrf}")
       .col-lg-4.board-search
         h4
@@ -127,4 +128,22 @@ block js
                 success: logoutDoctorSuccess
               });
             }); // End of logout doctor on click event
+       function getPatientAccountInformationSuccess(data){
+          var patientAI = {};
+          patientAI = data.patientAccountInformation;
+          
+          $("#username_h1").html("Paciente: "+patientAI.username);
+           $("#username1_h1").html("Busqueda de idoneidad de medicos en Cordoba"); 
+        }
+
+        function getPatientAccountInformation (){
+          $.ajax({
+            url:"/api/v1/patients/me/account_information",
+            headers: {
+              "accessToken": localStorage.accessToken
+            },
+            success: getPatientAccountInformationSuccess
+          });
+        }
+        getPatientAccountInformation ();
       });
