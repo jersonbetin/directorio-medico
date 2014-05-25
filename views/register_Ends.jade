@@ -47,6 +47,7 @@ block nav
         a#logout_doctor(href="#")
           i.fa.fa-sign-out
           |  Cerrar session
+    a.navbar-brand.navbar-right#username_h2 Doctor:
 
 block content
   .container.general-content
@@ -297,4 +298,21 @@ block js
             success: logoutDoctorSuccess
           });
         }); // End of logout doctor on click event
+
+        function getDoctorAccountInformationSuccess(data){
+          var doctorAI = {};
+          doctorAI = data.doctorAccountInformation;
+          $("#username_h2").html("Doctor: "+doctorAI.username);
+        }
+
+        function getDoctorAccountInformation (){
+          $.ajax({
+            url:"/api/v1/doctors/me/account_information",
+            headers: {
+              "accessToken": localStorage.accessToken
+            },
+            success: getDoctorAccountInformationSuccess
+          });
+        }
+        getDoctorAccountInformation();
       });

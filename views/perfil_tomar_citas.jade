@@ -39,7 +39,7 @@ block nav
         a#logout_patient(href="#")
           i.fa.fa-sign-out
           |  Cerrar session
-
+    a.navbar-brand.navbar-right#username_h2 Paciente:
 block content
   .container.general-content
     .info-principal
@@ -177,4 +177,21 @@ block js
       }); // End of logout doctor on click event
 
         cargarDatos();
+
+        function getPatientAccountInformationSuccess(data){
+          var patientAI = {};
+          patientAI = data.patientAccountInformation;
+          $("#username_h2").html("Bienvenido Paciente: "+(patientAI.username).toUpperCase());
+        }
+
+        function getPatientAccountInformation (){
+          $.ajax({
+            url:"/api/v1/patients/me/account_information",
+            headers: {
+              "accessToken": localStorage.accessToken
+            },
+            success: getPatientAccountInformationSuccess
+          });
+        }
+        getPatientAccountInformation();
       });

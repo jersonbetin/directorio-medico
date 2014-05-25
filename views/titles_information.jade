@@ -48,6 +48,7 @@ block nav
         a#logout_doctor(href="#")
           i.fa.fa-sign-out
           |  Cerrar session
+    a.navbar-brand.navbar-right#username_h2 Doctor:
 
 block content
 
@@ -305,4 +306,20 @@ block js
           }
         });
       });
+      function getDoctorAccountInformationSuccess(data){
+          var doctorAI = {};
+          doctorAI = data.doctorAccountInformation;
+          $("#username_h2").html("Doctor: "+doctorAI.username);
+        }
+
+        function getDoctorAccountInformation (){
+          $.ajax({
+            url:"/api/v1/doctors/me/account_information",
+            headers: {
+              "accessToken": localStorage.accessToken
+            },
+            success: getDoctorAccountInformationSuccess
+          });
+        }
+        getDoctorAccountInformation();
     }); // End of document on ready event

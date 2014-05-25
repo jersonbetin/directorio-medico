@@ -39,6 +39,7 @@ block nav
         a#logout_patient(href="#")
           i.fa.fa-sign-out
           |  Cerrar session
+    a.navbar-brand.navbar-right#username_h2 Paciente:
 block content
   .container
     input#csrf_input(type="hidden", value="#{data.csrf}")
@@ -126,7 +127,7 @@ block js
         function getPatientAccountInformationSuccess(data){
           var patientAI = {};
           patientAI = data.patientAccountInformation;
-          $("#username_h2").html("Bienvenido Paciente: "+patientAI.username);
+          $("#username_h2").html("Bienvenido Paciente: "+(patientAI.username).toUpperCase());
         }
 
         function getPatientAccountInformation (){
