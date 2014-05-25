@@ -445,7 +445,7 @@ exports.updateDoctorRegisterStateById = function (req, res){
                 to: doc.email, // list of receivers
                 subject: "Actualizacion del registro de estado", // Subject line
                 text: "La Secretaría de Salud Departamental ha actualizado el estado de tu registro. Ahora tu estado de registro es: "+rs+". Por favor ingrese a la plataforma y verifique su actualizacion", // plaintext body
-                html: "<h2>La Secretaría de Salud Departamental ha actualizado el estado de tu registro</h2> Ahora tu estado de registro es: <strong>"+rs+"</strong>. <p>Por favor ingrese a la plataforma y verifique su actualizacion</p> <p>Consulting-cordoba.herokuapp.com</p>"
+                html: "<h2>La Secretaría de Salud Departamental ha actualizado el estado de tu registro</h2> Ahora tu estado de registro es: <strong>"+rs+"</strong>. <p>Por favor ingrese a la plataforma y verifique su actualizacion</p> <p> link(rel="stylesheet", href='Consulting-cordoba.herokuapp.com')</p>"
 
 
 
