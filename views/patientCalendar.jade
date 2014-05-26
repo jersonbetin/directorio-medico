@@ -30,15 +30,15 @@ block nav
           li
             a(href="/search/doctors/patients")
               i.fa.fa-star
-              |   Tomar citas medicas
+              |   Tomar citas médicas
           li
             a(href="/search/doctors/idoneidad")
               i.fa.fa-star
-              |  Consulta de idoneidad medica
+              |  Consulta de idoneidad médica
       li
         a#logout_patient(href="#")
           i.fa.fa-sign-out
-          |  Cerrar session
+          |  Cerrar sesión
     a.navbar-brand.navbar-right#username_h2 Paciente:
 
 block content
@@ -162,7 +162,7 @@ block js
               },
               success: function(data){
                 console.log(data);
-                alert("Se aparto la cita satisfctoriamente");
+                alert("Se apartó la cita satisfactoriamente");
                 var week = getWeeksOfAMonthOfAYear($("select#month").val(), $("select#year").val())[$("select#weeks").val()-1];
                 loadDoctorWeekCalendar($("select#year").val(), $("select#month").val(), week, localStorage.doctorID);
                 socket.emit('calendarUpdated');
@@ -172,7 +172,7 @@ block js
             alert("No se aparto la cita");
           }
         }else{
-          alert("debe escribir una descripcion de la cita");
+          alert("Debe introducir una descripción de la cita");
         }
       });
 

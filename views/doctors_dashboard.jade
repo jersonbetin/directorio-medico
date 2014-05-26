@@ -19,7 +19,7 @@ block nav
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-info-circle
-          |   Mi informacion
+          |   Mi información
           b.caret
         ul.dropdown-menu
           li
@@ -33,7 +33,7 @@ block nav
           li
             a(href="/me/titles_information")
               i.fa.fa-star
-              |  Titulos
+              |  Títulos
           li
             a(href="/me/register_end")
               i.fa.fa-star
@@ -45,7 +45,7 @@ block nav
       li
         a#logout_doctor(href="#")
           i.fa.fa-sign-out
-          |  Cerrar session
+          |  Cerrar sesión
     a.navbar-brand.navbar-right#username_h2 Doctor:
 
 block content
@@ -55,7 +55,7 @@ block content
         #alert_registrado.alert-info
           span Hemos encontrado sus datos en secretaria de salud,estos se cargaran de forma temporal.
         #alert_no_registrado.alert-info
-          span Señor Profesional de la Salu, usted no esta registrado en Secretaria de Salud De Córdoba,  usted puede realizar su registro a travéz de nuestra sitio, y continuar con nuestros servicios.
+          span Usted no esta registrado en Secretaria de Salud de Córdoba,  usted puede realizar su registro a travéz de nuestra sitio, y continuar con nuestros servicios.
     .row#messagge-row(style="display: none")
       p.alert.alert-info Señor Profesional de la Salud, usted no ha competado su registro o aún La Secretaria de Salud Departamental de Córdoba no ha    avalado su registro, por lo tanto no puede hacer uso del calendario para gestionar citas médicas. 
     .row#selects-row(style="display: none")
@@ -91,7 +91,7 @@ block content
               option(value=-1) Seleccione una semana
       .col-lg-4
         div.form-group.panel-citas
-          label Panel de informacion
+          label Panel de información
           .panel-general
             .panel1
             p &nbsp;Cita No Habilitada
@@ -121,9 +121,9 @@ block content
                         tr
                           td
                           td
-                            label.control-label.col-sm-12(for="identification") Cedula:
+                            label.control-label.col-sm-12(for="identification") Cédula:
                           td
-                            input.form-control#identification(type="text", placeholder="cedula", required)
+                            input.form-control#identification(type="text", placeholder="Cédula", required)
                           td
                     .modal-footer
                         button(type="button", class="btn btn-default", data-dismiss="modal") Cancelar
@@ -133,7 +133,7 @@ block content
         .modal-content
           .modal-header
             button(type="button", class="close", data-dismiss="modal", aria-hidden="true")&times;
-            h4(class="modal-title", id="myModalLabel") Informacion del paciente y la cita.
+            h4(class="modal-title", id="myModalLabel") Información del paciente y la cita.
           .modal-body
             #patientId
             #patientName
@@ -230,7 +230,7 @@ block js
             $("#selects-row").css("display","none");
             $("#calendar-row").css("display","none");
             $("#messagge-row").css("display","block");
-            console.log("USted no es un doctor avalado por secretaria, por lo tanto no puede hacer uso del calendario");
+            console.log("USted no es un doctor avalado por secretaría, por lo tanto no puede hacer uso del calendario");
           }
         }
       });
@@ -778,7 +778,7 @@ block js
             $("#patientName").html("<h4> Nombre: "+data.dates[0].appointment.idPatient.personalInformation.names+"</h4>");
             $("#patientLastname").html("<h4> Apellido: "+data.dates[0].appointment.idPatient.personalInformation.lastnames.first+"</h4>");
             $("#patientSex").html("<h4> Sexo: "+data.dates[0].appointment.idPatient.personalInformation.sex+"</h4>");
-            $("#appointmentDescription").html("<h4> Descripcion de la consulta: "+data.dates[0].appointment.description+"</h4>");
+            $("#appointmentDescription").html("<h4> Descripción de la consulta: "+data.dates[0].appointment.description+"</h4>");
             $("#myModal").modal();
           }
         });

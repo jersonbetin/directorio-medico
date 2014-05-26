@@ -20,7 +20,7 @@ block nav
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-info-circle
-          |   Mi informacion
+          |   Mi información
           b.caret
         ul.dropdown-menu
           li
@@ -34,7 +34,7 @@ block nav
           li
             a(href="/me/titles_information")
               i.fa.fa-star
-              |  Titulos
+              |  Títulos
           li.active
             a()
               i.fa.fa-star
@@ -46,7 +46,7 @@ block nav
       li
         a#logout_doctor(href="#")
           i.fa.fa-sign-out
-          |  Cerrar session
+          |  Cerrar sesión
     a.navbar-brand.navbar-right#username_h2 Doctor:
 
 block content
@@ -58,13 +58,13 @@ block content
           input#csrf_input(type="hidden", value="#{data.csrf}")
       .col-lg-12
         #alert_registrado.alert-info
-           span El usuario esta registrado asi que no es necesario enviar los datos a secretaria
+           span El usuario esta registrado asi que no es necesario enviar los datos a La Secretaría de Salud Departamental
 
         #accordion.panel-group
           .panel.panel-default
             .panel-heading
               h4.panel-title
-                a(data-toggle="collapse" data-parent="#accordion" href="#collapseOne") Informacion personal
+                a(data-toggle="collapse" data-parent="#accordion" href="#collapseOne") Información personal
             #collapseOne.panel-collapse.collapse.in
               .panel-body
                 table.table.table-information
@@ -80,11 +80,11 @@ block content
                           span Segudno apellido: 
                     td
                       p#inf_tidentificacion 
-                        span Tipo de identificacion: 
+                        span Tipo de identificación: 
                   tr
                     td
                       p#inf_identificacion 
-                          span identificacion: 
+                          span identificación: 
                     td
                       p#inf_sexo 
                         span sexo: 
@@ -97,7 +97,7 @@ block content
                   tr
                     td
                       p#inf_dir_residencia 
-                          span Direccion: 
+                          span Dirección: 
                     td
                       p#inf_celular 
                         span Celular: 
@@ -120,7 +120,7 @@ block content
                           span Tarjeta profesional: 
                     td
                       p#inf_tipoProfesion 
-                        span Tipo de profesion: 
+                        span Tipo de profesión: 
                     td
                       p#inf_trabaja 
                           span Esta trabajando?: 
@@ -135,9 +135,9 @@ block content
                 table.table.table-information
                   thead
                     tr
-                      td.span_title Titulo
-                      td.span_title Descripcion
-                      td.span_title Fecha de graduacion
+                      td.span_title Título
+                      td.span_title Descripción
+                      td.span_title Fecha de graduación
                       td.span_title Universidad
                       td.span_title Ciudad
                       td.span_title Departamento
@@ -145,7 +145,7 @@ block content
     br
     .row
       .col-lg-12
-        button.btn.btn-primary.col-lg-6.col-lg-offset-3#button_send_secretary Enviar datos a secretaria
+        button.btn.btn-primary.col-lg-6.col-lg-offset-3#button_send_secretary Enviar datos a Secretaría
 block js
   script.
     $(document).on('ready', function(){

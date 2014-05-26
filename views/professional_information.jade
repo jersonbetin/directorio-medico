@@ -20,7 +20,7 @@ block nav
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-info-circle
-          |   Mi informacion
+          |   Mi información
           b.caret
         ul.dropdown-menu
           li
@@ -34,7 +34,7 @@ block nav
           li
             a(href="/me/titles_information")
               i.fa.fa-star
-              |  Titulos
+              |  Títulos
           li
             a(href="/me/register_end")
               i.fa.fa-star
@@ -46,7 +46,7 @@ block nav
       li
         a#logout_doctor(href="#")
           i.fa.fa-sign-out
-          |  Cerrar session
+          |  Cerrar sesión
     a.navbar-brand.navbar-right#username_h2 Doctor:
 
 block content
@@ -61,13 +61,13 @@ block content
           input#csrf_input(type="hidden", value="#{data.csrf}")
           table.table
             #alert_registrado.alert-info
-              span Medico registrado En secretaria de salud y se cargaron los datos personales en el formulario
+              span Médico registrado en La Secretaría de Salud Departamental, se cargaron los datos personales en el formulario
             #alert_no_registrado.alert-info
-              span Medico no esta registrado tiene que guardar sus datos y enviarlos a la secretaria de salud
+              span El médico no está registrado tiene que guardar sus datos y enviarlos a la secretaria de salud
             #alert_guardado.alert-success
-              span Medico se guardo con exito
+              span Datos del médico se guardo con exito
             #alert_no_guardado.alert-danger
-              span Medico no se guardo con exito error al enviar los datos
+              span Los datos del médico no se guardaron, error al enviar los datos
             .form-group
               tr
                 td
@@ -81,7 +81,7 @@ block content
             .form-group
               tr
                 td
-                  label(for="professional_type_input", class="control-label") Tipo de profesion: 
+                  label(for="professional_type_input", class="control-label") Tipo de profesión: 
                 td
                   #div_professional_type
                 td
@@ -95,11 +95,11 @@ block content
                 td
                   label(for="nit_clinica", class="control-label") Nit: 
                 td
-                  input(type="text", id="nit_clinica", class="form-control", placeholder="Nit de la clinica", required)
+                  input(type="text", id="nit_clinica", class="form-control", placeholder="Nit del consultorio o clinica", required)
                 td
                   label(for="name_clinica", class="control-label") Nombre de la clinica: 
                 td
-                  input(type="text", id="name_clinica", class="form-control", placeholder="Nombre de la clinica", required)
+                  input(type="text", id="name_clinica", class="form-control", placeholder="Consultorio o clinica", required)
             .form-group
                 tr
                   td
@@ -107,15 +107,15 @@ block content
                   td
                     #div_municipios_clinica
                   td
-                    label(for="address_clinica", class="control-label") Direccion de la clinica: 
+                    label(for="address_clinica", class="control-label") Dirección de la clinica: 
                   td
                     input(type="text", id="address_clinica", class="form-control", placeholder="direccion de la clinca", required)
             .form-group
                 tr
                   td
-                    label(for="landline_clinica", class="control-label") Telefono: 
+                    label(for="landline_clinica", class="control-label") Teléfono: 
                   td
-                    input(type="text", id="landline_clinica", class="form-control", placeholder="Telefono de la clinica", required)
+                    input(type="text", id="landline_clinica", class="form-control", placeholder="Teléfono de la clinica", required)
                   td
                     label(for="mobile_clinica", class="control-label") Celular: 
                   td
@@ -253,7 +253,7 @@ block js
             data.append("landline_clinica", landline_clinica);
           }
           console.log(localStorage.accessToken);
-          if(confirm("Al actualizar sus datos profesionales, el estado volvera a ser inhabilitado hasta que secretraria verifique sus nuevos datos, para eso, despues de actualizar estos datos debe ir a finalizar registro y dar click e el boton finalizar registro")){
+          if(confirm("Al actualizar sus datos profesionales, el estado volvera a ser inhabilitado hasta que La  Secretraría de Salud de Córdoba, verifique sus nuevos datos, luego de actualizar sus títulos, debe ir a la opción Finalizar registro y dar click e el boton Enviar a secretaría")){
             $.ajax({
               type: requestType,
               url:"/api/v1/doctors/me/professional_information?errors=verbose",

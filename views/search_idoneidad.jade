@@ -26,11 +26,11 @@ block nav
           li
             a(href="/search/doctors")
               i.fa.fa-user-md
-              |  Medicos en el directorio
+              |  Médicos en el directorio
           li.active
             a()
               i.fa.fa-ambulance
-              |  Idoneidad medica
+              |  Idoneidad médica
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-pencil-square
@@ -40,7 +40,7 @@ block nav
           li
             a(href="/signup/doctors")
               i.fa.fa-user-md
-              |   Medico
+              |   Médico
           li
             a(href="/signup/patients") 
               i.fa.fa-user
@@ -48,21 +48,21 @@ block nav
       li
         a(href="/login")
           i.fa.fa-sign-in
-          |  Iniciar Session
+          |  Iniciar Sesión
 
 block content
   .container.general-content
     .row
       .col-lg-12
         .page-header.title-header
-          h1 Busqueda de idoneidad de medicos en Cordoba
+          h1 Busqueda de idoneidad de médicos en Córdoba
       .col-lg-4.board-search
         h4
-          center Datos del medico
+          center Datos del médico
         .board-single
           .form-group
-            label.control-label(for="identificacion") Identificacion: 
-            input.form-control#identificacion(type="text", placeholder="Identificacion del doctor")
+            label.control-label(for="identificacion") Identificación: 
+            input.form-control#identificacion(type="text", placeholder="Identificación del doctor")
             label.control-label(for="lastnames") Apellido: 
             input.form-control#lastnames(type="text", placeholder="Apellido del doctor")
           .form-group
@@ -74,7 +74,7 @@ block content
         table.table.table-hover.table-search
           thead
             tr
-              th Identificacion
+              th Identificación
               th Nombre
               th Tipo de profesional
           tbody#result_search

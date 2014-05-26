@@ -20,7 +20,7 @@ block nav
       li.active
         a()
           i.fa.fa-info-circle
-          |  Mi informacion
+          |  Mi información
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-code-fork
@@ -30,15 +30,15 @@ block nav
           li
             a(href="/search/doctors/patients")
               i.fa.fa-star
-              |   Tomar citas medicas
+              |   Tomar citas médicas
           li
             a(href="/search/doctors/idoneidad")
               i.fa.fa-star
-              |  Consulta de idoneidad medica
+              |  Consulta de idoneidad médica
       li
         a#logout_patient(href="#")
           i.fa.fa-sign-out
-          |  Cerrar session
+          |  Cerrar sesión
     a.navbar-brand.navbar-right#username_h2 Paciente:
 block content
   .container.general-content
@@ -51,9 +51,9 @@ block content
           input#csrf_input(type="hidden", value="#{data.csrf}")
           table.table
             #alert_registrado.alert-info
-              span Guardado con exito
+              span Registro guardado con exito
             #alert_no_registrado.alert-info
-              span Paciente no fue guardado
+              span Los datos del paciente no fueron guardados
               tr
                 td
                   label(for="first_name_input" , class="control-label") Nombres:
@@ -78,20 +78,20 @@ block content
             .form-group
               tr
                 td
-                  label(for="identification_type_select", class="control-label") Tipo de identification:
+                  label(for="identification_type_select", class="control-label") Tipo de identificación:
                 td
                   select(id="identification_type_select", class="form-control" )
                     option(value="cc") Cedula de ciudadania
                     option(value="ti") Tarjeta de identidad
                     option(value="pasaporte") Pasaporte
                 td
-                  label(for="identification_number_input", class="control-label") Numero de identificacion: 
+                  label(for="identification_number_input", class="control-label") Número de identificación: 
                 td
-                  input(type="text", id="identification_number_input", class="form-control" , placeholder="Numero de identificacion", required)
+                  input(type="text", id="identification_number_input", class="form-control" , placeholder="Número de identificación", required)
             .form-group
               tr
                 td
-                  label(for="mobile_input", class="control-label") Numeros de celular: 
+                  label(for="mobile_input", class="control-label") Número de celular: 
                 td
                   input(type="text", id="mobile_input", class="form-control" , placeholder="Celular", required)
                 td
@@ -101,9 +101,9 @@ block content
             .form-group
               tr
                 td
-                  label(for="landline_input", class="control-label") Numero de telefono fijo: 
+                  label(for="landline_input", class="control-label") Número de télefono fijo: 
                 td
-                  input(type="text", id="landline_input", class="form-control" , placeholder="Fijo", required)
+                  input(type="text", id="landline_input", class="form-control" , placeholder=" Teléfono Fijo", required)
             .form-group
               tr
                 td
@@ -226,7 +226,7 @@ block js
                 $("#landline_input").val(personalInformation.contactData.phone.home);
                 $("#button_save_personal_information_form").html("Actualizar");
               }else{
-                console.log("No se ha guardado aun informacion personal de este paciente");
+                console.log("No ha diligenciado su información personal");
               }
             }
           });
