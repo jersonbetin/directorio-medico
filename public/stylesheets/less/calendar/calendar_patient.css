@@ -30,6 +30,12 @@ th {
   border-bottom: 1px solid lightgray;
   font-size: 12px;
 }
+#appointments_caption{
+  font-size: 20px;
+  font-weight: bold;
+  color: #2FA4E7
+}
+
 #calendar_caption {
   font-size: 16px;
   font-weight: bold;
