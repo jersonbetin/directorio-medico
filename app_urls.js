@@ -51,6 +51,7 @@ module.exports = function (app) {
   app.get('/profile/doctorsCitas', renderTemplates.renderProfileDoctorCitasTemplate);
   app.get('/patients/calendar', renderTemplates.renderPatientCalendarTemplate);
   app.get('/doctors/imagen/perfil', renderTemplates.renderImagenPerfilDoctorTemplate);
+  app.get('/patients/denuncia', renderTemplates.renderDenunciaPatientTemplate);
 
   app.get('/login', renderTemplates.renderLoginDoctorTemplate);
   app.post('/login/doctors', middleware.csrfValidation, sessions.newDoctorSession);
@@ -71,8 +72,10 @@ module.exports = function (app) {
   app.get('/:username/titles_information', renderTemplates.renderTitlesInformation)
   app.get('/:username/register_end', renderTemplates.renderRegisterEnd)
 
+  app.get("/api/v1/doctors", api.doctors.getDoctorsInformation);
 
   // API v1 
+
 
   /*Doctors Account Information*/
   

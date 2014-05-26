@@ -1,0 +1,210 @@
+extends layout
+
+block css
+  link(rel="stylesheet", href='/stylesheets/less/home/general.css')
+  link(rel="stylesheet", href='/stylesheets/less/information/information.css')
+
+block nav
+  button.navbar-toggle(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+    span.sr-only toogle navigation
+    span.icon-bar
+    span.icon-bar
+    span.icon-bar
+  a.navbar-brand(href='/') CONSULTING
+  #bs-example-navbar-collapse-1.navbar-collapse.collapse
+    ul.nav.navbar-nav
+      li
+        a(href="/") 
+          i.fa.fa-bars
+          |  Inicio
+      li
+        a(href="/me/patient_information")
+          i.fa.fa-info-circle
+          |  Mi informacion
+      li.dropdown
+        a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
+          i.fa.fa-code-fork
+          |   Operaciones
+          b.caret
+        ul.dropdown-menu
+          li
+            a(href="/search/doctors/patients")
+              i.fa.fa-star
+              |   Tomar citas medicas
+          li
+            a(href="/search/doctors/idoneidad")
+              i.fa.fa-star
+              |  Consulta de idoneidad medica
+          li.active
+            a()
+              i.fa.fa-gavel
+              |  Denunciar medico
+      li
+        a#logout_patient(href="#")
+          i.fa.fa-sign-out
+          |  Cerrar session
+    a.navbar-brand.navbar-right#username_h2 Paciente:
+
+block content
+  .container.general-content
+    .row
+      .col-lg-12
+        .page-header.title-header
+          h1 Crear solicitud de denuncia
+          input#csrf_input(type="hidden", value="#{data.csrf}")
+    .row
+      .col-lg-4
+        img(src="/images/reportar.png", alt="")
+      .col-lg-8
+        .alert-danger#mensaje-info
+            p Para usar el servicio y denuncia a un medico tiene que terminar el proceso de llenar sus datos personales
+        form.col-lg-12#form-denuncia
+          .alert-warning
+            p La informacion marcada con (*) son obligatorios
+          .form-group.col-lg-6
+            label Identificacion del medico:
+            input.form-control#Identificacion(placeholder="Ingrese cedula")
+          .form-group.col-lg-6
+            label Nombres del medico (*):
+            input.form-control#nombre(placeholder="Ingrese nombres", required)
+          .form-group.col-lg-6
+            label direccion:
+            input.form-control#direccion(placeholder="Ingrese nombres")
+          .form-group.col-lg-6
+            label Establecimiento (*):
+            input.form-control#establecimiento(placeholder="Ingrese establecimiento", required)
+          .form-group.col-lg-4
+            label Municipio (*):
+            input.form-control#municipio(placeholder="Ingrese municipio", required)
+          .form-group.col-lg-8
+            label Descripcion (*):
+            textarea.form-control#descripcion(style="height:100px;", required) Descripcion
+          .form-group.col-lg-6.col-lg-offset-3
+            button.btn.btn-primary.col-lg-6#save_denuncia(type="submit") Reportar
+            button.btn.btn-default.col-lg-6(type="reset") Limpiar
+
+
+block js
+  script.
+    $(document).on('ready', function(){
+          function logoutDoctorSuccess(data, textStatus, jqXHR){
+                console.log(data);
+                if(data){
+                  if(data.error){
+                    console.log(error);
+                  }else{
+                    localStorage.removeItem("accessToken");
+                    localStorage.removeItem("refreshToken");
+                    localStorage.removeItem("tokenType");
+                    localStorage.removeItem("expirationDate");
+                    window.location.replace("/");
+                  }
+                }
+              }
+
+              $(function(){
+                  $.ajax({
+                      url: "/api/v1/patients/me/personal_information",
+                      type: "GET",
+                      headers: {
+                        "accessToken": localStorage.accessToken
+                      },
+                      success: function(data) {
+                        console.log(data.patientPersonalInformation.personalInformation);
+                        if(data.patientPersonalInformation.personalInformation != null){
+                          $("#mensaje-info").css("display","none");
+                          $("#form-denuncia").css("display","block");
+                        }else{
+                          $("#mensaje-info").css("display","block");
+                          $("#form-denuncia").css("display","none");
+                          //- console.log("USted no es un doctor avalado por secretaria, por lo tanto no puede hacer uso del calendario");
+                        }
+                      }
+                    });
+                });
+
+          $('#save_denuncia').click(function(e){
+              var identificacion=$('#Identificacion').val();
+              var nombres=$('#nombre').val();
+              var direccion=$('#direccion').val();
+              var establecimiento=$('#establecimiento').val();
+              var municipio=$('#municipio').val();
+              var descripcion=$('#descripcion').val();
+              if(nombres!='' && establecimiento!='' && municipio!='' && descripcion!=''){
+                e.preventDefault();
+                if(confirm('¿Quiere reportar a este medico?')){
+                  $.ajax({
+                        url: "/api/v1/patients/me/personal_information",
+                        type: "GET",
+                        headers: {
+                          "accessToken": localStorage.accessToken
+                        },
+                        success: function(data) {
+                          console.log(data.patientPersonalInformation.personalInformation);
+                          if(data.patientPersonalInformation.personalInformation != null){
+                            var infoPersonal=data.patientPersonalInformation.personalInformation;
+                            var reporte={
+                                    denunciante:{
+                                      identificacion:infoPersonal.identification.number,
+                                      nombres:infoPersonal.names,
+                                      apellidos:{
+                                        primero: infoPersonal.lastnames.first,
+                                        segundo:infoPersonal.lastnames.second
+                                      },
+                                      phone:{
+                                        celular:infoPersonal.contactData.phone.mobile,
+                                        fijo:infoPersonal.contactData.phone.home
+                                      }
+                                    },
+                                    profesionalDenunciado:{
+                                      identificacion:identificacion,
+                                      nombres: nombres,
+                                      direccion:direccion,
+                                      establecimiento:establecimiento
+                                    },
+                                        descripcion:descripcion,
+                                        municipio:municipio,
+                                        fechaDenuncia:new Date()
+                                }
+                                $.ajax({
+                                    type:'post',
+                                    dataType: 'json',
+                                    url:'http://secretariadesalud-cordoba.herokuapp.com/denuncias/medicos',
+                                    data:{
+                                      reporte:reporte
+                                    },
+                                    success:function(data){
+                                      if(data.error==null){
+                                        alert('guardado con exito');
+                                        $('#Identificacion').val('');
+                                        $('#nombre').val('');
+                                        $('#direccion').val('');
+                                        $('#establecimiento').val('');
+                                        $('#municipio').val('');
+                                        $('#descripcion').val('');
+                                      }else{
+                                      alert('problemas al guardar');
+                                      }
+                                    }
+                                  })
+                          }else{
+                            alert('no existen datos del paciente');
+                            }
+                        }
+                      });
+                }
+              }
+            });
+
+            $("#logout_patient").on('click', function(e){
+                e.preventDefault();
+                $.ajax({
+                  type: "DELETE",
+                  url:"/login/patients",
+                  headers: {
+                    "csrfToken": $("#csrf_input").val()
+                  },
+                  success: logoutDoctorSuccess
+                });
+              }); // End of logout doctor on click event
+        });

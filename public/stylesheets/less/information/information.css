@@ -17,6 +17,19 @@
 .alert-danger span {
   vertical-align: middle;
 }
+.alert-warning {
+  height: 40px;
+  font-size: 16px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -o-border-radius: 10px;
+  -moz-border-radius: 10px;
+  padding-top: 5px;
+}
+.alert-warning p {
+  vertical-align: middle;
+}
 #image-upload {
   margin-top: 20px;
   margin-left: 30%;

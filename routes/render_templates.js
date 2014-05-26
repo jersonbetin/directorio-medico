@@ -255,6 +255,25 @@ exports.renderPatientCalendarTemplate = function (req, res){
   } 
 }
 
+exports.renderDenunciaPatientTemplate = function (req, res){
+  console.log("#################### renderDenunciaPatientTemplate ####################");
+  console.log("Generation csrf token");
+  var data = {};
+  var csrf = helpers.encryptString(Math.random().toString(),"csrftoken");
+  req.session.csrf = csrf;
+  data.csrf = csrf;
+  console.log(data);
+  if (req.cookies && (req.cookies.isLogged == true || req.cookies.isLogged == 'true')) {
+    console.log("render Denuncia Patient Template from cookie");
+    res.render('denuncia', {data: data});
+  }else if(req.session && req.session.isLogged == true || req.session.isLogged == 'true'){
+    console.log("render Denuncia Patient Template from session");
+    res.render('denuncia', {data: data});
+  }else{
+    res.redirect('/');
+  } 
+}
+
 exports.renderImagenPerfilDoctorTemplate = function (req, res){
   console.log("#################### renderImagenPerfilDoctorTemplate ####################");
   console.log("Generation csrf token");
