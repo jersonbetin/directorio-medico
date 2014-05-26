@@ -21,7 +21,7 @@ block nav
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-info-circle
-          |   Mi informacion
+          |   Mi información
           b.caret
         ul.dropdown-menu
           li
@@ -35,7 +35,7 @@ block nav
           li.active
             a()
               i.fa.fa-star
-              |  Titulos
+              |  Títulos
           li
             a(href="/me/register_end")
               i.fa.fa-star
@@ -47,7 +47,7 @@ block nav
       li
         a#logout_doctor(href="#")
           i.fa.fa-sign-out
-          |  Cerrar session
+          |  Cerrar sesión
     a.navbar-brand.navbar-right#username_h2 Doctor:
 
 block content
@@ -60,18 +60,18 @@ block content
       .col-lg-9
         table.table
             #alert_registrado.alert-info
-              span Usted debe cargar la informacion de sus titulos
+              span Usted debe cargar la información de sus títulos
             form#save_title_information
                   .form-group
                     tr
                       td
-                        label.control-label.col-sm-12(for="titulo") Nombres titulo:
+                        label.control-label.col-sm-12(for="titulo") Nombre del ttulo:
                       td
-                        input.form-control(type="text", name="titulo", id="titulo", Placeholder="Ingrese nombre del titulo", required)
+                        input.form-control(type="text", name="titulo", id="titulo", Placeholder="Nombre del título", required)
                       td
-                        label.control-label.col-sm-12(for="fechaObtencion") fecha Obtencion:
+                        label.control-label.col-sm-12(for="fechaObtencion") fecha Obtención:
                       td
-                        input.form-control(type="date", name="fechaObtencion", id="fechaObtencion", Placeholder="Ingrese fecha de optencion", required)
+                        input.form-control(type="date", name="fechaObtencion", id="fechaObtencion", Placeholder="Fecha de obtención", required)
                   .form-group
                     tr
                       td
@@ -80,7 +80,7 @@ block content
                         #content_universidad
                     tr
                       td
-                        label.control-label.col-sm-12(for="descripcion") Descripcion:
+                        label.control-label.col-sm-12(for="descripcion") Descripción:
                       td(colspan="3")
                         textarea.form-control(name="descripcion", id="descripcion")
                   .form-group
@@ -103,9 +103,9 @@ block content
             caption  Titulos Registrados
             thead
               tr
-                th Titulo
-                th Descripcion
-                th Fecha de graduacion
+                th Título
+                th Descripción
+                th Fecha de graduación
                 th Universidad
                 th Ciudad
                 th Departamento
@@ -165,7 +165,7 @@ block js
           var descripcion_title = $('#descripcion').val();
           if(nombre_titulo!="" && fecha_title!="" && universidad_title!=""){
             console.log("se pasaron todos los datos");
-            if(confirm("Al actualizar sus datos profesionales, el estado volvera a ser inhabilitado hasta que secretraria verifique sus nuevos datos, para eso, despues de actualizar estos datos debe ir a finalizar registro y dar click e el boton finalizar registro")){
+            if(confirm("Al actualizar sus datos profesionales, el estado volvera a ser inhabilitado hasta que La  Secretraría de Salud de Córdoba, verifique sus nuevos datos, luego de actualizar sus títulos, debe ir a la opción Finalizar registro y dar click e el boton Enviar a secretaría")){
               var titleInformation={
                   "title" : nombre_titulo,
                   "description" :descripcion_title ,
@@ -187,10 +187,10 @@ block js
                   }
               });
             }else{
-              alert("Actualizacion cancelada");
+              alert("Actualización cancelada");
             }
           }else{
-            console.log("No se pasaron todos los datos")
+            console.log("Faltan datos, por favor verifique")
           }
         });
 
@@ -222,7 +222,7 @@ block js
                   $('#alert_registrado').css('display', 'none');
                 }
             }else{
-              console.log("No se ha guardado aun informacion personal de este doctor");
+              console.log("No ha diligenciado su información personal");
             }
           }
         });
@@ -232,7 +232,7 @@ block js
 
       $("#table_titles_body").on('click', '.delete-title',function(e){
           e.preventDefault();
-          if(confirm('Seguro quiere elimimar el titulo')){
+          if(confirm('Seguro quiere elimimar el título')){
             var idTitulo=$(this).attr('data-infoTitle');
             $.ajax({
                 type:'delete',
@@ -242,10 +242,10 @@ block js
                 },
                 success:function(data){
                   if(data.error==null){
-                    alert('el tituto se elimino con exito');
+                    alert('el títuto se eliminó con exito');
                     getDoctorTitlesInformation();
                   }else{
-                    alert('Error al borrar el titulo');
+                    alert('Error al borrar el título');
                   }
                 }
               });

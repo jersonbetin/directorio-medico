@@ -30,11 +30,11 @@ block nav
           li
             a(href="/search/doctors/patients")
               i.fa.fa-star
-              |   Tomar citas medicas
+              |   Tomar citas médicas
           li.active
             a()
               i.fa.fa-star
-              |  Consulta de idoneidad medica
+              |  Consulta de idoneidad médica
           li
             a(href="/patients/denuncia")
               i.fa.fa-gavel
@@ -42,7 +42,7 @@ block nav
       li
         a#logout_patient(href="#")
           i.fa.fa-sign-out
-          |  Cerrar session
+          |  Cerrar sesión
     a.navbar-brand.navbar-right#username_h2 Paciente:
 
 block content
@@ -51,15 +51,15 @@ block content
       .col-lg-12
         .page-header.title-header
           
-          h1 Busqueda de idoneidad de medicos en Cordoba
+          h1 Busqueda de idoneidad de médicos en Córdoba
           input#csrf_input(type="hidden", value="#{data.csrf}")
       .col-lg-4.board-search
         h4
-          center Datos del medico
+          center Datos del médico
         .board-single
           .form-group
-            label.control-label(for="identificacion") Identificacion: 
-            input.form-control#identificacion(type="text", placeholder="Identificacion del doctor")
+            label.control-label(for="identificacion") Identificación: 
+            input.form-control#identificacion(type="text", placeholder="Identificación del doctor")
             label.control-label(for="lastnames") Apellido: 
             input.form-control#lastnames(type="text", placeholder="Apellido del doctor")
           .form-group
@@ -71,7 +71,7 @@ block content
         table.table.table-hover.table-search
           thead
             tr
-              th Identificacion
+              th Identificación
               th Nombre
               th Tipo de profesional
           tbody#result_search
