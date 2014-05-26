@@ -435,17 +435,20 @@ exports.updateDoctorRegisterStateById = function (req, res){
             DAI.save(function(err, doc){
               var rs = "";
               if(req.body.registerState == 2){
-                rs = "Registrado y aprobado"; // ojo ortografia
+                rs = "Registrado y aprobado"; 
               }else{
-                rs = "Registrado y noaprobado"; // ojo ortografia
+                rs = "Registrado y no aprobado"; 
               }
               // setup e-mail data with unicode symbols
               var mailOptions = {
                 from: "<consulting.cordoba.service@gmail.com>", // sender address
                 to: doc.email, // list of receivers
                 subject: "Actualizacion del registro de estado", // Subject line
-                text: "La secretaria de salud ha actualizado tu estado de registro. Ahora tu estado de registro es: "+rs+". Por favor ingrese a la plataforma y verifique su actualizacion", // plaintext body
-                html: "<h2>La secretaria de salud ha actualizado tu estado de registro</h2>. Ahora tu estado de registro es: <strong>"+rs+"</strong>. <p>Por favor ingrese a la plataforma y verifique su actualizacion</p>"
+                text: "La Secretaría de Salud Departamental ha actualizado el estado de tu registro. Ahora tu estado de registro es: "+rs+". Por favor ingrese a la plataforma y verifique su actualizacion", // plaintext body
+                html: "<h2>La Secretaría de Salud Departamental ha actualizado el estado de tu registro</h2> Ahora tu estado de registro es: <strong>"+rs+"</strong>. <p>Por favor ingrese a la plataforma y verifique su actualizacion</p> <p>Consulting-cordoba.herokuapp.com</p>"
+
+
+
               }
 
               mails.sendMail(mailOptions);

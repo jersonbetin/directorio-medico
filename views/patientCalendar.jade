@@ -16,7 +16,7 @@ block nav
       li
         a(href="/")
           i.fa.fa-bars
-          |  Dashboard
+          |  Inicio
       li
         a(href="/me/patient_information")
           i.fa.fa-info-circle
@@ -480,7 +480,7 @@ block js
             }
             //- console.log("termine el segundo for");
 
-            $("#calendar_caption").html("Calendario de la semana #"+$("select#weeks").val()+" de "+$("select#month option:selected").text()+" de "+year);
+            $("#calendar_caption").html("Calendario de la semana número "+$("select#weeks").val()+" de "+$("select#month option:selected").text()+" de "+year);
             $("#my_calendar_tbody").html(cal);
           }
         });

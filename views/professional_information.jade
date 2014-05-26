@@ -16,7 +16,7 @@ block nav
       li
         a(href="/") 
           i.fa.fa-bars
-          |  Dashboard
+          |  Inicio
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-info-circle
@@ -54,8 +54,8 @@ block content
   .container.general-content
     .row
       .col-lg-12
-        .page-header.title-header
-           h1 Informacion Profesional
+          .page-header.title-header
+           h1 Información Profesional
       .col-lg-9
         form#perosnal_information_form
           input#csrf_input(type="hidden", value="#{data.csrf}")
@@ -71,9 +71,9 @@ block content
             .form-group
               tr
                 td
-                  label(for="professional_card_number_input", class="control-label") Numero de la targeta profesional: 
+                  label(for="professional_card_number_input", class="control-label") Numero de la tarjeta profesional: 
                 td
-                  input(type="text", class="form-control", id="professional_card_number_input", placeholder="Numero de la targeta profesional", required)
+                  input(type="text", class="form-control", id="professional_card_number_input", placeholder="Numero de la tarjeta profesional", required)
                 td
                   label(for="evidence_input", class="control-label") Evidencia: 
                 td
@@ -300,6 +300,22 @@ block js
         }
       });
 
+      function getDoctorAccountInformationSuccess(data){
+        var doctorAI = {};
+        doctorAI = data.doctorAccountInformation;
+        $("#username_h1").html(" Informacion Profesional, Doctor: "+doctorAI.username);
+      }
+
+      function getDoctorAccountInformation (){
+        $.ajax({
+          url:"/api/v1/doctors/me/account_information",
+          headers: {
+            "accessToken": localStorage.accessToken
+          },
+          success: getDoctorAccountInformationSuccess
+        });
+      }
+      
 
       function tipo_profesional(next){
           $.ajax({
@@ -381,6 +397,7 @@ block js
         });
       });
 
+
     function getDoctorAccountInformationSuccess(data){
           var doctorAI = {};
           doctorAI = data.doctorAccountInformation;
@@ -398,3 +415,5 @@ block js
         }
         getDoctorAccountInformation();
     }); // End of document on ready event
+
+

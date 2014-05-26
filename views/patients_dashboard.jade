@@ -16,7 +16,7 @@ block nav
       li.active
         a() 
           i.fa.fa-bars
-          |  Dashboard
+          |  Inicio
       li
         a(href="/me/patient_information")
           i.fa.fa-info-circle
@@ -40,11 +40,13 @@ block nav
           i.fa.fa-sign-out
           |  Cerrar session
     a.navbar-brand.navbar-right#username_h2 Paciente:
+
 block content
   .container
     input#csrf_input(type="hidden", value="#{data.csrf}")
     .row
       .col-xs-12
+       
         table#appointments.table
           caption#appointments_caption Mis citas   
           thead#appointments_thead

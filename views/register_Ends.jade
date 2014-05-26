@@ -16,7 +16,7 @@ block nav
       li
         a(href="/") 
           i.fa.fa-bars
-          |  Dashboard
+          |  Inicio
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-info-circle
@@ -54,7 +54,7 @@ block content
     .row
       .col-lg-12
         .page-header.title-header
-          h2#username_h2 Informacion general del doctor:
+          h2#username_h2 Información general
           input#csrf_input(type="hidden", value="#{data.csrf}")
       .col-lg-12
         #alert_registrado.alert-info
@@ -153,7 +153,7 @@ block js
         var doctorAI = {};
         function getDoctorAccountInformationSuccess(data){
               doctorAI = data.doctorAccountInformation;
-              $("#username_h2").html("Informacion general del doctor: "+(doctorAI.username).toUpperCase());
+            //  $("#username_h2").html("Informacion general del doctor: "+(doctorAI.username).toUpperCase());
           }
 
         $(function getDoctorAccountInformation (){
@@ -261,7 +261,7 @@ block js
               success:function(data){
                 console.log(data);
                 if(data.error==null){
-                  alert('se agrego con exito');
+                  alert('Datos enviados a Secretaria de Salud de Córdoba');
                 }else if(data.error){
                   alert('error al enviar');
                   window.reload();

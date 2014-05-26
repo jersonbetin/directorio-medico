@@ -16,7 +16,7 @@ block nav
       li
         a(href="/") 
           i.fa.fa-bars
-          |  Dashboard
+          |  Inicio
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-info-circle
@@ -55,7 +55,7 @@ block content
     .row
       .col-lg-12
         .page-header.title-header
-          h1 Informacion personal
+          h1 Información Personal
       .col-lg-9
         form#perosnal_information_form
           input#csrf_input(type="hidden", value="#{data.csrf}")
@@ -125,7 +125,7 @@ block content
             .form-group
               tr
                 td
-                  label(for="mobile_input", class="control-label") Numeros de celular: 
+                  label(for="mobile_input", class="control-label") Numero de celular: 
                 td
                   input(type="text", id="mobile_input", class="form-control" , placeholder="Celular", required)
                 td
@@ -313,6 +313,12 @@ block js
           }
         });
       }
+        function getDoctorAccountInformationSuccess(data){
+        var doctorAI = {};
+        doctorAI = data.doctorAccountInformation;
+        $("#username_h1").html(" Informacion Personal, Doctor: "+doctorAI.username);
+      }
+
 
       function getDoctorAccountInformationSuccess(data){
           var doctorAI = {};
@@ -331,6 +337,5 @@ block js
         }
         getDoctorAccountInformation();
 
-      
       getDoctorPersonalInformation();
     }); // End of document on ready event

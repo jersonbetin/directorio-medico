@@ -17,7 +17,7 @@ block nav
       li
         a(href="/") 
           i.fa.fa-bars
-          |  Dashboard
+          |  Inicio
       li.dropdown
         a(href="#", class="dropdown-toggle", data-toggle="dropdown") 
           i.fa.fa-info-circle
@@ -56,7 +56,7 @@ block content
     .row
       .col-lg-12
         .page-header.title-header
-          h1 Mis titulos
+         h1 Mis Títulos
       .col-lg-9
         table.table
             #alert_registrado.alert-info
@@ -312,14 +312,15 @@ block js
           $("#username_h2").html("Doctor: "+doctorAI.username);
         }
 
-        function getDoctorAccountInformation (){
-          $.ajax({
-            url:"/api/v1/doctors/me/account_information",
-            headers: {
-              "accessToken": localStorage.accessToken
-            },
-            success: getDoctorAccountInformationSuccess
-          });
-        }
-        getDoctorAccountInformation();
+      function getDoctorAccountInformation (){
+        $.ajax({
+          url:"/api/v1/doctors/me/account_information",
+          headers: {
+            "accessToken": localStorage.accessToken
+          },
+          success: getDoctorAccountInformationSuccess
+        });
+      }
+      
+      getDoctorAccountInformation();
     }); // End of document on ready event
